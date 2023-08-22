@@ -1,16 +1,35 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Provider as PaperProvider, TextInput, Button } from 'react-native-paper';
+import { Provider as PaperProvider, TextInput, Button, Snackbar } from 'react-native-paper';
 
 import {APIHandler} from '../Shared/APIHandler';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [invalidVisible, setInvalidVisible] = useState(false); // State to control visibility of the Snackbar
+  const [loginError, setLoginError] = useState('None');
 
   const login_handler = () => {
-    APIHandler.loginUser(username,password);
+    APIHandler.loginUser(username,password,showSnackbar);
   }
+
+  // Function to show the Snackbar
+  function showSnackbar(error){
+    setLoginError(error)
+    setInvalidVisible(true);
+
+    // Automatically hide the Snackbar after 3000 milliseconds (3 seconds)
+    setTimeout(() => {
+      hideSnackbar();
+    }, 3000);
+  };
+
+  // Function to hide the Snackbar
+  const hideSnackbar = () => {
+    setInvalidVisible(false);
+  };
+
 
 
   return (
@@ -32,6 +51,16 @@ export default function LoginScreen() {
         <Button style={[styles.input, { marginTop: 16 }]} mode="contained" onPress={login_handler}>
           Login
         </Button>
+        <Snackbar
+        visible={invalidVisible}
+        onDismiss={hideSnackbar}
+        action={{
+          label: 'OK',
+          onPress: hideSnackbar,
+        }}
+      >
+      {loginError}
+      </Snackbar>
       </View>
     </PaperProvider>
   );

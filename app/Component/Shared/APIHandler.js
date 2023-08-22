@@ -5,7 +5,8 @@ export const APIHandler = {
     refresh_token:null,
     user_data:null,
 
-    loginUser: function(username,password) {
+    loginUser: function(username,password,invalid) {
+
         let query =  new URLSearchParams({
             grant_type:'password',
             username,
@@ -13,7 +14,7 @@ export const APIHandler = {
             client_id:'test_client',
             scope:'openid offline_access profile sol_api'
             });
-        fetch('https://aplikace.skolaonline.cz/SOLAPI/api/connect/token', {
+    fetch('https://aplikace.skolaonline.cz/SOLAPI/api/connect/token', {
     method: 'POST',
     headers:{
         'Content-Type':'application/x-www-form-urlencoded',
@@ -23,7 +24,7 @@ export const APIHandler = {
     .then(response => response.json())
     .then(data => {
         if('error_description' in data){
-            console.log(data.error_description)
+            invalid(data.error_description);
         }
         else {
             this.token = data.access_token;
@@ -43,8 +44,6 @@ export const APIHandler = {
         }
     })
     .catch(error => console.error(error));
-    
-    },   
-    
+    },
 
 }
