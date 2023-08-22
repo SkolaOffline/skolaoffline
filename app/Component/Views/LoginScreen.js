@@ -1,32 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Provider as PaperProvider, TextInput, Button } from 'react-native-paper';
-import base64 from 'base-64';
+
+import {APIHandler} from '../Shared/APIHandler';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    console.log('Username:', username);
-    console.log('Password:', password);
-    let responseData; // Declare a variable in a higher scope
-
-    fetch('https://aplikace.skolaonline.cz/SOLWebApi/api/v1/AuthorizationStatus', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Basic ' + base64.encode(username + ':' + password)
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      responseData = data; // Assign the data object to the variable
-      console.log(responseData); // Output: the data object
-    })
-    .catch(error => console.error(error));
-    
- 
+  const login_handler = () => {
+    APIHandler.loginUser(username,password);
   }
+
 
   return (
     <PaperProvider>
@@ -44,7 +29,7 @@ export default function LoginScreen() {
           onChangeText={text => setPassword(text)}
           secureTextEntry
         />
-        <Button style={[styles.input, { marginTop: 16 }]} mode="contained" onPress={handleLogin}>
+        <Button style={[styles.input, { marginTop: 16 }]} mode="contained" onPress={login_handler}>
           Login
         </Button>
       </View>

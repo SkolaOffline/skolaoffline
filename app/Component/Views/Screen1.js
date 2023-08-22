@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
-import {Text, StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import { Text, StyleSheet } from 'react-native';
+import { TouchableRipple } from 'react-native-paper';
 
 const TextInANest = () => {
   const [titleText, setTitleText] = useState("Bird's Nest");
@@ -11,11 +12,13 @@ const TextInANest = () => {
 
   return (
     <Text style={styles.baseText}>
-      <Text style={styles.titleText} onPress={onPressTitle}>
-        {titleText}
-        {'\n'}
-        {'\n'}
-      </Text>
+      <TouchableRipple onPress={onPressTitle}>
+        <Text style={styles.titleText}>
+          {titleText}
+          {'\n'}
+          {'\n'}
+        </Text>
+      </TouchableRipple>
       <Text numberOfLines={5}>{bodyText}</Text>
     </Text>
   );

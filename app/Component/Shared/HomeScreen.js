@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { BottomNavigation, BottomNavigationTab } from 'react-native-paper';
+import { View } from 'react-native';
+import { BottomNavigation, Text } from 'react-native-paper';
+import { NavigationScreenProp } from 'react-navigation';
 
-import Screen1 from '../Views/Screen1';
-import Screen2 from '../Views/Screen2';
-import Screen3 from '../Views/Screen3';
-import Screen4 from '../Views/Screen4';
-import Screen5 from '../Views/Screen5';
+import Screen1 from '../Views/Screen1.js'
 
 export default function LoginScreen({ navigation }) {
   const [index, setIndex] = useState(0);
@@ -22,9 +19,7 @@ export default function LoginScreen({ navigation }) {
   const renderScene = BottomNavigation.SceneMap({
     screen1: Screen1,
     screen2: Screen2,
-    screen3: Screen3,
-    screen4: Screen4,
-    screen5: Screen5,
+
   });
 
   return (
@@ -40,8 +35,8 @@ export default function LoginScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
   },
-});
+};
