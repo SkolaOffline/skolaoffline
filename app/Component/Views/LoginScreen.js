@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Provider as PaperProvider, TextInput, Button, Snackbar } from 'react-native-paper';
 
-import {APIHandler} from '../Shared/APIHandler';
+
+import {APIHandler,AuthError,HTTPError} from '../Shared/APIHandler';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
@@ -10,8 +11,17 @@ export default function LoginScreen() {
   const [invalidVisible, setInvalidVisible] = useState(false); // State to control visibility of the Snackbar
   const [loginError, setLoginError] = useState('None');
 
+
   const login_handler = () => {
-    APIHandler.loginUser(username,password,showSnackbar);
+    APIHandler.Authenticate(username,password)
+    .catch(error => {
+      if(error instanceof AuthError || error instanceof HTTPError){
+        showSnackbar(error.message);
+        console.log(`AuthError:error.message`);
+      }
+      else throw error;
+    });
+    
   }
 
   // Function to show the Snackbar

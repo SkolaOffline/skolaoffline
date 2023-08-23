@@ -3,6 +3,7 @@
     "name": "skolaoffline",
     "slug": "skolaoffline",
     "version": "1.0.0",
+    "jsEngine": "hermes",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
