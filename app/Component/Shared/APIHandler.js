@@ -38,11 +38,11 @@ export const APIHandler = {
         return await fetch(request.url,{
             method:request.method,
             headers:request.headers,
-            body:request.query_params,
+            body:request.query_params.toString(),
         }).then(response =>{
             if(!response.ok) {
                 // Handle error responses (non-2xx status codes)
-                console.log(response)
+                console.log(response.message)
                 throw new HTTPError(`An HTTP error occured. Status:${response.status}.`,response);
             }
             else{
@@ -60,7 +60,8 @@ export const APIHandler = {
         this.token = response.access_token;
         this.refresh_token = response.refresh_token;
         
-        // this.user_data = await this.TryRequest(new GetUserData());
+        this.user_data = await this.TryRequest(new GetUserData());
+        print(this.user_data)
 
     },
 

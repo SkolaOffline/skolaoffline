@@ -36,7 +36,7 @@ export class GetToken extends APIRoute{
 
     Build(){
     
-    this.url = 'https://aplikace.skolaonline.cz/SOLAPI/api/connect/token';
+    this.url = 'https://aplikace.skolaonline.cz/solapi/api/connect/token';
 
     this.method='POST';
 

@@ -15,10 +15,8 @@ export default function LoginScreen() {
   const login_handler = () => {
     APIHandler.Authenticate(username,password)
     .catch(error => {
-
         console.error(error)
           showSnackbar(error.message);
-
     });
     
   }
