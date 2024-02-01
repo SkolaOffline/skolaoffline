@@ -5,11 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Android Hermes",
-            "request": "launch",
-            "type": "reactnativedirect",
-            "cwd": "${workspaceFolder}",
-            "platform": "android"
-        }
+            "type": "expo",
+            "request": "attach",
+            "name": "Debug Expo app",
+            "projectRoot": "${workspaceFolder}",
+            "bundlerPort": "8081",
+            "bundlerHost": "127.0.0.1"
+        },
     ]
 }

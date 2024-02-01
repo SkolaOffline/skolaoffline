@@ -15,11 +15,10 @@ export default function LoginScreen() {
   const login_handler = () => {
     APIHandler.Authenticate(username,password)
     .catch(error => {
-      if(error instanceof AuthError || error instanceof HTTPError){
-        showSnackbar(error.message);
-        console.log(`AuthError:error.message`);
-      }
-      else throw error;
+
+        console.error(error)
+          showSnackbar(error.message);
+
     });
     
   }
@@ -32,7 +31,7 @@ export default function LoginScreen() {
     // Automatically hide the Snackbar after 3000 milliseconds (3 seconds)
     setTimeout(() => {
       hideSnackbar();
-    }, 3000);
+    }, 4000);
   };
 
   // Function to hide the Snackbar

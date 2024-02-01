@@ -61,7 +61,9 @@ export class GetUserData extends APIRoute{
 
     this.method ='GET';
 
-    headers.append('Authorization',`Bearer ${data.access_token}`);
+    this.headers.append('Authorization',`Bearer ${this.auth_token}`);
+
+    return this;
 
     }
 }
