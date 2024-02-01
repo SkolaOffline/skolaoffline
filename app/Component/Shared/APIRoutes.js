@@ -1,9 +1,28 @@
 
+export class URLParams{
+    constructor(){
+        this.string=''
+    }
+    append(parameter,value){
+        if((parameter instanceof String|| typeof parameter ==='string') && (value instanceof String|| typeof parameter ==='string')){
+            if(this.string===''){
+                this.string=this.string.concat(parameter,'=',value)
+            }
+            else{
+                this.string= this.string.concat('&',parameter,'=',value)
+            }
+        }
+        else{
+            throw Error('Appended parameter is not a string!')
+        }
+    }
+}
+
 export class APIRoute{
     // Parameters that are selected by other code should be passed over here.
     constructor(){
         this.headers = new Headers();
-        this.query_params = new URLSearchParams();
+        this.query_params = new URLParams();
         this.url='';
         this.method='';
     }
@@ -40,6 +59,7 @@ export class GetToken extends APIRoute{
 
     this.method='POST';
 
+
     this.query_params.append('grant_type','password');
     this.query_params.append('username',this.username);
     this.query_params.append('password',this.password);
@@ -57,7 +77,7 @@ export class GetUserData extends APIRoute{
 
     Build(){
 
-    this.url = 'https://aplikace.skolaonline.cz/SOLAPI/api/v1/user';
+    this.url = 'https://aplikace.skolaonline.cz/solapi/api/v1/user';
 
     this.method ='GET';
 

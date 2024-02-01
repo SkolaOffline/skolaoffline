@@ -32,13 +32,12 @@ export const APIHandler = {
                 throw new APIError(`Invalid Request.(${error.message})`);
             }
 
-            console.log(request.query_params.toString());
-
+            console.log(request.query_params.string);
 
         return await fetch(request.url,{
             method:request.method,
             headers:request.headers,
-            body:request.query_params.toString(),
+            body:request.query_params.string,
         }).then(response =>{
             if(!response.ok) {
                 // Handle error responses (non-2xx status codes)
@@ -46,7 +45,7 @@ export const APIHandler = {
                 throw new HTTPError(`An HTTP error occured. Status:${response.status}.`,response);
             }
             else{
-                response.json();
+                return response.json();
             }
         });
 
@@ -61,7 +60,7 @@ export const APIHandler = {
         this.refresh_token = response.refresh_token;
         
         this.user_data = await this.TryRequest(new GetUserData());
-        print(this.user_data)
+        console.log('Vítám tě '.concat(this.user_data.firstName,'. '))
 
     },
 
