@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Provider as PaperProvider, TextInput, Button, Snackbar } from 'react-native-paper';
 
 
-import {APIHandler,HTTPError} from '../Shared/APIHandler';
+import {APIHandler} from '../Shared/APIHandler';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
@@ -12,13 +12,13 @@ export default function LoginScreen() {
   const [loginError, setLoginError] = useState('None');
 
 
-  const login_handler = () => {
+  const login_handler = ({navigation}) => {
     APIHandler.Authenticate(username,password)
     .catch(error => {
             showSnackbar(error.message);
             console.error(error.message)
     });
-    
+    navigation.navigate('Home')
   }
 
   // Function to show the Snackbar

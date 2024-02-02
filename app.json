@@ -2,7 +2,7 @@
   "expo": {
     "name": "skolaoffline",
     "slug": "skolaoffline",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "jsEngine": "hermes",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,6 +29,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }

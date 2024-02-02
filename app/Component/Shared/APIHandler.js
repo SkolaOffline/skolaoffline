@@ -1,4 +1,5 @@
 import { APIRoute, GetToken, GetUserData, RenewToken } from "./APIRoutes";
+import {router} from 'expo-router';
 
 export class APIError extends Error{}
 
@@ -61,7 +62,7 @@ export const APIHandler = {
         this.refresh_token = response.refresh_token;
         
         this.user_data = await this.TryRequest(new GetUserData());
-        console.log('Vítám tě '.concat(this.user_data.firstName,'. '))
+        router.push('/Components/Views/HomeScreen');
 
         //TODO: save the refresh token at a safe place
 

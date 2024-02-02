@@ -3,11 +3,12 @@ import { View } from 'react-native';
 import { BottomNavigation, Text } from 'react-native-paper';
 import { NavigationScreenProp } from 'react-navigation';
 
-import Screen1 from '../Views/Screen1.js';
-import Screen2 from '../Views/Screen1.js';
+import Screen1 from './Screen1.js';
+import Screen2 from './Screen1.js';
 
 
-export default function HomeScreen({ navigation }) {
+
+export default function HomeScreen() {
   const [index, setIndex] = useState(0);
 
   const routes = [
@@ -17,7 +18,6 @@ export default function HomeScreen({ navigation }) {
     { key: 'screen4', title: 'Screen 4', icon: 'star' },
     { key: 'screen5', title: 'Screen 5', icon: 'settings' },
   ];
-  console.log(routes);
 
   const renderScene = BottomNavigation.SceneMap({
     screen1: Screen1,
