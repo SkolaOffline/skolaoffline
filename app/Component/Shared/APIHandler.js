@@ -1,9 +1,9 @@
-import { APIRoute, GetToken, GetUserData } from "./APIRoutes";
+import { APIRoute, GetToken, GetUserData, RenewToken } from "./APIRoutes";
 
-class APIError extends Error{}
+export class APIError extends Error{}
 
-class AuthError extends Error{}
-class HTTPError extends APIError{
+
+export class HTTPError extends APIError{
     constructor(message,response){
         super(message);
         this.response = response;
@@ -33,6 +33,8 @@ export const APIHandler = {
             }
 
             console.log(request.query_params.string);
+        
+
 
         return await fetch(request.url,{
             method:request.method,
@@ -41,8 +43,7 @@ export const APIHandler = {
         }).then(response =>{
             if(!response.ok) {
                 // Handle error responses (non-2xx status codes)
-                console.log(response.message)
-                throw new HTTPError(`An HTTP error occured. Status:${response.status}.`,response);
+                throw new HTTPError(`An HTTP error occured. Status:${response.status}.`,response.json());
             }
             else{
                 return response.json();
@@ -62,10 +63,17 @@ export const APIHandler = {
         this.user_data = await this.TryRequest(new GetUserData());
         console.log('Vítám tě '.concat(this.user_data.firstName,'. '))
 
+        //TODO: save the refresh token at a safe place
+
     },
 
     RefreshToken: async function(){
-        //TODO:Write this bad boy. 
+        this.TryRequest(new RenewToken())
+        .catch(error=>{
+
+
+        })
+        //TODO: Add request for login when refresh token expires. 
     },
 
     //Handles expired tokens automatically. Use instead of APITrySendRequest wherever possible. 

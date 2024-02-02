@@ -71,6 +71,20 @@ export class GetToken extends APIRoute{
     }
 }
 
+export class RenewToken extends APIRoute{
+    Build(){
+        this.url = 'https://aplikace.skolaonline.cz/solapi/api/connect/token'
+
+        this.method = 'POST'
+
+        this.headers.append('Content-Type','application/x-www-form-urlencoded');
+
+        this.query_params.append('grant_type','refresh_token');
+        this.query_params.append('client_id','test_client');
+        this.query_params.append('refresh_token',this.refresh_token);
+    }
+}
+
 
 export class GetUserData extends APIRoute{
 
