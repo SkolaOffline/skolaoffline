@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { BottomNavigation, Text } from 'react-native-paper';
-import { NavigationScreenProp } from 'react-navigation';
+
 
 import Screen1 from './Screen1.js';
-import Screen2 from './Screen1.js';
+import Screen2 from './Screen2.js';
 
 
 
