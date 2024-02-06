@@ -5,6 +5,9 @@ import { BottomNavigation, Text } from 'react-native-paper';
 
 import Screen1 from './Screen1.js';
 import Screen2 from './Screen2.js';
+import Screen3 from './Screen3.js';
+import Screen4 from './Screen4.js';
+import Screen5 from './Screen5.js';
 
 
 
@@ -22,6 +25,9 @@ export default function HomeScreen() {
   const renderScene = BottomNavigation.SceneMap({
     screen1: Screen1,
     screen2: Screen2,
+    screen3: Screen3,
+    screen4: Screen4,
+    screen5: Screen5,
 
   });
 

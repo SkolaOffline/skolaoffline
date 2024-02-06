@@ -4,6 +4,7 @@ import { Provider as PaperProvider, TextInput, Button, Snackbar } from 'react-na
 
 
 import {APIHandler} from '../Shared/APIHandler';
+import { router } from 'expo-router';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
@@ -18,7 +19,7 @@ export default function LoginScreen() {
             showSnackbar(error.message);
             console.error(error.message)
     });
-    navigation.navigate('Home')
+    router.navigate("/Component/Views/HomeScreen");
   }
 
   // Function to show the Snackbar

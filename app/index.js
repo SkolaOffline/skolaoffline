@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
+import { Router, router } from 'expo-router';
 
 const LoadingScreen = () => {
     return (
@@ -18,12 +19,18 @@ const App = () => {
         // Simulating an asynchronous task
         setTimeout(() => {
             setIsLoading(false);
-        }, 3000);
+        },  3000);
     }, []);
+
+    useEffect(() => {
+        if (!isLoading) {
+            router.navigate("/Component/Views/LoginScreen");
+        }
+    }, [isLoading]);
 
     return (
         <View style={styles.container}>
-            {isLoading ? <LoadingScreen /> : <Text>Content loaded!</Text>}
+            {isLoading ? <LoadingScreen /> : null}
         </View>
     );
 };
