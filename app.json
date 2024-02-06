@@ -2,6 +2,7 @@
   "expo": {
     "name": "skolaoffline",
     "slug": "skolaoffline",
+    "scheme": "skolaoffline",
     "version": "0.0.1",
     "jsEngine": "hermes",
     "orientation": "portrait",
