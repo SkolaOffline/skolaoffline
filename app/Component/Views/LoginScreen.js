@@ -19,7 +19,7 @@ export default function LoginScreen() {
             showSnackbar(error.message);
             console.error(error.message)
     });
-    router.navigate("/Component/Views/HomeScreen");
+    router.navigate("/Component/Views/Screen1");
   }
 
   // Function to show the Snackbar

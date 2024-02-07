@@ -26,7 +26,7 @@ const TextInANest = () => {
 
 const styles = StyleSheet.create({
   baseText: {
-    fontFamily: 'Cochin',
+    fontFamily: 'Roboto',
   },
   titleText: {
     fontSize: 20,
