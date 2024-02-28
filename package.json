@@ -17,6 +17,7 @@
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
     "base-64": "^1.0.0",
+    "eas-cli": "^7.3.0",
     "expo": "^50.0.4",
     "expo-auth-session": "^5.4.0",
     "expo-constants": "^15.4.5",
