@@ -107,7 +107,7 @@ export class GetNotifications extends APIRoute{
 
     Build(){
 
-    this.url = 'https://<instance.url>/solapi/api/v1/user/notifications';
+    this.url = 'https://aplikace.skolaonline.cz/solapi/api/v1/user/notifications';
 
     this.method ='GET';
 
@@ -120,7 +120,7 @@ export class GetNotifications extends APIRoute{
 
 export class GetTimetableInfo extends APIRoute {
     Build() {
-        this.url = 'https://<instance.url>/solapi/api/v1/timeTable/codeLists';
+        this.url = 'https://aplikace.skolaonline.cz/solapi/api/v1/timeTable/codeLists';
 
         this.method = 'GET';
 
@@ -132,7 +132,7 @@ export class GetTimetableInfo extends APIRoute {
 
 export class GetTimetable extends APIRoute{
     Build(){
-        this.url = 'https://<instance.url>/solapi/api/v1/timeTable'
+        this.url = 'https://aplikace.skolaonline.cz/solapi/api/v1/timeTable'
 
         this.method = 'GET'
 
@@ -149,7 +149,7 @@ export class GetTimetable extends APIRoute{
 
 export class GetGrades extends APIRoute {
     Build() {
-        this.url = `https://<instance.url>/solapi/api/v1/students/${this.student_id}/marks/list`;
+        this.url = `https://aplikace.skolaonline.cz/solapi/api/v1/students/${this.student_id}/marks/list`;
 
         this.method = 'GET';
 
@@ -169,7 +169,7 @@ export class GetGrades extends APIRoute {
 
 export class GetGrade extends APIRoute{
     Build(){
-        this.url = 'https://<instance.url>/solapi/api/v1/student/marks/' + this.grade_id
+        this.url = 'https://aplikace.skolaonline.cz/solapi/api/v1/student/marks/' + this.grade_id
 
         this.method = 'GET'
 
@@ -183,7 +183,7 @@ export class GetGrade extends APIRoute{
 
 export class GetCertificates extends APIRoute {
     Build() {
-        this.url = `https://<instance.url>/solapi/api/v1/students/${this.student_id}/marks/final`;
+        this.url = `https://aplikace.skolaonline.cz/solapi/api/v1/students/${this.student_id}/marks/final`;
 
         this.method = 'GET';
 
@@ -195,7 +195,7 @@ export class GetCertificates extends APIRoute {
 
 export class GetHomework extends APIRoute {
     Build() {
-        this.url = `https://<instance.url>/solapi/api/v1/students/${this.student_id}/homeworks`;
+        this.url = `https://aplikace.skolaonline.cz/solapi/api/v1/students/${this.student_id}/homeworks`;
 
         this.method = 'GET';
 
@@ -211,7 +211,7 @@ export class GetHomework extends APIRoute {
 
 export class GetBehaviors extends APIRoute {
     Build() {
-        this.url = `https://<instance.url>/solapi/api/v1/students/${this.student_id}/behaviors`;
+        this.url = `https://aplikace.skolaonline.cz/solapi/api/v1/students/${this.student_id}/behaviors`;
 
         this.method = 'GET';
 
@@ -227,7 +227,7 @@ export class GetBehaviors extends APIRoute {
 
 export class GetMessageSettings extends APIRoute {
     Build() {
-        this.url = 'https://<instance.url>/solapi/api/v1/messages/settings';
+        this.url = 'https://aplikace.skolaonline.cz/solapi/api/v1/messages/settings';
 
         this.method = 'GET';
 
@@ -239,7 +239,7 @@ export class GetMessageSettings extends APIRoute {
 
 export class MarkMessageAsRead extends APIRoute {
     Build() {
-        this.url = `https://<instance.url>/solapi/api/v1/messages/${this.message_id}/mark-as-read`;
+        this.url = `https://aplikace.skolaonline.cz/solapi/api/v1/messages/${this.message_id}/mark-as-read`;
 
         this.method = 'PUT';
 
@@ -251,7 +251,7 @@ export class MarkMessageAsRead extends APIRoute {
 
 export class GetMessages extends APIRoute {
     Build() {
-        this.url = 'https://<instance.url>/solapi/api/v1/messages/received';
+        this.url = 'https://aplikace.skolaonline.cz/solapi/api/v1/messages/received';
 
         this.method = 'GET';
 
@@ -266,7 +266,7 @@ export class GetMessages extends APIRoute {
 
 export class GetMarksCodeLists extends APIRoute {
     Build() {
-        this.url = 'https://<instance.url>/solapi/api/v1/marks/codeLists';
+        this.url = 'https://aplikace.skolaonline.cz/solapi/api/v1/marks/codeLists';
 
         this.method = 'GET';
 
