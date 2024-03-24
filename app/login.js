@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Provider as PaperProvider, TextInput, Button, Snackbar } from 'react-native-paper';
 
 
-import {APIHandler} from '../Shared/APIHandler';
+import {APIHandler} from './api/APIHandler';
 import { router } from 'expo-router';
 
 export default function LoginScreen() {
@@ -19,7 +19,6 @@ export default function LoginScreen() {
             showSnackbar(error.message);
             console.error(error.message)
     });
-    router.navigate("/Component/Views/Screen1");
   }
 
   // Function to show the Snackbar

@@ -1,5 +1,5 @@
 import { APIRoute, GetToken, GetUserData, RenewToken } from "./APIRoutes";
-import {router} from 'expo-router';
+import {useRouter} from 'expo-router';
 
 export class APIError extends Error{}
 
@@ -12,9 +12,11 @@ export class HTTPError extends APIError{
 
 }
 
+const router = useRouter();
+
 export const APIHandler = {
 
-
+    
     token:'',
     refresh_token:'',
     user_data:{student_id:0},
@@ -31,11 +33,7 @@ export const APIHandler = {
             }
             catch(error){
                 throw new APIError(`Invalid Request.(${error.message})`);
-            }
-
-            console.log(request.query_params.string);
-        
-
+            }        
 
         return await fetch(request.url,{
             method:request.method,
@@ -62,7 +60,8 @@ export const APIHandler = {
         this.refresh_token = response.refresh_token;
         
         this.user_data = await this.TryRequest(new GetUserData());
-        router.push('/Components/Views/HomeScreen');
+
+        router.navigate('(home)/home')
 
         //TODO: save the refresh token at a safe place
 

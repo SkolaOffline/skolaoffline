@@ -24,7 +24,7 @@ const App = () => {
 
     useEffect(() => {
         if (!isLoading) {
-            router.navigate("/Component/Views/LoginScreen");
+            router.navigate('login')
         }
     }, [isLoading]);
 
