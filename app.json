@@ -6,7 +6,7 @@
     "version": "0.0.1",
     "jsEngine": "hermes",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/soff_logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -24,12 +24,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/soff_logo.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/soff_logo.png"
     },
     "plugins": [
       "expo-router"

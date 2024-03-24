@@ -61,7 +61,7 @@ export const APIHandler = {
         
         this.user_data = await this.TryRequest(new GetUserData());
 
-        router.navigate('(home)/home')
+        router.navigate('(home)/home');
 
         //TODO: save the refresh token at a safe place
 

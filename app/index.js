@@ -24,7 +24,7 @@ const App = () => {
 
     useEffect(() => {
         if (!isLoading) {
-            router.navigate('login')
+            router.navigate('login');
         }
     }, [isLoading]);
 
