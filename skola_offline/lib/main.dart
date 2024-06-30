@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:http/http
-//.dart' as http;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bottom Navigation Demo',
+      title: 'Škola Offline',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -40,11 +40,13 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Skola Offline'),
+        title: Text('Škola Offline'),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: _tabs[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // Add this line
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         currentIndex: _currentIndex,
         onTap: (int index) {
           setState(() {
@@ -126,43 +128,75 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> login(username, password) async {
     final storage = FlutterSecureStorage();
-    print('Username: $username');
     await storage.write(key: 'username', value: username);
     await storage.write(key: 'password', value: password);
+ 
+    final response = await http.post(
+      Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: <String, String>{
+        'grant_type': 'password',
+        'username': username,
+        'password': password,
+        'client_id': 'test_client',
+        'scope': 'openid offline_access profile sol_api',
+      },
+    );
 
-    // final response = await http.post(
-    //   Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
-    //   headers: <String, String>{
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //   },
-    //   body: <String, String>{
-    //     'grant_type': 'password',
-    //     'username': username,
-    //     'password': password,
-    //     'client_id': 'test_client',
-    //     'scope': 'openid offline_access profile sol_api',
-    //   },
-    // );
+    if (response.statusCode == 400) {
+      showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Wrong credentials'),
+            content: Text('Please check your username and password.'),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+    if (response.statusCode != 200) {
+      showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(response.body),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
 
-  //   if (response.statusCode == 400) {
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           title: Text('Wrong credentials'),
-  //           content: Text('Please check your username and password.'),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //               child: Text('OK'),
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     );
-  //   }
+    // print(response.body);
+    Map<String, dynamic> data = json.decode(response.body);
+    String accessToken = data['access_token'];
+    print('expires in: ${data['expires_in']}');
+    String refreshToken = data['refresh_token'];
+
+    await storage.write(key: 'accessToken', value: accessToken);
+    await storage.write(key: 'refreshToken', value: refreshToken);
+
   }
 
   @override
@@ -198,6 +232,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             ),
             TextField(
               controller: _passwordController, // Add this line
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
               ),
