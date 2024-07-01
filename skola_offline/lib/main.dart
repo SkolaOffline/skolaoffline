@@ -255,57 +255,59 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   }
 
-  Future<void> logout() async {
-    final storage = FlutterSecureStorage();
+  // Future<void> logout() async {
+    // final storage = FlutterSecureStorage();
 
-    final response = await http.post(
-      Uri.parse('https://aplikace.skolaonline.cz/solapi/api/v1/user/logout'),
-      headers: {
-        "Authorization": "Bearer ${await storage.read(key: 'accessToken')}",
-      },
-    );
+    // final response = await http.post(
+    //   Uri.parse('https://aplikace.skolaonline.cz/solapi/api/v1/user/logout'),
+    //   headers: {
+    //     "Authorization": "Bearer ${await storage.read(key: 'accessToken')}",
+    //   },
+    // );
 
-    if (response.statusCode != 200) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text(response.body),
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-    else {
-      await storage.deleteAll();
-      showDialog(context: context, builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Logout'),
-          content: Text('You have been logged out.'),
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      });
-    }
-    
-    
-  }
+    // if (response.statusCode != 200) {
+    //   showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       return AlertDialog(
+    //         title: Text('Error'),
+    //         content: Row(children: [
+    //           Text('Error logging out: '),
+    //           Text(response.statusCode.toString()),
+    //           Text(response.body),
+    //         ],),
+    //         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //             child: Text('OK'),
+    //           ),
+    //         ],
+    //       );
+    //     },
+    //   );
+    // }
+    // else {
+    //   await storage.deleteAll();
+    //   showDialog(context: context, builder: (BuildContext context) {
+    //     return AlertDialog(
+    //       title: Text('Logout'),
+    //       content: Text('You have been logged out.'),
+    //       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+    //       actions: [
+    //         TextButton(
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //           child: Text('OK'),
+    //         ),
+    //       ],
+    //     );
+    //   });
+    // }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -363,21 +365,21 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 15,),
-            ElevatedButton(
-              onPressed: () {
-                logout();
-              }, 
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.logout),
-                    Text('Logout'),
-                  ],
-                ),
-              ),
-            )
+            // SizedBox(height: 15,),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     logout();
+            //   }, 
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(12.0),
+            //     child: Row(
+            //       children: [
+            //         Icon(Icons.logout),
+            //         Text('Logout'),
+            //       ],
+            //     ),
+            //   ),
+            // )
           ],
         ),
       ),
