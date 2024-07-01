@@ -101,17 +101,19 @@ class TimetableScreen extends StatefulWidget {
 
 class TimetableScreenState extends State<TimetableScreen> {
   String responseText = 'Loading...';
-
+  List<dynamic> weekTimetable = []; // Define weekTimetable variable
   @override
   void initState() {
     super.initState();
     downloadTimetable().then((value) {
+      print('downloading data');
       setState(() {
-        responseText = value;
+        weekTimetable = parseWeekTimtable(value); // Assign value to weekTimetable
+        print('data loaded');
+        responseText = 'Loaded';
       });
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,17 +124,40 @@ class TimetableScreenState extends State<TimetableScreen> {
             // color: Theme.of(context).colorScheme.onPrimary
           ),
           ),
-        Text(responseText)
-      ],)
+        timeTable(weekTimetable: weekTimetable),
+     ],)
     );
+  } }
+
+  Widget timeTable({required List<dynamic> weekTimetable}) {
+    print(weekTimetable);
+    if (weekTimetable.isEmpty) {
+        return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // CircularProgressIndicator(),
+          // SizedBox(width: 10,),
+          Text('Loading...'),
+        ],
+        );
+    } else {
+      return Column(
+        children: [
+          for (var lesson in weekTimetable[0])
+            Text('${lesson['lessonAbbrev']} ${lesson['classroomAbbrev']} ${lesson['teacherAbbrev']}'),
+        ],
+      );
+    }
   }
 
   Future<String> downloadTimetable() async {
-      final storage = FlutterSecureStorage();
-    Future<String?> accessToken = storage.read(key: 'accessToken');
+    final storage = FlutterSecureStorage();
     
     final userId = await storage.read(key: 'userId');
     final syID = await storage.read(key: 'schoolYearId');
+    final accessToken = await storage.read(key: 'accessToken');
+
+
     final params = {
       'studentId': userId,
       // todo - not hardcoded
@@ -142,7 +167,7 @@ class TimetableScreenState extends State<TimetableScreen> {
     };
 
     final url = Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/timeTable").replace(queryParameters: params);
-    
+   
     final response = await http.get(
       url, 
       headers: {
@@ -150,13 +175,46 @@ class TimetableScreenState extends State<TimetableScreen> {
       },
     );
 
-    print(response.statusCode);
-
+    print('timeTable response: ${response.statusCode}');
     return response.statusCode == 200 ? response.body : 'Error: ${response.statusCode}';
-      
-    
   }
+
+  List<dynamic> parseWeekTimtable(String json) {
+    Map<String, dynamic> data = jsonDecode(json);
+    List<dynamic> timetable = [];
+
+    final monday = parseDayTimetable(data['days'][0]);
+    final tuesday = parseDayTimetable(data['days'][1]);
+    final wednesday = parseDayTimetable(data['days'][2]);
+    final thursday = parseDayTimetable(data['days'][3]);
+    final friday = parseDayTimetable(data['days'][4]);
+
+    timetable.add(monday);
+    timetable.add(tuesday);
+    timetable.add(wednesday);
+    timetable.add(thursday);
+    timetable.add(friday);
+
+    return timetable;
+  }
+
+  List<dynamic> parseDayTimetable(Map<String, dynamic> day) {
+    List<dynamic> lessons = [];
+    for (var lesson in day['schedules']) {
+      final less = {
+        'lessonFrom': lesson['lessonIdFrom'],
+        'lessonTo': lesson['lessonIdTo'],
+        'lessonType': lesson['hourType']['id'],
+        'lessonAbbrev': lesson['subject']['abbrev'],
+        'classroomAbbrev': lesson['rooms'][0]['abbrev'],
+        'teacherAbbrev': lesson['teachers'][0]['abbrev'],
+        'lessonOrder': lesson['detailHours'][0]['order'],
+      };
+      lessons.add(less);
+    }
+    return lessons;
 }
+
 
 class MarksScreen extends StatelessWidget {
   @override
@@ -299,7 +357,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     // print(response.body);
     Map<String, dynamic> data = json.decode(response.body);
     String accessToken = data['access_token'];
-    print('expires in: ${data['expires_in']}');
+    // print('expires in: ${data['expires_in']}');
     String refreshToken = data['refresh_token'];
 
     await storage.write(key: 'accessToken', value: accessToken);
