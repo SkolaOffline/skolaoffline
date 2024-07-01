@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -141,6 +143,27 @@ class ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _passwordController = TextEditingController(); // Add this line
 
   Future<void> login(username, password) async {
+    showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+    return Dialog(
+      child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+        CircularProgressIndicator(),
+        SizedBox(height: 16.0),
+        Text('Logging in...'),
+        ],
+      ),
+      ),
+    );
+    },
+    );
+
+
     final storage = FlutterSecureStorage();
     await storage.write(key: 'username', value: username);
     await storage.write(key: 'password', value: password);
@@ -159,9 +182,10 @@ class ProfileScreenState extends State<ProfileScreen> {
       },
     );
 
+    Navigator.of(context).pop();
+
     if (response.statusCode == 400) {
       showDialog(
-        // ignore: use_build_context_synchronously
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -183,7 +207,6 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
     if (response.statusCode != 200) {
       showDialog(
-        // ignore: use_build_context_synchronously
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -203,25 +226,22 @@ class ProfileScreenState extends State<ProfileScreen> {
       );
       return;
     } else {
-      showDialog(
-        // ignore: use_build_context_synchronously
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Success'),
-            content: Text('You have been logged in.'),
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text('You have been logged in.'),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      });
+    }
 
 
     // print(response.body);
@@ -247,7 +267,6 @@ class ProfileScreenState extends State<ProfileScreen> {
 
     if (response.statusCode != 200) {
       showDialog(
-        // ignore: use_build_context_synchronously
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -328,11 +347,12 @@ class ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: 20,),
             ElevatedButton(
-              onPressed: () {
+                onPressed: () async {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
-                login(username, password);
+                await login(username, password);
               },
+
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Row(
@@ -363,4 +383,4 @@ class ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-}}
+}
