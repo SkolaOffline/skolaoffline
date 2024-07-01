@@ -26,6 +26,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+  // test login
+  Future<void> testLogin() async {
+    final storage = FlutterSecureStorage();
+    String? username = await storage.read(key: 'username');
+    String? password = await storage.read(key: 'password');
+    String? accessToken = await storage.read(key: 'accessToken');
+    String? refreshToken = await storage.read(key: 'refreshToken');
+
+    print('username: $username');
+    print('password: $password');
+    print('accessToken: $accessToken');
+    print('refreshToken: $refreshToken');
+  }
+
   int _currentIndex = 0;
 
   final List<Widget> _tabs = [
@@ -165,6 +179,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           );
         },
       );
+      return;
     }
     if (response.statusCode != 200) {
       showDialog(
@@ -186,7 +201,28 @@ class ProfileScreenState extends State<ProfileScreen> {
           );
         },
       );
-    }
+      return;
+    } else {
+      showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('You have been logged in.'),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+
 
     // print(response.body);
     Map<String, dynamic> data = json.decode(response.body);
@@ -197,6 +233,59 @@ class ProfileScreenState extends State<ProfileScreen> {
     await storage.write(key: 'accessToken', value: accessToken);
     await storage.write(key: 'refreshToken', value: refreshToken);
 
+  }
+
+  Future<void> logout() async {
+    final storage = FlutterSecureStorage();
+
+    final response = await http.post(
+      Uri.parse('https://aplikace.skolaonline.cz/solapi/api/v1/user/logout'),
+      headers: {
+        "Authorization": "Bearer ${await storage.read(key: 'accessToken')}",
+      },
+    );
+
+    if (response.statusCode != 200) {
+      showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(response.body),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+    else {
+      await storage.deleteAll();
+      showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout'),
+          content: Text('You have been logged out.'),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      });
+    }
+    
+    
   }
 
   @override
@@ -249,14 +338,29 @@ class ProfileScreenState extends State<ProfileScreen> {
                 child: Row(
                   children: [
                     Icon(Icons.login),
-                    Text('Login'),
+                    Text('Login (takes ~5 seconds)'),
                   ],
                 ),
               ),
             ),
+            SizedBox(height: 15,),
+            ElevatedButton(
+              onPressed: () {
+                logout();
+              }, 
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  children: [
+                    Icon(Icons.logout),
+                    Text('Logout'),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
     );
   }
-}
+}}
