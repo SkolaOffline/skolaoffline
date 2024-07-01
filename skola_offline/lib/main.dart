@@ -108,10 +108,12 @@ class TimetableScreenState extends State<TimetableScreen> {
     downloadTimetable().then((value) {
       print('downloading data');
       setState(() {
+        print('setting state');
         weekTimetable = parseWeekTimtable(value); // Assign value to weekTimetable
         print('data loaded');
         responseText = 'Loaded';
       });
+      print('data loaded');
     });
   }
   @override
@@ -201,7 +203,13 @@ class TimetableScreenState extends State<TimetableScreen> {
   List<dynamic> parseDayTimetable(Map<String, dynamic> day) {
     List<dynamic> lessons = [];
     for (var lesson in day['schedules']) {
-      final less = {
+      print(lesson['hourType']['id']);
+      if (lesson['hourType']['id'] == 'SKOLNI_AKCE' ||
+        lesson['hourType']['id'] == 'SUPLOVANA') {
+        continue;
+      }
+      print(lesson);
+      var less = {
         'lessonFrom': lesson['lessonIdFrom'],
         'lessonTo': lesson['lessonIdTo'],
         'lessonType': lesson['hourType']['id'],
@@ -210,8 +218,10 @@ class TimetableScreenState extends State<TimetableScreen> {
         'teacherAbbrev': lesson['teachers'][0]['abbrev'],
         'lessonOrder': lesson['detailHours'][0]['order'],
       };
+      print('here');
       lessons.add(less);
     }
+    print('end');
     return lessons;
 }
 
