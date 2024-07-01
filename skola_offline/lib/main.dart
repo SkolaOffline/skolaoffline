@@ -7,6 +7,8 @@ import 'dart:convert';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // test login
+
   runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
@@ -15,7 +17,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Škola Offline',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: MyHomePage(),
     );
@@ -28,19 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  // test login
-  Future<void> testLogin() async {
-    final storage = FlutterSecureStorage();
-    String? username = await storage.read(key: 'username');
-    String? password = await storage.read(key: 'password');
-    String? accessToken = await storage.read(key: 'accessToken');
-    String? refreshToken = await storage.read(key: 'refreshToken');
-
-    print('username: $username');
-    print('password: $password');
-    print('accessToken: $accessToken');
-    print('refreshToken: $refreshToken');
-  }
 
   int _currentIndex = 0;
 
@@ -97,12 +87,74 @@ class MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class TimetableScreen extends StatelessWidget {
+class TimetableScreen extends StatefulWidget {
+  @override
+  TimetableScreenState createState() => TimetableScreenState();
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   // Add your widget tree here
+  //   return Container();
+  // }
+  // TimetableScreenState createState() => TimetableScreenState();
+}
+
+class TimetableScreenState extends State<TimetableScreen> {
+  String responseText = 'Loading...';
+
+  @override
+  void initState() {
+    super.initState();
+    downloadTimetable().then((value) {
+      setState(() {
+        responseText = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Timetable Screen'),
+    return Scaffold(
+      body: Column(children: [
+        Text(
+          'timetable',
+          style: Theme.of(context).textTheme.displayMedium!.copyWith(
+            // color: Theme.of(context).colorScheme.onPrimary
+          ),
+          ),
+        Text(responseText)
+      ],)
     );
+  }
+
+  Future<String> downloadTimetable() async {
+      final storage = FlutterSecureStorage();
+    Future<String?> accessToken = storage.read(key: 'accessToken');
+    
+    final userId = await storage.read(key: 'userId');
+    final syID = await storage.read(key: 'schoolYearId');
+    final params = {
+      'studentId': userId,
+      // todo - not hardcoded
+      'dateFrom': '2024-06-03T00:00:00.000',
+      'dateTo': '2024-06-08T00:00:00.000',
+      'schoolYearId': syID
+    };
+
+    final url = Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/timeTable").replace(queryParameters: params);
+    
+    final response = await http.get(
+      url, 
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print(response.statusCode);
+
+    return response.statusCode == 200 ? response.body : 'Error: ${response.statusCode}';
+      
+    
   }
 }
 
@@ -253,7 +305,20 @@ class ProfileScreenState extends State<ProfileScreen> {
     await storage.write(key: 'accessToken', value: accessToken);
     await storage.write(key: 'refreshToken', value: refreshToken);
 
+    //get user data
+    final userResponse = await http.get(
+      Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/user"),
+      headers: {
+        'Authorization': 'Bearer $accessToken'
+      }
+    );
+    
+    Map<String, dynamic> jsonResponse = json.decode(userResponse.body) as Map<String, dynamic>;
+
+    await storage.write(key: 'userId', value: jsonResponse['personID']);
+    await storage.write(key: 'schoolYearId', value: jsonResponse['schoolYearId']);
   }
+
 
   // Future<void> logout() async {
     // final storage = FlutterSecureStorage();
