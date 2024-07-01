@@ -106,14 +106,10 @@ class TimetableScreenState extends State<TimetableScreen> {
   void initState() {
     super.initState();
     downloadTimetable().then((value) {
-      print('downloading data');
       setState(() {
-        print('setting state');
         weekTimetable = parseWeekTimtable(value); // Assign value to weekTimetable
-        print('data loaded');
         responseText = 'Loaded';
       });
-      print('data loaded');
     });
   }
   @override
@@ -129,10 +125,9 @@ class TimetableScreenState extends State<TimetableScreen> {
         timeTable(weekTimetable: weekTimetable),
      ],)
     );
-  } }
+  } 
 
   Widget timeTable({required List<dynamic> weekTimetable}) {
-    print(weekTimetable);
     if (weekTimetable.isEmpty) {
         return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -146,10 +141,71 @@ class TimetableScreenState extends State<TimetableScreen> {
       return Column(
         children: [
           for (var lesson in weekTimetable[0])
-            Text('${lesson['lessonAbbrev']} ${lesson['classroomAbbrev']} ${lesson['teacherAbbrev']}'),
+            // Text('${lesson['lessonAbbrev']} ${lesson['classroomAbbrev']} ${lesson['teacherAbbrev']}'),
+            Column(
+              children: [
+                LessonOnTimetable(
+                  abbrev: lesson['lessonAbbrev'],
+                  classroom: lesson['classroomAbbrev'],
+                  teacher: lesson['teacherAbbrev'],
+                  lesson: lesson),
+                SizedBox(height:20),
+              ],
+            ),
+            
         ],
       );
     }
+  }
+
+  // ignore: non_constant_identifier_names
+  Widget LessonOnTimetable({final abbrev, final classroom, final teacher, final lesson}) {
+    return Row(children: [
+      Container(
+        width: 80,
+        height: 80,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              lesson['lessonOrder'].toString(),
+              style: TextStyle(fontSize: 25),
+            ),
+            Text(
+              formatDate(lesson['beginTime'] ?? 'error'),
+              style: TextStyle(fontSize: 13),
+            ),
+            Text(
+              formatDate(lesson['endTime'] ?? 'error'),
+              style: TextStyle(fontSize: 13),
+            ),
+        ],
+        ),
+      ),
+      SizedBox(width: 10),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            abbrev,
+            style: TextStyle(fontSize: 20),
+          ),
+          Text(
+            classroom,
+            style: TextStyle(fontSize: 15),
+          ),
+          Text(
+            teacher,
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
+    ],
+    );
   }
 
   Future<String> downloadTimetable() async {
@@ -178,6 +234,7 @@ class TimetableScreenState extends State<TimetableScreen> {
     );
 
     print('timeTable response: ${response.statusCode}');
+    // todo - refresh token when expired
     return response.statusCode == 200 ? response.body : 'Error: ${response.statusCode}';
   }
 
@@ -200,15 +257,20 @@ class TimetableScreenState extends State<TimetableScreen> {
     return timetable;
   }
 
+  String formatDate(String date) {
+    DateTime dateTime = DateTime.parse(date);
+    String formatedDate = '${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+    print(formatedDate);
+    return formatedDate;
+  }
+
   List<dynamic> parseDayTimetable(Map<String, dynamic> day) {
     List<dynamic> lessons = [];
     for (var lesson in day['schedules']) {
-      print(lesson['hourType']['id']);
       if (lesson['hourType']['id'] == 'SKOLNI_AKCE' ||
         lesson['hourType']['id'] == 'SUPLOVANA') {
         continue;
       }
-      print(lesson);
       var less = {
         'lessonFrom': lesson['lessonIdFrom'],
         'lessonTo': lesson['lessonIdTo'],
@@ -217,12 +279,13 @@ class TimetableScreenState extends State<TimetableScreen> {
         'classroomAbbrev': lesson['rooms'][0]['abbrev'],
         'teacherAbbrev': lesson['teachers'][0]['abbrev'],
         'lessonOrder': lesson['detailHours'][0]['order'],
+        'beginTime': lesson['beginTime'],
+        'endTime': lesson['endTime'],
       };
-      print('here');
       lessons.add(less);
     }
-    print('end');
     return lessons;
+  }
 }
 
 
@@ -364,7 +427,6 @@ class ProfileScreenState extends State<ProfileScreen> {
     }
 
 
-    // print(response.body);
     Map<String, dynamic> data = json.decode(response.body);
     String accessToken = data['access_token'];
     // print('expires in: ${data['expires_in']}');
