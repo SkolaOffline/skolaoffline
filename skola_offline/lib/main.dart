@@ -116,8 +116,36 @@ class TimetableScreenState extends State<TimetableScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
+        // todo - implement where and what is the current lesson
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child:
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(20),
+              ),
+            child: 
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+              children: [
+                Text(
+              'Current Lesson', 
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+              ],
+              ),
+            ),),
+        ),
+
+          
+          
         Text(
-          'timetable',
+          'Rozvrh hodin',
           style: Theme.of(context).textTheme.displayMedium!.copyWith(
             // color: Theme.of(context).colorScheme.onPrimary
           ),
@@ -190,22 +218,39 @@ class TimetableScreenState extends State<TimetableScreen> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            abbrev,
-            style: TextStyle(fontSize: 20),
+          Row(
+            children: [
+            Text(
+              abbrev,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(width: 8),
+            Text(
+              lesson['lessonName'],
+              style: TextStyle(fontSize: 16),),
+ 
+            ],
           ),
           Text(
             classroom,
             style: TextStyle(fontSize: 15),
           ),
-          Text(
-            teacher,
-            style: TextStyle(fontSize: 15),
-          ),
+            Row(children: [
+            Icon(Icons.person),
+            Text(
+              teacher,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 7),
+            Text(lesson['teacher'] ?? 'error'),
+            ]
+            ),
+          ],)
         ],
-      ),
-    ],
-    );
+      );
   }
 
   Future<String> downloadTimetable() async {
@@ -276,7 +321,9 @@ class TimetableScreenState extends State<TimetableScreen> {
         'lessonTo': lesson['lessonIdTo'],
         'lessonType': lesson['hourType']['id'],
         'lessonAbbrev': lesson['subject']['abbrev'],
+        'lessonName': lesson['subject']['name'],
         'classroomAbbrev': lesson['rooms'][0]['abbrev'],
+        'teacher': lesson['teachers'][0]['displayName'],
         'teacherAbbrev': lesson['teachers'][0]['abbrev'],
         'lessonOrder': lesson['detailHours'][0]['order'],
         'beginTime': lesson['beginTime'],
