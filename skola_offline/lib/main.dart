@@ -3,6 +3,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:html/parser.dart';
+// import 'package:flutter_html/flutter_html.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,12 +19,16 @@ class MyApp extends StatelessWidget {
       title: 'Škola Offline',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+        ),
       ),
       home: MyHomePage(),
     );
   }
 }
+
+
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -338,10 +345,10 @@ class LessonCard extends StatelessWidget {
 
 class MarksScreen extends StatefulWidget {
   @override
-  _MarksScreenState createState() => _MarksScreenState();
+  MarksScreenState createState() => MarksScreenState();
 }
 
-class _MarksScreenState extends State<MarksScreen> {
+class MarksScreenState extends State<MarksScreen> {
   List<dynamic> subjects = [];
   bool isLoading = true;
   bool _mounted = true;
@@ -554,22 +561,74 @@ class MessagesScreen extends StatefulWidget {
 }
 
 class MessagesScreenState extends State<MessagesScreen> {
-  List<dynamic> messageList = ['lol'];
+  List<dynamic> messageList = [];
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   downloadMessages().then((value) {
-  //     setState(() {
-  //       messageList = parseMessages(value);
-  //     });
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    downloadMessages().then((value) {
+      setState(() {
+        messageList = parseMessages(value);
+      });
+    });
+  }
 
-  // Future<String> downloadMessages() async {
-  //   final storage = FlutterSecureStorage();
+  Future<String> downloadMessages() async {
+    final storage = FlutterSecureStorage();
+    final accessToken = await storage.read(key: 'accessToken');
 
-  // }
+    final params = { 
+      // TODO - not hardcoded
+      'dateFrom': '2024-04-01T00:00:00.000',
+      'dateTo': '2024-08-01T00:00:00.000',
+    };
+
+    final url = 
+      Uri.parse('https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
+      .replace(queryParameters: params);
+
+    final response = await http.get(
+      url, 
+      headers: {'Authorization': 'Bearer $accessToken'},
+    );
+
+    if (response.statusCode == 200) {
+      // print(response.body);
+      return response.body;
+    } else {
+      // TODO - handle exceptions
+      throw Exception('Failed to load messages\n${response.statusCode}\n${response.body}');
+    }
+  }
+
+  List<dynamic> parseMessages(String jsonString) {
+    Map<String, dynamic> jsn = jsonDecode(jsonString);
+    List<dynamic> messageJsn = jsn['messages'];
+    var messages = [];
+
+    for (var message in messageJsn) {
+      var messg = {
+        'sentDate': message['sentDate'],
+        'read': message['read'],
+        'sender': message['sender']['name'],
+        'attachments': message['attachemnts'].toString(),
+        'title': message['title'],
+        'text': 
+        // message['text'],
+          parse(message['text'])
+          .outerHtml
+          // .replaceAll(RegExp(r''), '')
+          ,
+        'id': message['id'],
+      };
+      messages.add(messg);
+    }
+
+    return messages;
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -587,33 +646,39 @@ class MessagesScreenState extends State<MessagesScreen> {
   String formatDateToDate(String date) {
     DateTime dateTime = DateTime.parse(date);
     String formatedDate = '${dateTime.day}. ${dateTime.month}. ${dateTime.year}';
-    print(formatedDate);
+    // print(formatedDate);
     return formatedDate;
   }
 
   // ignore: non_constant_identifier_names
   Widget Messages({required List<dynamic> messageList, required BuildContext context}) {
-    if (messageList.isEmpty && false) {
-          return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(width: 10,),
-            Text('Loading...'),
-          ],
+    if (messageList.isEmpty) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 10,),
+                Text('Loading...'),
+              ],
+              ),
+            ],
           );
     } else {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: ListView(children: [
-          for (var i = 0; i < 6; i++) 
+          for (var message in messageList)
           MessageWidget(
-            title: 'Lorem ipsum dolor sit amet', 
-            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 
+            title: message['title'], 
+            content: message['text'], 
             context: context,
-            from: 'LI Generator',
-            date: '2024-06-03T00:00:00.000',
+            from: message['sender'],
+            date: message['sentDate'],
+            message: message
             ),
         ],),
       )
@@ -627,7 +692,8 @@ class MessagesScreenState extends State<MessagesScreen> {
     required String content, 
     required BuildContext context, 
     required String from,
-    required String date
+    required String date,
+    required final message,
     }) {
     return Column(
       children: [
@@ -660,7 +726,15 @@ class MessagesScreenState extends State<MessagesScreen> {
                 )
               ],
             ),
+
             Text(content),
+            // HtmlWidget(
+            //   content
+            // )
+            // Html(
+            //   data: content,
+            //   style: ,
+            // ),
           ],
         ),
       ),
@@ -726,6 +800,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         },
       );
 
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
 
       if (response.statusCode == 400) {
@@ -760,6 +835,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
       _showSuccessDialog('Success', 'You have been logged in.');
     } catch (e) {
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
       _showErrorDialog('Error', 'An unexpected error occurred: $e');
     }
