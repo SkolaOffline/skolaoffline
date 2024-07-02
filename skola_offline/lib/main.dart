@@ -138,6 +138,21 @@ class TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO: Swap for DateTime.now() for production
+    final now = DateTime(2024, 6, 5, 8, 00, 03);
+    final date_formatter = DateFormat('y-MM-ddTHH:mm:ss');
+
+    var current_lesson_index = -1;
+
+
+    if(!isLoading){
+      for(var i=weekTimetable[now.weekday-1].length-1;i>=0; i--){
+      if(now.isBefore(date_formatter.parse(weekTimetable[now.weekday-1][i]['endTime']))  ){
+          current_lesson_index=i;
+      }
+    }
+    }
+    
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _fetchTimetable,
@@ -146,7 +161,7 @@ class TimetableScreenState extends State<TimetableScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: CurrentLessonCard(),
+                child: isLoading ? Center(child: CircularProgressIndicator()) : (current_lesson_index ==-1 ?Center(child:Text('There are no lessons left for today')) : CurrentLessonCard(lesson: weekTimetable[now.weekday-1][current_lesson_index]))
               ),
             ),
             SliverToBoxAdapter(
@@ -166,7 +181,7 @@ class TimetableScreenState extends State<TimetableScreen> {
                 : SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        final lesson = weekTimetable[0][index];
+                        final lesson = weekTimetable[now.weekday-1][index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16.0, vertical: 8.0),
@@ -174,7 +189,7 @@ class TimetableScreenState extends State<TimetableScreen> {
                         );
                       },
                       childCount:
-                          weekTimetable.isEmpty ? 0 : weekTimetable[0].length,
+                          weekTimetable.isEmpty ? 0 : weekTimetable[now.weekday-1].length,
                     ),
                   ),
           ],
@@ -189,13 +204,12 @@ class TimetableScreenState extends State<TimetableScreen> {
     final syID = await storage.read(key: 'schoolYearId');
     final accessToken = await storage.read(key: 'accessToken');
 
-    //TODO - change dateFrom and dateTo to monday and friday
     final now = DateTime.now();
     // final monday = now.subtract(Duration(days: now.weekday - 1));
     // final friday = monday.add(Duration(days: 5));
     // ! ONLY FOR DEBUGGING PURPOSES !!!
-    final monday = DateTime(2024,6,3, now.hour, now.minute, now.second);
-    final friday = DateTime(2024,6,7, now.hour, now.minute, now.second);
+    final monday = DateTime(2024,6,3);
+    final friday = DateTime(2024,6,7);
 
     final date_formatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
@@ -249,11 +263,13 @@ class TimetableScreenState extends State<TimetableScreen> {
 }
 
 class CurrentLessonCard extends StatelessWidget {
+
+  final Map<String, dynamic> lesson;
+
+  const CurrentLessonCard({Key? key, required this.lesson}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    //TODO: Move this up to the top, probably will be used multiple times
-    final date_formatter = DateFormat('y-MM-ddTHH:mm:ss.000');
     return Card(
       elevation: 4,
       child: Padding(
@@ -266,10 +282,7 @@ class CurrentLessonCard extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             SizedBox(height: 8),
-            Text(
-              date_formatter.format(now),
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
+            LessonCard(lesson: lesson)
           ],
         ),
       ),
