@@ -150,12 +150,14 @@ class TimetableScreenState extends State<TimetableScreen> {
     final syID = await storage.read(key: 'schoolYearId');
     final accessToken = await storage.read(key: 'accessToken');
 
-    final now = DateTime.now();
-    final monday = now.subtract(Duration(days: now.weekday - 1));
-    final saturday = monday.add(Duration(days: 5));
+    //TODO - change dateFrom and dateTo to monday and friday
+    // final now = DateTime.now();
+    // final monday = now.subtract(Duration(days: now.weekday - 1));
+    // final friday = monday.add(Duration(days: 5));
 
     final params = {
       'studentId': userId,
+      //TODO - change dateFrom and dateTo to monday and friday
       'dateFrom': '2024-06-03T00:00:00.000',
       'dateTo': '2024-06-08T00:00:00.000',
       'schoolYearId': syID
@@ -298,12 +300,129 @@ class LessonCard extends StatelessWidget {
   }
 }
 
-class MarksScreen extends StatelessWidget {
+class MarksScreen extends StatefulWidget {
+  @override
+  _MarksScreenState createState() => _MarksScreenState();
+}
+
+class _MarksScreenState extends State<MarksScreen> {
+  List<dynamic> subjects = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchMarks();
+  }
+
+  Future<void> _fetchMarks() async {
+    try {
+      final storage = FlutterSecureStorage();
+      final userId = await storage.read(key: 'userId');
+      final accessToken = await storage.read(key: 'accessToken');
+
+      final url = Uri.parse(
+          "https://aplikace.skolaonline.cz/solapi/api/v1/students/$userId/marks/bySubject");
+
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          subjects = json.decode(response.body)['subjects'];
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load marks');
+      }
+    } catch (e) {
+      print('Error fetching marks: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Marks Screen'),
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: _fetchMarks,
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: subjects.length,
+                itemBuilder: (context, index) {
+                  final subject = subjects[index];
+                  return SubjectCard(subject: subject);
+                },
+              ),
+      ),
     );
+  }
+}
+
+class SubjectCard extends StatelessWidget {
+  final Map<String, dynamic> subject;
+
+  const SubjectCard({Key? key, required this.subject}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.all(8),
+      child: ExpansionTile(
+        title: Text(
+          subject['subject']['name'],
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text('Average: ${subject['averageText']}'),
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: subject['marks'].length,
+            itemBuilder: (context, index) {
+              final mark = subject['marks'][index];
+              return ListTile(
+                title: Text(mark['theme']),
+                subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
+                trailing: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: _getMarkColor(mark['markText']),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    mark['markText'],
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getMarkColor(String mark) {
+    switch (mark) {
+      case '1':
+        return Colors.green;
+      case '2':
+        return Colors.lightGreen;
+      case '3':
+        return Colors.yellow;
+      case '4':
+        return Colors.orange;
+      case '5':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 }
 
