@@ -39,7 +39,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  int _currentIndex = 2;
+  int _currentIndex = 0;
 
   final List<Widget> _tabs = [
     TimetableScreen(),
@@ -106,6 +106,7 @@ class TimetableScreenState extends State<TimetableScreen> {
   List<dynamic> weekTimetable = [];
   bool isLoading = true;
   bool _mounted = true;
+  DateTime now = DateTime(2024,6,3,12,00,03);
 
   @override
   void initState() {
@@ -121,7 +122,7 @@ class TimetableScreenState extends State<TimetableScreen> {
 
   Future<void> _fetchTimetable() async {
     try {
-      final timetableData = await downloadTimetable();
+      final timetableData = await downloadTimetable(now);
       if (_mounted) {
         setState(() {
           weekTimetable = parseWeekTimetable(timetableData);
@@ -140,8 +141,6 @@ class TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Swap for DateTime.now() for production
-    final now = DateTime(2024, 6, 5, 8, 00, 03);
     final date_formatter = DateFormat('y-MM-ddTHH:mm:ss');
 
     var current_lesson_index = -1;
@@ -200,18 +199,18 @@ class TimetableScreenState extends State<TimetableScreen> {
     );
   }
 
-  Future<String> downloadTimetable() async {
+  Future<String> downloadTimetable(DateTime dateTime) async {
     final storage = FlutterSecureStorage();
     final userId = await storage.read(key: 'userId');
     final syID = await storage.read(key: 'schoolYearId');
     final accessToken = await storage.read(key: 'accessToken');
 
-    final now = DateTime.now();
-    // final monday = now.subtract(Duration(days: now.weekday - 1));
-    // final friday = monday.add(Duration(days: 5));
-    // ! ONLY FOR DEBUGGING PURPOSES !!!
-    final monday = DateTime(2024,6,3);
-    final friday = DateTime(2024,6,7);
+      DateTime getMidnight(DateTime datetime){
+      return DateTime(datetime.year,datetime.month,datetime.day);
+    }
+
+    final monday = getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
+    final friday = getMidnight(monday.add(Duration(days: 5)));
 
     final date_formatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
