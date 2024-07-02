@@ -1,16 +1,14 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // test login
-
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -31,9 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-
   int _currentIndex = 0;
-
   final List<Widget> _tabs = [
     TimetableScreen(),
     MarksScreen(),
@@ -50,37 +46,21 @@ class MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: _tabs[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // Add this line
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        currentIndex: _currentIndex,
-        onTap: (int index) {
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (int index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.schedule),
-            label: 'Timetable',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.format_list_numbered_outlined),
-            label: 'Marks',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.mark_as_unread),
-            label: 'Messages',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.group_off),
-            label: 'Absences',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.schedule), label: 'Timetable'),
+          NavigationDestination(
+              icon: Icon(Icons.format_list_numbered), label: 'Marks'),
+          NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),
+          NavigationDestination(
+              icon: Icon(Icons.person_off), label: 'Absences'),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
@@ -90,251 +70,233 @@ class MyHomePageState extends State<MyHomePage> {
 class TimetableScreen extends StatefulWidget {
   @override
   TimetableScreenState createState() => TimetableScreenState();
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   // Add your widget tree here
-  //   return Container();
-  // }
-  // TimetableScreenState createState() => TimetableScreenState();
 }
 
 class TimetableScreenState extends State<TimetableScreen> {
-  String responseText = 'Loading...';
-  List<dynamic> weekTimetable = []; // Define weekTimetable variable
+  List<dynamic> weekTimetable = [];
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
-    downloadTimetable().then((value) {
-      setState(() {
-        weekTimetable = parseWeekTimtable(value); // Assign value to weekTimetable
-        responseText = 'Loaded';
-      });
-    });
+    _fetchTimetable();
   }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(children: [
-        // todo - implement where and what is the current lesson
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child:
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(20),
-              ),
-            child: 
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Row(
-              children: [
-                Text(
-              'Current Lesson', 
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-              ],
-              ),
-            ),),
-        ),
 
-          
-          
-        Text(
-          'Rozvrh hodin',
-          style: Theme.of(context).textTheme.displayMedium!.copyWith(
-            // color: Theme.of(context).colorScheme.onPrimary
-          ),
-          ),
-        timeTable(weekTimetable: weekTimetable),
-     ],)
-    );
-  } 
-
-  Widget timeTable({required List<dynamic> weekTimetable}) {
-    if (weekTimetable.isEmpty) {
-        return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // CircularProgressIndicator(),
-          // SizedBox(width: 10,),
-          Text('Loading...'),
-        ],
-        );
-    } else {
-      return Column(
-        children: [
-          for (var lesson in weekTimetable[0])
-            // Text('${lesson['lessonAbbrev']} ${lesson['classroomAbbrev']} ${lesson['teacherAbbrev']}'),
-            Column(
-              children: [
-                LessonOnTimetable(
-                  abbrev: lesson['lessonAbbrev'],
-                  classroom: lesson['classroomAbbrev'],
-                  teacher: lesson['teacherAbbrev'],
-                  lesson: lesson),
-                SizedBox(height:20),
-              ],
-            ),
-            
-        ],
-      );
+  Future<void> _fetchTimetable() async {
+    try {
+      final timetableData = await downloadTimetable();
+      setState(() {
+        weekTimetable = parseWeekTimetable(timetableData);
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching timetable: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
-  // ignore: non_constant_identifier_names
-  Widget LessonOnTimetable({final abbrev, final classroom, final teacher, final lesson}) {
-    return Row(children: [
-      Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              lesson['lessonOrder'].toString(),
-              style: TextStyle(fontSize: 25),
-            ),
-            Text(
-              formatDate(lesson['beginTime'] ?? 'error'),
-              style: TextStyle(fontSize: 13),
-            ),
-            Text(
-              formatDate(lesson['endTime'] ?? 'error'),
-              style: TextStyle(fontSize: 13),
-            ),
-        ],
-        ),
-      ),
-      SizedBox(width: 10),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-            Text(
-              abbrev,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: _fetchTimetable,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CurrentLessonCard(),
               ),
             ),
-            SizedBox(width: 8),
-            Text(
-              lesson['lessonName'],
-              style: TextStyle(fontSize: 16),),
- 
-            ],
-          ),
-          Text(
-            classroom,
-            style: TextStyle(fontSize: 15),
-          ),
-            Row(children: [
-            Icon(Icons.person),
-            Text(
-              teacher,
-              style: TextStyle(fontWeight: FontWeight.bold),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'Rozvrh hodin',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
-            SizedBox(width: 7),
-            Text(lesson['teacher'] ?? 'error'),
-            ]
-            ),
-          ],)
-        ],
-      );
+            isLoading
+                ? SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final lesson = weekTimetable[0][index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                          child: LessonCard(lesson: lesson),
+                        );
+                      },
+                      childCount:
+                          weekTimetable.isEmpty ? 0 : weekTimetable[0].length,
+                    ),
+                  ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<String> downloadTimetable() async {
     final storage = FlutterSecureStorage();
-    
     final userId = await storage.read(key: 'userId');
     final syID = await storage.read(key: 'schoolYearId');
     final accessToken = await storage.read(key: 'accessToken');
 
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    final saturday = monday.add(Duration(days: 5));
 
     final params = {
       'studentId': userId,
-      // todo - not hardcoded
       'dateFrom': '2024-06-03T00:00:00.000',
       'dateTo': '2024-06-08T00:00:00.000',
       'schoolYearId': syID
     };
 
-    final url = Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/timeTable").replace(queryParameters: params);
-   
+    final url =
+        Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/timeTable")
+            .replace(queryParameters: params);
+
     final response = await http.get(
-      url, 
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-      },
+      url,
+      headers: {'Authorization': 'Bearer $accessToken'},
     );
 
-    print('timeTable response: ${response.statusCode}');
-    // todo - refresh token when expired
-    return response.statusCode == 200 ? response.body : 'Error: ${response.statusCode}';
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to load timetable');
+    }
   }
 
-  List<dynamic> parseWeekTimtable(String json) {
-    Map<String, dynamic> data = jsonDecode(json);
-    List<dynamic> timetable = [];
-
-    final monday = parseDayTimetable(data['days'][0]);
-    final tuesday = parseDayTimetable(data['days'][1]);
-    final wednesday = parseDayTimetable(data['days'][2]);
-    final thursday = parseDayTimetable(data['days'][3]);
-    final friday = parseDayTimetable(data['days'][4]);
-
-    timetable.add(monday);
-    timetable.add(tuesday);
-    timetable.add(wednesday);
-    timetable.add(thursday);
-    timetable.add(friday);
-
-    return timetable;
-  }
-
-  String formatDate(String date) {
-    DateTime dateTime = DateTime.parse(date);
-    String formatedDate = '${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
-    print(formatedDate);
-    return formatedDate;
+  List<dynamic> parseWeekTimetable(String jsonString) {
+    Map<String, dynamic> data = jsonDecode(jsonString);
+    return data['days'].map((day) => parseDayTimetable(day)).toList();
   }
 
   List<dynamic> parseDayTimetable(Map<String, dynamic> day) {
-    List<dynamic> lessons = [];
-    for (var lesson in day['schedules']) {
-      if (lesson['hourType']['id'] == 'SKOLNI_AKCE' ||
-        lesson['hourType']['id'] == 'SUPLOVANA') {
-        continue;
-      }
-      var less = {
-        'lessonFrom': lesson['lessonIdFrom'],
-        'lessonTo': lesson['lessonIdTo'],
-        'lessonType': lesson['hourType']['id'],
-        'lessonAbbrev': lesson['subject']['abbrev'],
-        'lessonName': lesson['subject']['name'],
-        'classroomAbbrev': lesson['rooms'][0]['abbrev'],
-        'teacher': lesson['teachers'][0]['displayName'],
-        'teacherAbbrev': lesson['teachers'][0]['abbrev'],
-        'lessonOrder': lesson['detailHours'][0]['order'],
-        'beginTime': lesson['beginTime'],
-        'endTime': lesson['endTime'],
-      };
-      lessons.add(less);
-    }
-    return lessons;
+    return day['schedules']
+        .where((lesson) =>
+            lesson['hourType']['id'] != 'SKOLNI_AKCE' &&
+            lesson['hourType']['id'] != 'SUPLOVANA')
+        .map((lesson) => {
+              'lessonFrom': lesson['lessonIdFrom'],
+              'lessonTo': lesson['lessonIdTo'],
+              'lessonType': lesson['hourType']['id'],
+              'lessonAbbrev': lesson['subject']['abbrev'],
+              'lessonName': lesson['subject']['name'],
+              'classroomAbbrev': lesson['rooms'][0]['abbrev'],
+              'teacher': lesson['teachers'][0]['displayName'],
+              'teacherAbbrev': lesson['teachers'][0]['abbrev'],
+              'lessonOrder': lesson['detailHours'][0]['order'],
+              'beginTime': lesson['beginTime'],
+              'endTime': lesson['endTime'],
+            })
+        .toList();
   }
 }
 
+class CurrentLessonCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Current Lesson',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            SizedBox(height: 8),
+            Text(
+              'To be implemented',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LessonCard extends StatelessWidget {
+  final Map<String, dynamic> lesson;
+
+  const LessonCard({Key? key, required this.lesson}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    lesson['lessonOrder'].toString(),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    formatTime(lesson['beginTime']),
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${lesson['lessonAbbrev']} - ${lesson['lessonName']}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Room: ${lesson['classroomAbbrev']}',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Teacher: ${lesson['teacher']}',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String formatTime(String time) {
+    final dateTime = DateTime.parse(time);
+    return DateFormat('HH:mm').format(dateTime);
+  }
+}
 
 class MarksScreen extends StatelessWidget {
   @override
@@ -362,6 +324,7 @@ class AbsencesScreen extends StatelessWidget {
     );
   }
 }
+// Implement other screen classes (MarksScreen, MessagesScreen, AbsencesScreen) similarly
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -369,187 +332,119 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController _usernameController = TextEditingController(); // Add this line
-  TextEditingController _passwordController = TextEditingController(); // Add this line
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  Future<void> login(username, password) async {
+  Future<void> login(String username, String password) async {
     showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-    return Dialog(
-      child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-        CircularProgressIndicator(),
-        SizedBox(height: 16.0),
-        Text('Logging in...'),
-        ],
-      ),
-      ),
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text('Logging in...'),
+            ],
+          ),
+        );
+      },
     );
-    },
-    );
-
 
     final storage = FlutterSecureStorage();
     await storage.write(key: 'username', value: username);
     await storage.write(key: 'password', value: password);
- 
-    final response = await http.post(
-      Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
-      headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: <String, String>{
-        'grant_type': 'password',
-        'username': username,
-        'password': password,
-        'client_id': 'test_client',
-        'scope': 'openid offline_access profile sol_api',
-      },
-    );
 
-    Navigator.of(context).pop();
-
-    if (response.statusCode == 400) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Wrong credentials'),
-            content: Text('Please check your username and password.'),
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
+    try {
+      final response = await http.post(
+        Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: <String, String>{
+          'grant_type': 'password',
+          'username': username,
+          'password': password,
+          'client_id': 'test_client',
+          'scope': 'openid offline_access profile sol_api',
         },
       );
-      return;
+
+      Navigator.of(context).pop(); // Close the loading dialog
+
+      if (response.statusCode == 400) {
+        _showErrorDialog(
+            'Wrong credentials', 'Please check your username and password.');
+        return;
+      }
+
+      if (response.statusCode != 200) {
+        _showErrorDialog('Error', 'An error occurred while logging in.');
+        return;
+      }
+
+      Map<String, dynamic> data = json.decode(response.body);
+      String accessToken = data['access_token'];
+      String refreshToken = data['refresh_token'];
+
+      await storage.write(key: 'accessToken', value: accessToken);
+      await storage.write(key: 'refreshToken', value: refreshToken);
+
+      // Get user data
+      final userResponse = await http.get(
+        Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/user"),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+
+      Map<String, dynamic> jsonResponse = json.decode(userResponse.body);
+
+      await storage.write(key: 'userId', value: jsonResponse['personID']);
+      await storage.write(
+          key: 'schoolYearId', value: jsonResponse['schoolYearId']);
+
+      _showSuccessDialog('Success', 'You have been logged in.');
+    } catch (e) {
+      Navigator.of(context).pop(); // Close the loading dialog
+      _showErrorDialog('Error', 'An unexpected error occurred: $e');
     }
-    if (response.statusCode != 200) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text(response.body),
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    } else {
-      showDialog(context: context, builder: (BuildContext context) {
+  }
+
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Success'),
-          content: Text('You have been logged in.'),
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          title: Text(title),
+          content: Text(message),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: Text('OK'),
             ),
           ],
         );
-      });
-    }
-
-
-    Map<String, dynamic> data = json.decode(response.body);
-    String accessToken = data['access_token'];
-    // print('expires in: ${data['expires_in']}');
-    String refreshToken = data['refresh_token'];
-
-    await storage.write(key: 'accessToken', value: accessToken);
-    await storage.write(key: 'refreshToken', value: refreshToken);
-
-    //get user data
-    final userResponse = await http.get(
-      Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/user"),
-      headers: {
-        'Authorization': 'Bearer $accessToken'
-      }
+      },
     );
-    
-    Map<String, dynamic> jsonResponse = json.decode(userResponse.body) as Map<String, dynamic>;
-
-    await storage.write(key: 'userId', value: jsonResponse['personID']);
-    await storage.write(key: 'schoolYearId', value: jsonResponse['schoolYearId']);
   }
 
-
-  // Future<void> logout() async {
-    // final storage = FlutterSecureStorage();
-
-    // final response = await http.post(
-    //   Uri.parse('https://aplikace.skolaonline.cz/solapi/api/v1/user/logout'),
-    //   headers: {
-    //     "Authorization": "Bearer ${await storage.read(key: 'accessToken')}",
-    //   },
-    // );
-
-    // if (response.statusCode != 200) {
-    //   showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return AlertDialog(
-    //         title: Text('Error'),
-    //         content: Row(children: [
-    //           Text('Error logging out: '),
-    //           Text(response.statusCode.toString()),
-    //           Text(response.body),
-    //         ],),
-    //         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-    //         actions: [
-    //           TextButton(
-    //             onPressed: () {
-    //               Navigator.of(context).pop();
-    //             },
-    //             child: Text('OK'),
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    // }
-    // else {
-    //   await storage.deleteAll();
-    //   showDialog(context: context, builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: Text('Logout'),
-    //       content: Text('You have been logged out.'),
-    //       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-    //       actions: [
-    //         TextButton(
-    //           onPressed: () {
-    //             Navigator.of(context).pop();
-    //           },
-    //           child: Text('OK'),
-    //         ),
-    //       ],
-    //     );
-    //   });
-    // }
-  // }
+  void _showSuccessDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -557,71 +452,42 @@ class ProfileScreenState extends State<ProfileScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.person),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('John Doe'),
-                  ],
-                ),
-              ],
+            CircleAvatar(
+              radius: 50,
+              child: Icon(Icons.person, size: 50),
             ),
+            SizedBox(height: 20),
             TextField(
-              controller: _usernameController, // Add this line
+              controller: _usernameController,
               decoration: InputDecoration(
                 labelText: 'Username',
+                border: OutlineInputBorder(),
               ),
             ),
+            SizedBox(height: 12),
             TextField(
-              controller: _passwordController, // Add this line
+              controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
+                border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20,),
-            ElevatedButton(
-                onPressed: () async {
+            SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () async {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
                 await login(username, password);
               },
-
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.login),
-                    Text('Login (takes ~5 seconds)'),
-                  ],
-                ),
+              icon: Icon(Icons.login),
+              label: Text('Login'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50),
               ),
             ),
-            // SizedBox(height: 15,),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     logout();
-            //   }, 
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(12.0),
-            //     child: Row(
-            //       children: [
-            //         Icon(Icons.logout),
-            //         Text('Logout'),
-            //       ],
-            //     ),
-            //   ),
-            // )
           ],
         ),
       ),
