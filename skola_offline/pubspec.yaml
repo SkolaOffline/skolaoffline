@@ -12,7 +12,9 @@ dependencies:
   flutter_secure_storage: ^8.1.0
   http: ^1.2.1
   html: ^0.15.4
-  flutter_html: ^2.1.2
+  # flutter_html: ^2.1.2
+  flutter_html: 3.0.0-beta.2
+  flutter_html_all: 3.0.0-beta.2
   # flutter_widget_from_html: ^0.15.1
   intl: ^0.17.0
   flutter:
