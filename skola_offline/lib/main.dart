@@ -3,8 +3,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:html/parser.dart';
-// import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/flutter_html.dart';
+
+
+
 
 
 void main() {
@@ -633,9 +635,9 @@ class MessagesScreenState extends State<MessagesScreen> {
         'attachments': message['attachemnts'].toString(),
         'title': message['title'],
         'text': 
-        // message['text'],
-          parse(message['text'])
-          .outerHtml
+        message['text']
+          // parse(message['text'])
+          // .outerHtml
           // .replaceAll(RegExp(r''), '')
           ,
         'id': message['id'],
@@ -730,9 +732,11 @@ class MessagesScreenState extends State<MessagesScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  title,
+                  // TODO - fix, so it doesn't depend on the length of the title
+                  // because this is embarassing
+                    title.length > 25 ? title.substring(0, 25) + '...' : title,
                   style: TextStyle(
-                    fontSize: 25,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -747,14 +751,18 @@ class MessagesScreenState extends State<MessagesScreen> {
               ],
             ),
 
-            Text(content),
+            // Text(content),
             // HtmlWidget(
             //   content
             // )
-            // Html(
-            //   data: content,
-            //   style: ,
-            // ),
+            Html(
+              data: content,
+              style: {
+                'p': Style(
+                  fontSize: FontSize(16),
+                ),
+              },
+            ),
           ],
         ),
       ),
