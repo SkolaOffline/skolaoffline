@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
@@ -73,18 +79,63 @@ class MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class AbsencesScreen extends StatelessWidget {
-  var absence = {
-    'subjectName': 'subjectName',
-    'absences': 123,
-    'percentage': 0.2345,
-    'numberOfHours': 234,
-    'excused': 345,
-    'unexcused': 456,
-    'notCounted': 567,
-    'allowedAbsences': 678,
-    'allowedPercentage': 789, 
-  };
+class AbsencesScreen extends StatefulWidget {
+  @override
+  AbsencesScreenState createState() => AbsencesScreenState();
+}
+
+class AbsencesScreenState extends State<AbsencesScreen> {
+  List<dynamic> absencesList = [];
+  bool isLoading = true;
+  bool _mounted = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAbsences();
+  }
+
+  @override
+  void dispose() {
+    _mounted = false;
+    super.dispose();
+  }
+
+  Future<void> _fetchAbsences() async {
+    try {
+      final absencesData = await downloadAbsences();
+      print(absencesData);
+      if (_mounted) {
+        setState(() {
+          absencesList = parseAbsences(absencesData);
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('error fetching timetable: $e');
+      if (_mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  List<dynamic> parseAbsences(String jsonString) {
+    return [jsonString];
+  }
+
+  // final absence = {
+  //   'subjectName': 'subjectName',
+  //   'absences': 123,
+  //   'percentage': 0.2345,
+  //   'numberOfHours': 234,
+  //   'excused': 345,
+  //   'unexcused': 456,
+  //   'notCounted': 567,
+  //   'allowedAbsences': 678,
+  //   'allowedPercentage': 789, 
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,11 +144,36 @@ class AbsencesScreen extends StatelessWidget {
     );
   }
 
+  Future<String> downloadAbsences() async {
+    final storage = FlutterSecureStorage();
+    final accessToken = await storage.read(key: 'accessToken');
+
+    final params = {
+      'dateFrom': DateTime(DateTime.now().year, 9, 1).toIso8601String(),
+      'dateTo': DateTime(DateTime.now().year, 6, 31).toIso8601String(),
+    };
+
+    final url = Uri.parse(
+      'https://aplikace.skolaonline.cz/solapi/api/v1/absences/inSubject',
+    ).replace(queryParameters: params);
+
+    final response = await http.get(
+      url, 
+      headers: {'Authorization': 'Bearer $accessToken'},
+    );
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to load timetable\n${response.statusCode}\n${response.body}');
+    }
+  }
+
 
   // ignore: non_constant_identifier_names
   Widget AbsenceInSubjectCard({required final absence, required final context}) {
     return Card(
-      elevation: 4,
+      elevation: 5,
       child: Row(children: [
         SizedBox(
           width: 200,
@@ -117,7 +193,24 @@ class AbsencesScreen extends StatelessWidget {
             ],
           ),
         ),
-        Text(absence['absences'].toString())
+        SizedBox(
+          width: 50,
+          child: Row(
+            children: [
+              Text(absence['absences'].toString()),
+              Expanded(child: Container()),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 50,
+          child: Row(children: [
+            Text(absence['percentage'].toString()),
+            Expanded(child: Container(),),
+          ],),
+        ),
+        Text('.....'),
+
 
       ],),
     );

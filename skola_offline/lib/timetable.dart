@@ -45,15 +45,15 @@ class TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final date_formatter = DateFormat('y-MM-ddTHH:mm:ss');
+    final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss');
 
-    var current_lesson_index = -1;
+    var currentLessonIndex = -1;
 
 
     if(!isLoading){
       for(var i=weekTimetable[now.weekday-1].length-1;i>=0; i--){
-      if(now.isBefore(date_formatter.parse(weekTimetable[now.weekday-1][i]['endTime']))  ){
-          current_lesson_index=i;
+      if(now.isBefore(dateFormatter.parse(weekTimetable[now.weekday-1][i]['endTime']))  ){
+          currentLessonIndex=i;
       }
     }
     }
@@ -66,7 +66,7 @@ class TimetableScreenState extends State<TimetableScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: isLoading ? Center(child: CircularProgressIndicator()) : (current_lesson_index ==-1 ?Center(child:Text('There are no lessons left for today')) : CurrentLessonCard(lesson: weekTimetable[now.weekday-1][current_lesson_index]))
+                child: isLoading ? Center(child: CircularProgressIndicator()) : (currentLessonIndex ==-1 ?Center(child:Text('There are no lessons left for today')) : CurrentLessonCard(lesson: weekTimetable[now.weekday-1][currentLessonIndex]))
               ),
             ),
             SliverToBoxAdapter(
@@ -116,12 +116,12 @@ class TimetableScreenState extends State<TimetableScreen> {
     final monday = getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
     final friday = getMidnight(monday.add(Duration(days: 5)));
 
-    final date_formatter = DateFormat('y-MM-ddTHH:mm:ss.000');
+    final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
     final params = {
       'studentId': userId,
-      'dateFrom': date_formatter.format(monday),
-      'dateTo': date_formatter.format(friday),
+      'dateFrom': dateFormatter.format(monday),
+      'dateTo': dateFormatter.format(friday),
       'schoolYearId': syID
     };
 
