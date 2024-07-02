@@ -190,15 +190,19 @@ class TimetableScreenState extends State<TimetableScreen> {
     final accessToken = await storage.read(key: 'accessToken');
 
     //TODO - change dateFrom and dateTo to monday and friday
-    // final now = DateTime.now();
+    final now = DateTime.now();
     // final monday = now.subtract(Duration(days: now.weekday - 1));
     // final friday = monday.add(Duration(days: 5));
+    // ! ONLY FOR DEBUGGING PURPOSES !!!
+    final monday = DateTime(2024,6,3, now.hour, now.minute, now.second);
+    final friday = DateTime(2024,6,7, now.hour, now.minute, now.second);
+
+    final date_formatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
     final params = {
       'studentId': userId,
-      //TODO - change dateFrom and dateTo to monday and friday
-      'dateFrom': '2024-06-03T00:00:00.000',
-      'dateTo': '2024-06-08T00:00:00.000',
+      'dateFrom': date_formatter.format(monday),
+      'dateTo': date_formatter.format(friday),
       'schoolYearId': syID
     };
 
@@ -210,7 +214,6 @@ class TimetableScreenState extends State<TimetableScreen> {
       url,
       headers: {'Authorization': 'Bearer $accessToken'},
     );
-
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -248,6 +251,9 @@ class TimetableScreenState extends State<TimetableScreen> {
 class CurrentLessonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    //TODO: Move this up to the top, probably will be used multiple times
+    final date_formatter = DateFormat('y-MM-ddTHH:mm:ss.000');
     return Card(
       elevation: 4,
       child: Padding(
@@ -261,7 +267,7 @@ class CurrentLessonCard extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              'To be implemented',
+              date_formatter.format(now),
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
@@ -645,6 +651,7 @@ class MessagesScreenState extends State<MessagesScreen> {
 
   String formatDateToDate(String date) {
     DateTime dateTime = DateTime.parse(date);
+    //TODO: USE DateFormat - better build-in version of the same thing
     String formatedDate = '${dateTime.day}. ${dateTime.month}. ${dateTime.year}';
     // print(formatedDate);
     return formatedDate;
