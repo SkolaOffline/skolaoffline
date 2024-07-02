@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:skola_offline/timetable.dart';
@@ -85,7 +84,7 @@ class AbsencesScreen extends StatefulWidget {
 }
 
 class AbsencesScreenState extends State<AbsencesScreen> {
-  List<dynamic> absencesList = [];
+  List<dynamic> absencesSubjectList = [];
   bool isLoading = true;
   bool _mounted = true;
 
@@ -107,7 +106,7 @@ class AbsencesScreenState extends State<AbsencesScreen> {
       print(absencesData);
       if (_mounted) {
         setState(() {
-          absencesList = parseAbsences(absencesData);
+          absencesSubjectList = parseAbsences(absencesData);
           isLoading = false;
         });
       }
@@ -122,7 +121,38 @@ class AbsencesScreenState extends State<AbsencesScreen> {
   }
 
   List<dynamic> parseAbsences(String jsonString) {
-    return [jsonString];
+    final absencesData = jsonDecode(jsonString);
+    List<dynamic> absencesList = [];
+
+    final absenceAllInAll = {
+      'subjectName': 'Dohromady',
+      'absences': absencesData['summaryAbsenceAll'],
+      'percentage': absencesData['absenceAllPercentage'],
+      'numberOfHours': absencesData['summaryNumberOfHours'],
+      'excused': absencesData['summaryNumberOfExcused'],
+      'unexcused': absencesData['summaryNumberOfUnexcused'],
+      'notCounted': absencesData['summaryNumberOfNotCounted'],
+      'allowedAbsences': -1,
+      'allowedPercentage': -1,
+    };
+    absencesList.add(absenceAllInAll);
+
+    for (var absence in absencesData['subjects']) {
+      final absenceDict = {
+      'subjectName': absence['subject']['name'],
+      'absences': absence['absenceAll'],
+      'percentage': absence['absenceAllPercentage'],
+      'numberOfHours': absence['numberOfHours'],
+      'excused': absence['numberOfExcused'],
+      'unexcused': absence['numberOfUnexcused'],
+      'notCounted': absence['numberOfNotCounted'],
+      'allowedAbsences': absence['allowedAbsence'],
+      'allowedPercentage': absence['allowedAbsencePercentage'],
+      };
+      absencesList.add(absenceDict);
+    }
+
+    return absencesList;
   }
 
   // final absence = {
@@ -139,9 +169,10 @@ class AbsencesScreenState extends State<AbsencesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: AbsenceInSubjectCard(absence: absence, context: context),
-    );
+    return ListView(children: [
+      for (var subject in absencesSubjectList)
+      AbsenceInSubjectCard(absence: subject, context: context)
+    ],);
   }
 
   Future<String> downloadAbsences() async {
@@ -149,7 +180,8 @@ class AbsencesScreenState extends State<AbsencesScreen> {
     final accessToken = await storage.read(key: 'accessToken');
 
     final params = {
-      'dateFrom': DateTime(DateTime.now().year, 9, 1).toIso8601String(),
+      // TODO - pololeti
+      'dateFrom': DateTime(DateTime.now().year-1, 9, 1).toIso8601String(),
       'dateTo': DateTime(DateTime.now().year, 6, 31).toIso8601String(),
     };
 
