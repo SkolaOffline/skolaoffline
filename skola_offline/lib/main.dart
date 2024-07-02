@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  int _currentIndex = 0;
+  int _currentIndex = 2;
 
   final List<Widget> _tabs = [
     TimetableScreen(),
@@ -99,6 +99,25 @@ class TimetableScreen extends StatefulWidget {
   // TimetableScreenState createState() => TimetableScreenState();
 }
 
+// todo test
+Future<void> refreshToken() async {
+  final storage = FlutterSecureStorage();
+  // refresh token
+  final refreshToken = await storage.read(key: 'refreshToken');
+  final r = await http.post(
+    Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: {
+        "grant_type": "refresh_token",
+        "refresh_token": refreshToken,
+        "client_id": "test_client",
+        "scope": "offline_access sol_api",
+    },
+  );
+  print('refresh response: ${r.statusCode}');
+}
+
+
 class TimetableScreenState extends State<TimetableScreen> {
   String responseText = 'Loading...';
   List<dynamic> weekTimetable = []; // Define weekTimetable variable
@@ -150,18 +169,19 @@ class TimetableScreenState extends State<TimetableScreen> {
             // color: Theme.of(context).colorScheme.onPrimary
           ),
           ),
-        timeTable(weekTimetable: weekTimetable),
+        TimeTable(weekTimetable: weekTimetable),
      ],)
     );
   } 
 
-  Widget timeTable({required List<dynamic> weekTimetable}) {
+  // ignore: non_constant_identifier_names
+  Widget TimeTable({required List<dynamic> weekTimetable}) {
     if (weekTimetable.isEmpty) {
         return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // CircularProgressIndicator(),
-          // SizedBox(width: 10,),
+          CircularProgressIndicator(),
+          SizedBox(width: 10,),
           Text('Loading...'),
         ],
         );
@@ -204,11 +224,11 @@ class TimetableScreenState extends State<TimetableScreen> {
               style: TextStyle(fontSize: 25),
             ),
             Text(
-              formatDate(lesson['beginTime'] ?? 'error'),
+              formatDateToTime(lesson['beginTime'] ?? 'error'),
               style: TextStyle(fontSize: 13),
             ),
             Text(
-              formatDate(lesson['endTime'] ?? 'error'),
+              formatDateToTime(lesson['endTime'] ?? 'error'),
               style: TextStyle(fontSize: 13),
             ),
         ],
@@ -279,7 +299,12 @@ class TimetableScreenState extends State<TimetableScreen> {
     );
 
     print('timeTable response: ${response.statusCode}');
-    // todo - refresh token when expired
+
+    if (response.statusCode == 401) {
+      await refreshToken();
+    }
+
+
     return response.statusCode == 200 ? response.body : 'Error: ${response.statusCode}';
   }
 
@@ -302,7 +327,7 @@ class TimetableScreenState extends State<TimetableScreen> {
     return timetable;
   }
 
-  String formatDate(String date) {
+  String formatDateToTime(String date) {
     DateTime dateTime = DateTime.parse(date);
     String formatedDate = '${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
     print(formatedDate);
@@ -345,13 +370,127 @@ class MarksScreen extends StatelessWidget {
   }
 }
 
-class MessagesScreen extends StatelessWidget {
+class MessagesScreen extends StatefulWidget {
+  @override
+  MessagesScreenState createState() => MessagesScreenState();
+}
+
+class MessagesScreenState extends State<MessagesScreen> {
+  List<dynamic> messageList = ['lol'];
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   downloadMessages().then((value) {
+  //     setState(() {
+  //       messageList = parseMessages(value);
+  //     });
+  //   });
+  // }
+
+  // Future<String> downloadMessages() async {
+  //   final storage = FlutterSecureStorage();
+
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Message Screen'),
+    return Scaffold(
+      // body: ListView(children: [
+        // Text(
+          // 'Zprávy',
+          // style: Theme.of(context).textTheme.displayMedium!.copyWith(),
+          // ),
+        body: Messages(messageList: messageList, context: context)
+      // ],)
     );
+ }
+
+  String formatDateToDate(String date) {
+    DateTime dateTime = DateTime.parse(date);
+    String formatedDate = '${dateTime.day}. ${dateTime.month}. ${dateTime.year}';
+    print(formatedDate);
+    return formatedDate;
   }
+
+  // ignore: non_constant_identifier_names
+  Widget Messages({required List<dynamic> messageList, required BuildContext context}) {
+    if (messageList.isEmpty && false) {
+          return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 10,),
+            Text('Loading...'),
+          ],
+          );
+    } else {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: ListView(children: [
+          for (var i = 0; i < 6; i++) 
+          MessageWidget(
+            title: 'Lorem ipsum dolor sit amet', 
+            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 
+            context: context,
+            from: 'LI Generator',
+            date: '2024-06-03T00:00:00.000',
+            ),
+        ],),
+      )
+    );
+    }
+  }
+ 
+  // ignore: non_constant_identifier_names
+  Widget MessageWidget({
+    required String title, 
+    required String content, 
+    required BuildContext context, 
+    required String from,
+    required String date
+    }) {
+    return Column(
+      children: [
+        Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Column(
+                  children: [
+                    Text(
+                      from,),
+                    Text(
+                      formatDateToDate(date),)
+                  ],
+                )
+              ],
+            ),
+            Text(content),
+          ],
+        ),
+      ),
+      ),
+      SizedBox(height: 15,),
+      ],
+    );
+  }  
 }
 
 class AbsencesScreen extends StatelessWidget {
