@@ -191,7 +191,7 @@ class TimetableScreenState extends State<TimetableScreen> {
     final syID = await storage.read(key: 'schoolYearId');
     final accessToken = await storage.read(key: 'accessToken');
 
-    //TODO - change dateFrom and dateTo to monday and friday
+    // TODO - change dateFrom and dateTo to monday and friday
     final now = DateTime.now();
     // final monday = now.subtract(Duration(days: now.weekday - 1));
     // final friday = monday.add(Duration(days: 5));
@@ -286,15 +286,18 @@ class LessonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return 
+    Card(
       elevation: 2,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
+      child: 
+      Padding(
+        padding: EdgeInsets.all(8),
+        child: 
+        Row(
           children: [
             Container(
-              width: 60,
-              height: 60,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(10),
@@ -447,7 +450,10 @@ class SubjectCard extends StatelessWidget {
                 children: <TextSpan>[
               TextSpan(
                 text: '${subject['averageText']}', // Bold text
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  ),
               )
             ])),
         children: [
@@ -457,37 +463,60 @@ class SubjectCard extends StatelessWidget {
             itemCount: subject['marks'].length,
             itemBuilder: (context, index) {
               final mark = subject['marks'][index];
-              return ListTile(
-                title: Text(mark['theme']),
-                subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(width: 8),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 6.0,
-                          right:
-                              6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
-                      child: Text('Weight: ${mark['weight']}',
-                          style: TextStyle(fontSize: 12)),
+              return Column(
+                children: [
+                  ListTile(
+                    title: Text(
+                      mark['theme'].substring(0, 1).toUpperCase() + mark['theme'].substring(1),
+                      style: TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: _getMarkColor(mark['markText']),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        mark['markText'],
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
+                    // subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
+                    subtitle: Text(formatDateToDate(mark['markDate']), style: TextStyle(fontSize: 12)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(width: 8),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 6.0,
+                              right:
+                                  6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
+                          // child: Text('Weight: ${mark['weight']}',
+                          child: Text('${(mark['weight']*10).toInt()}',
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300)),
+                        ),
+                        SizedBox(width: 8),
+                        Container(
+                          width: 30,
+                          height: 40,
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: _getMarkColor(mark['markText']),
+                            borderRadius: BorderRadius.circular(5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 6,
+                                offset: Offset(4, 4),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              mark['markText'],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                onTap: () =>
-                    _showMarkDetails(context, mark, subject['teachers']),
+                    onTap: () =>
+                        _showMarkDetails(context, mark, subject['teachers']),
+                  ),
+                  Divider(height: 0,),
+                ],
               );
             },
           ),
@@ -513,6 +542,15 @@ class SubjectCard extends StatelessWidget {
     }
   }
 
+
+  String formatDateToDate(String date) {
+    // final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
+    final dateFormatter = DateFormat('dd.MM.yyyy');
+    return dateFormatter.format(DateTime.parse(date));
+  }
+
+
+
   void _showMarkDetails(
       BuildContext context, Map<String, dynamic> mark, List<dynamic> teachers) {
     String teacherName = 'Unknown';
@@ -531,10 +569,11 @@ class SubjectCard extends StatelessWidget {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Date: ${mark['markDate'].split('T')[0]}'),
+                // Text('Date: ${mark['markDate'].split('T')[0]}'),
+                Text('Date: ${formatDateToDate(mark['markDate'])}'),
                 Text('Mark: ${mark['markText']}'),
                 Text('Weight: ${mark['weight']}'),
-                Text('Type: ${mark['type']}'),
+                // Text('Type: ${mark['type']}'),
                 if (mark['typeNote'] != null)
                   Text('Type Note: ${mark['typeNote']}'),
                 if (mark['comment'] != null)
