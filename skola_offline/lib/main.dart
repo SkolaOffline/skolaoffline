@@ -75,6 +75,7 @@ class TimetableScreen extends StatefulWidget {
 class TimetableScreenState extends State<TimetableScreen> {
   List<dynamic> weekTimetable = [];
   bool isLoading = true;
+  bool _mounted = true;
 
   @override
   void initState() {
@@ -82,18 +83,28 @@ class TimetableScreenState extends State<TimetableScreen> {
     _fetchTimetable();
   }
 
+  @override
+  void dispose() {
+    _mounted = false;
+    super.dispose();
+  }
+
   Future<void> _fetchTimetable() async {
     try {
       final timetableData = await downloadTimetable();
-      setState(() {
-        weekTimetable = parseWeekTimetable(timetableData);
-        isLoading = false;
-      });
+      if (_mounted) {
+        setState(() {
+          weekTimetable = parseWeekTimetable(timetableData);
+          isLoading = false;
+        });
+      }
     } catch (e) {
       print('Error fetching timetable: $e');
-      setState(() {
-        isLoading = false;
-      });
+      if (_mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -261,7 +272,11 @@ class LessonCard extends StatelessWidget {
                   ),
                   Text(
                     formatTime(lesson['beginTime']),
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 10),
+                  ),
+                  Text(
+                    formatTime(lesson['endTime']),
+                    style: TextStyle(fontSize: 10),
                   ),
                 ],
               ),
@@ -308,11 +323,18 @@ class MarksScreen extends StatefulWidget {
 class _MarksScreenState extends State<MarksScreen> {
   List<dynamic> subjects = [];
   bool isLoading = true;
+  bool _mounted = true;
 
   @override
   void initState() {
     super.initState();
     _fetchMarks();
+  }
+
+  @override
+  void dispose() {
+    _mounted = false;
+    super.dispose();
   }
 
   Future<void> _fetchMarks() async {
@@ -330,18 +352,22 @@ class _MarksScreenState extends State<MarksScreen> {
       );
 
       if (response.statusCode == 200) {
-        setState(() {
-          subjects = json.decode(response.body)['subjects'];
-          isLoading = false;
-        });
+        if (_mounted) {
+          setState(() {
+            subjects = json.decode(response.body)['subjects'];
+            isLoading = false;
+          });
+        }
       } else {
         throw Exception('Failed to load marks');
       }
     } catch (e) {
       print('Error fetching marks: $e');
-      setState(() {
-        isLoading = false;
-      });
+      if (_mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -378,7 +404,16 @@ class SubjectCard extends StatelessWidget {
           subject['subject']['name'],
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text('Average: ${subject['averageText']}'),
+        subtitle: RichText(
+            text: TextSpan(
+                text: 'Average: ', // Normal text
+                style: DefaultTextStyle.of(context).style,
+                children: <TextSpan>[
+              TextSpan(
+                text: '${subject['averageText']}', // Bold text
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )
+            ])),
         children: [
           ListView.builder(
             shrinkWrap: true,
@@ -389,17 +424,34 @@ class SubjectCard extends StatelessWidget {
               return ListTile(
                 title: Text(mark['theme']),
                 subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
-                trailing: Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: _getMarkColor(mark['markText']),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    mark['markText'],
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(width: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 6.0,
+                          right:
+                              6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
+                      child: Text('Weight: ${mark['weight']}',
+                          style: TextStyle(fontSize: 12)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: _getMarkColor(mark['markText']),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        mark['markText'],
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                    ),
+                  ],
                 ),
+                onTap: () =>
+                    _showMarkDetails(context, mark, subject['teachers']),
               );
             },
           ),
@@ -423,6 +475,55 @@ class SubjectCard extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+
+  void _showMarkDetails(
+      BuildContext context, Map<String, dynamic> mark, List<dynamic> teachers) {
+    String teacherName = 'Unknown';
+    for (var teacher in teachers) {
+      if (teacher['id'] == mark['teacherId']) {
+        teacherName = teacher['displayName'];
+        break;
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(mark['theme']),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Date: ${mark['markDate'].split('T')[0]}'),
+                Text('Mark: ${mark['markText']}'),
+                Text('Weight: ${mark['weight']}'),
+                Text('Type: ${mark['type']}'),
+                if (mark['typeNote'] != null)
+                  Text('Type Note: ${mark['typeNote']}'),
+                if (mark['comment'] != null)
+                  Text('Comment: ${mark['comment']}'),
+                if (mark['verbalEvaluation'] != null)
+                  Text('Verbal Evaluation: ${mark['verbalEvaluation']}'),
+                Text('Teacher: $teacherName'),
+                if (mark['classRankText'] != null)
+                  Text('Class Rank: ${mark['classRankText']}'),
+                if (mark['classAverage'] != null)
+                  Text('Class Average: ${mark['classAverage']}'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
