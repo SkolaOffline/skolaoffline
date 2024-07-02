@@ -26,6 +26,7 @@ class TimetableScreenState extends State<TimetableScreen> {
   Future<void> _fetchTimetable() async {
     try {
       final timetableData = await downloadTimetable(now);
+      print(timetableData);
       if (_mounted) {
         setState(() {
           weekTimetable = parseWeekTimetable(timetableData);
@@ -44,15 +45,15 @@ class TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss');
+    final date_formatter = DateFormat('y-MM-ddTHH:mm:ss');
 
-    var currentLessonIndex = -1;
+    var current_lesson_index = -1;
 
 
     if(!isLoading){
       for(var i=weekTimetable[now.weekday-1].length-1;i>=0; i--){
-      if(now.isBefore(dateFormatter.parse(weekTimetable[now.weekday-1][i]['endTime']))  ){
-          currentLessonIndex=i;
+      if(now.isBefore(date_formatter.parse(weekTimetable[now.weekday-1][i]['endTime']))  ){
+          current_lesson_index=i;
       }
     }
     }
@@ -65,7 +66,7 @@ class TimetableScreenState extends State<TimetableScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: isLoading ? Center(child: CircularProgressIndicator()) : (currentLessonIndex ==-1 ?Center(child:Text('There are no lessons left for today')) : CurrentLessonCard(lesson: weekTimetable[now.weekday-1][currentLessonIndex]))
+                child: isLoading ? Center(child: CircularProgressIndicator()) : (current_lesson_index ==-1 ?Center(child:Text('There are no lessons left for today')) : CurrentLessonCard(lesson: weekTimetable[now.weekday-1][current_lesson_index]))
               ),
             ),
             SliverToBoxAdapter(
@@ -115,12 +116,12 @@ class TimetableScreenState extends State<TimetableScreen> {
     final monday = getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
     final friday = getMidnight(monday.add(Duration(days: 5)));
 
-    final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
+    final date_formatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
     final params = {
       'studentId': userId,
-      'dateFrom': dateFormatter.format(monday),
-      'dateTo': dateFormatter.format(friday),
+      'dateFrom': date_formatter.format(monday),
+      'dateTo': date_formatter.format(friday),
       'schoolYearId': syID
     };
 
@@ -135,7 +136,7 @@ class TimetableScreenState extends State<TimetableScreen> {
     if (response.statusCode == 200) {
       return response.body;
     } else {
-      throw Exception('Failed to load timetable');
+      throw Exception('Failed to load timetable\n${response.statusCode}\n${response.body}');
     }
   }
 
@@ -245,6 +246,7 @@ class LessonCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
+                    // TODO - when lesson is 90 minutes
                     lesson['lessonOrder'].toString(),
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),

@@ -36,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  int _currentIndex = 0;
+  int _currentIndex = 3;
 
   final List<Widget> _tabs = [
     TimetableScreen(),
@@ -74,10 +74,52 @@ class MyHomePageState extends State<MyHomePage> {
 }
 
 class AbsencesScreen extends StatelessWidget {
+  var absence = {
+    'subjectName': 'subjectName',
+    'absences': 123,
+    'percentage': 0.2345,
+    'numberOfHours': 234,
+    'excused': 345,
+    'unexcused': 456,
+    'notCounted': 567,
+    'allowedAbsences': 678,
+    'allowedPercentage': 789, 
+  };
+
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('Absences Screen'),
+      child: AbsenceInSubjectCard(absence: absence, context: context),
+    );
+  }
+
+
+  // ignore: non_constant_identifier_names
+  Widget AbsenceInSubjectCard({required final absence, required final context}) {
+    return Card(
+      elevation: 4,
+      child: Row(children: [
+        SizedBox(
+          width: 200,
+          height: 80,
+          child: Row(
+            children: [
+              Text(
+                absence['subjectName'],
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              Expanded(
+                child: Container(),
+              ),
+            ],
+          ),
+        ),
+        Text(absence['absences'].toString())
+
+      ],),
     );
   }
 }
