@@ -292,12 +292,12 @@ class LessonCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Room: ${lesson['classroomAbbrev']}',
+                    lesson['classroomAbbrev'],
                     style: TextStyle(fontSize: 14),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Teacher: ${lesson['teacher']}',
+                    lesson['teacher'],
                     style: TextStyle(fontSize: 14),
                   ),
                 ],
