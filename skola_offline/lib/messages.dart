@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class MessagesScreen extends StatefulWidget {
   @override
@@ -11,192 +12,195 @@ class MessagesScreen extends StatefulWidget {
 
 class MessagesScreenState extends State<MessagesScreen> {
   List<dynamic> messageList = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    downloadMessages().then((value) {
-      setState(() {
-        messageList = parseMessages(value);
-      });
-    });
+    downloadMessages();
   }
 
-  Future<String> downloadMessages() async {
-    final storage = FlutterSecureStorage();
-    final accessToken = await storage.read(key: 'accessToken');
+  Future<void> downloadMessages() async {
+    try {
+      final storage = FlutterSecureStorage();
+      final accessToken = await storage.read(key: 'accessToken');
 
-    final params = {
-      // TODO - not hardcoded
-      'dateFrom': '2024-04-01T00:00:00.000',
-      'dateTo': '2024-08-01T00:00:00.000',
-    };
+      final now = DateTime.now();
+      final params = {
+        'dateFrom': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS')
+            .format(now.subtract(Duration(days: 30))),
+        'dateTo': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').format(now),
+      };
 
-    final url = Uri.parse(
-            'https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
-        .replace(queryParameters: params);
+      final url = Uri.parse(
+              'https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
+          .replace(queryParameters: params);
 
-    final response = await http.get(
-      url,
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
 
-    if (response.statusCode == 200) {
-      // print(response.body);
-      return response.body;
-    } else {
-      // TODO - handle exceptions
-      throw Exception(
-          'Failed to load messages\n${response.statusCode}\n${response.body}');
+      if (response.statusCode == 200) {
+        setState(() {
+          messageList = parseMessages(response.body);
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load messages: ${response.statusCode}');
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading messages: $e')),
+      );
     }
   }
 
   List<dynamic> parseMessages(String jsonString) {
     Map<String, dynamic> jsn = jsonDecode(jsonString);
     List<dynamic> messageJsn = jsn['messages'];
-    var messages = [];
-
-    for (var message in messageJsn) {
-      var messg = {
-        'sentDate': message['sentDate'],
-        'read': message['read'],
-        'sender': message['sender']['name'],
-        'attachments': message['attachemnts'].toString(),
-        'title': message['title'],
-        'text': message['text']
-        // parse(message['text'])
-        // .outerHtml
-        // .replaceAll(RegExp(r''), '')
-        ,
-        'id': message['id'],
-      };
-      messages.add(messg);
-    }
-
-    return messages;
+    return messageJsn
+        .map((message) => {
+              'sentDate': message['sentDate'],
+              'read': message['read'],
+              'sender': message['sender']['name'],
+              'attachments': message['attachments'].toString(),
+              'title': message['title'],
+              'text': message['text'],
+              'id': message['id'],
+            })
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // body: ListView(children: [
-        // Text(
-        // 'Zprávy',
-        // style: Theme.of(context).textTheme.displayMedium!.copyWith(),
-        // ),
-        body: Messages(messageList: messageList, context: context)
-        // ],)
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : MessagesList(messageList: messageList),
+    );
+  }
+}
+
+class MessagesList extends StatelessWidget {
+  final List<dynamic> messageList;
+
+  const MessagesList({Key? key, required this.messageList}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: EdgeInsets.all(20.0),
+      itemCount: messageList.length,
+      itemBuilder: (context, index) {
+        final message = messageList[index];
+        return MessageWidget(
+          title: message['title'],
+          content: message['text'],
+          from: message['sender'],
+          date: message['sentDate'],
+          message: message,
         );
+      },
+    );
+  }
+}
+
+class MessageWidget extends StatefulWidget {
+  final String title;
+  final String content;
+  final String from;
+  final String date;
+  final dynamic message;
+
+  const MessageWidget({
+    Key? key,
+    required this.title,
+    required this.content,
+    required this.from,
+    required this.date,
+    required this.message,
+  }) : super(key: key);
+
+  @override
+  _MessageWidgetState createState() => _MessageWidgetState();
+}
+
+class _MessageWidgetState extends State<MessageWidget> {
+  bool _isExpanded = false;
+
+  void _toggleExpanded() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
   }
 
-  String formatDateToDate(String date) {
-    DateTime dateTime = DateTime.parse(date);
-    //TODO: USE DateFormat - better build-in version of the same thing
-    String formatedDate =
-        '${dateTime.day}. ${dateTime.month}. ${dateTime.year}';
-    // print(formatedDate);
-    return formatedDate;
-  }
-
-  // ignore: non_constant_identifier_names
-  Widget Messages(
-      {required List<dynamic> messageList, required BuildContext context}) {
-    if (messageList.isEmpty) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(
-                width: 10,
-              ),
-              Text('Loading...'),
-            ],
-          ),
-        ],
-      );
-    } else {
-      return Scaffold(
-          body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: ListView(
-          children: [
-            for (var message in messageList)
-              MessageWidget(
-                  title: message['title'],
-                  content: message['text'],
-                  context: context,
-                  from: message['sender'],
-                  date: message['sentDate'],
-                  message: message),
-          ],
-        ),
-      ));
-    }
-  }
-
-  // ignore: non_constant_identifier_names
-  Widget MessageWidget({
-    required String title,
-    required String content,
-    required BuildContext context,
-    required String from,
-    required String date,
-    required final message,
-  }) {
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
+        GestureDetector(
+          onTap: _toggleExpanded,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.title,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: _isExpanded ? null : 2,
+                          overflow: _isExpanded
+                              ? TextOverflow.visible
+                              : TextOverflow.ellipsis,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(from),
-                        Text(formatDateToDate(date)),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Html(
-                  data: content,
-                  style: {
-                    'p': Style(
-                      fontSize: FontSize(16),
-                    ),
-                  },
-                ),
-              ],
+                      SizedBox(width: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(widget.from),
+                          Text(formatDateToDate(widget.date)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Html(
+                    data: widget.content,
+                    style: {
+                      'p': Style(
+                        fontSize: FontSize(16),
+                      ),
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
         SizedBox(height: 15),
       ],
     );
+  }
+
+  String formatDateToDate(String date) {
+    DateTime dateTime = DateTime.parse(date);
+    return DateFormat('d. M. yyyy').format(dateTime);
   }
 }
