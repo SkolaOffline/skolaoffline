@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class MessagesScreen extends StatefulWidget {
   @override
@@ -25,6 +26,12 @@ class MessagesScreenState extends State<MessagesScreen> {
     final dummyAppState = DummyAppState();
     bool useDummyData = dummyAppState.useDummyData;
     if (useDummyData) {
+      final dummyData =
+          await rootBundle.loadString("lib/assets/dummy_messages.json");
+      setState(() {
+        messageList = parseMessages(dummyData);
+        isLoading = false;
+      });
     } else {
       try {
         final storage = FlutterSecureStorage();

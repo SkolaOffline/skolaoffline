@@ -1,0 +1,62 @@
+{
+    "messages": [
+        {
+            "sentDate": "2024-07-01T09:15:30.000",
+            "read": false,
+            "sender": {
+                "id": "testID",
+                "type": "employee",
+                "name": "Mgr. Petr Novák",
+                "personsInitials": "PN",
+                "contactId": "Zamestnanci;;testID",
+                "detailName": "učitel",
+                "icon": "employee"
+            },
+            "attachmentsDeleteDate": "2025-07-01T00:00:00",
+            "attachmentsDeleteText": null,
+            "voteOptions": [],
+            "voteAnswer": null,
+            "attachments": [],
+            "id": "9f3a1234-d54b-48b7-bab7-8ca489a0b6ff",
+            "title": "Upozornění na konec školního roku",
+            "text": "<p>Milí studenti,</p>\r\n\r\n<p>připomínáme, že školní rok končí 30. června. Prosím, ujistěte se, že máte všechny úkoly odevzdané a učebnice vrácené.</p>\r\n\r\n<p>Předem děkujeme.</p>\r\n\r\n<p>S pozdravem</p>\r\n\r\n<p>Petr Novák</p>"
+        },
+        {
+            "sentDate": "2024-06-28T14:20:45.000",
+            "read": false,
+            "sender": {
+                "id": "testID",
+                "type": "employee",
+                "name": "Mgr. Eva Horáková",
+                "personsInitials": "EH",
+                "contactId": "Zamestnanci;;testID",
+                "detailName": "učitel",
+                "icon": "employee"
+            },
+            "attachmentsDeleteDate": "2025-06-28T00:00:00",
+            "attachmentsDeleteText": null,
+            "voteOptions": [],
+            "voteAnswer": null,
+            "attachments": [
+                {
+                    "id": "8cb12345-3d07-4647-974c-eb5c9690ee9a",
+                    "name": "seznam-literatury-k-letnimu-cteni.pdf",
+                    "nameUser": null,
+                    "type": null,
+                    "size": 215539
+                },
+                {
+                    "id": "abd24970-9508-46aa-99d9-f7591b0223e2",
+                    "name": "prihlaska-na-letni-kurzy.docx",
+                    "nameUser": null,
+                    "type": null,
+                    "size": 108039
+                }
+            ],
+            "id": "b4f0dc3d-e16b-4865-ab81-6de357aac653",
+            "title": "Letní kurzy a čtení",
+            "text": "<p>Vážení studenti a rodiče,</p>\r\n\r\n<p>v příloze zasílám informace o letních kurzech a doporučenou literaturu na léto. Pokud máte zájem o účast, prosím, vyplňte přihlášku a zašlete ji zpět do 15. července.</p>\r\n\r\n<p>Děkujeme za spolupráci.</p>\r\n\r\n<p>S pozdravem</p>\r\n\r\n<p>Eva Horáková</p>"
+        }
+    ],
+    "message": null
+}

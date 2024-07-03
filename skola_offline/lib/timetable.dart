@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
+import 'package:flutter/services.dart' show rootBundle;
 // import 'package:skola_offline/main.dart';
 
 class TimetableScreenState extends State<TimetableScreen> {
@@ -123,7 +124,7 @@ class TimetableScreenState extends State<TimetableScreen> {
     bool useDummyData = dummyAppState.useDummyData;
 
     if (useDummyData) {
-      return "TODO"; //TODO: Add dummy data
+      return await rootBundle.loadString('lib/assets/dummy_timetable.json');
     } else {
       final storage = FlutterSecureStorage();
       final userId = await storage.read(key: 'userId');

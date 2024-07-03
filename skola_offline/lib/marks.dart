@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class MarksScreen extends StatefulWidget {
   @override
@@ -31,8 +32,10 @@ class MarksScreenState extends State<MarksScreen> {
     final dummyAppState = DummyAppState();
     bool useDummyData = dummyAppState.useDummyData;
     if (useDummyData) {
+      final dummyData =
+          await rootBundle.loadString('lib/assets/dummy_marks.json');
       setState(() {
-        //TODO: Add dummy data
+        subjects = json.decode(dummyData)['subjects'];
         isLoading = false;
       });
     } else {
@@ -102,7 +105,7 @@ class SubjectCard extends StatelessWidget {
       color: Theme.of(context).colorScheme.primaryContainer,
       child: ExpansionTile(
         title: Text(
-          subject['subject']['name'],
+          subject['name'],
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: RichText(

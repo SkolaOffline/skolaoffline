@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:skola_offline/dummy_app_state.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class AbsencesScreen extends StatefulWidget {
   @override
@@ -110,7 +111,7 @@ class AbsencesScreenState extends State<AbsencesScreen> {
     bool useDummyData = dummyAppState.useDummyData;
 
     if (useDummyData) {
-      return "TODO"; //TODO: Add dummy data
+      return await rootBundle.loadString('lib/assets/dummy_absences.json');
     } else {
       final storage = FlutterSecureStorage();
       final accessToken = await storage.read(key: 'accessToken');
@@ -165,7 +166,9 @@ class AbsencesScreenState extends State<AbsencesScreen> {
             padding: const EdgeInsets.all(5.0),
             child: Row(
               children: [
-                SizedBox(width: 7,),
+                SizedBox(
+                  width: 7,
+                ),
                 Expanded(
                   flex: 3,
                   child: Text(
@@ -187,7 +190,8 @@ class AbsencesScreenState extends State<AbsencesScreen> {
                       ),
                       Text(
                         absence['absences']?.toString() ?? 'N/A',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -206,7 +210,8 @@ class AbsencesScreenState extends State<AbsencesScreen> {
                         absence['percentage'] != null
                             ? '${absence['percentage']}%'
                             : 'N/A',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -215,7 +220,9 @@ class AbsencesScreenState extends State<AbsencesScreen> {
             ),
           ),
         ),
-        SizedBox(height: 5,)
+        SizedBox(
+          height: 5,
+        )
       ],
     );
   }
