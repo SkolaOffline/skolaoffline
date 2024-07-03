@@ -170,6 +170,7 @@ class AbsencesScreenState extends State<AbsencesScreen> {
   @override
   Widget build(BuildContext context) {
     final absenceHeader = {
+      'subjectName': '',
       'absences': 'Abse',
       'percentage': '%',
       'numberOfHours': 'Hodin',
