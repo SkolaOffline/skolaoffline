@@ -4,9 +4,15 @@ import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';
 import 'package:skola_offline/absences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final storage = FlutterSecureStorage();
+  // TODO invalidate the access token
+  // storage.write(key: 'accessToken', value: 'your_access_token_here');
+
   runApp(MyApp());
 }
 
@@ -32,7 +38,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 2;
+  int _currentIndex = 0;
 
   final List<Widget> _tabs = [
     TimetableScreen(),
