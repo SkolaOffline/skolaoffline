@@ -93,12 +93,15 @@ class AbsencesScreenState extends State<AbsencesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        for (var subject in absencesSubjectList)
-          AbsenceInSubjectCard(absence: subject, context: context)
-      ],
-    );
+    return Scaffold(
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView(
+                children: [
+                  for (var subject in absencesSubjectList)
+                    AbsenceInSubjectCard(absence: subject, context: context)
+                ],
+              ));
   }
 
   Future<String> downloadAbsences() async {
