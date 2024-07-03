@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
+import 'package:skola_offline/dummy_app_state.dart';
 
 class MarksScreen extends StatefulWidget {
   @override
@@ -28,35 +28,44 @@ class MarksScreenState extends State<MarksScreen> {
   }
 
   Future<void> _fetchMarks() async {
-    try {
-      final storage = FlutterSecureStorage();
-      final userId = await storage.read(key: 'userId');
-      final accessToken = await storage.read(key: 'accessToken');
+    final dummyAppState = DummyAppState();
+    bool useDummyData = dummyAppState.useDummyData;
+    if (useDummyData) {
+      setState(() {
+        //TODO: Add dummy data
+        isLoading = false;
+      });
+    } else {
+      try {
+        final storage = FlutterSecureStorage();
+        final userId = await storage.read(key: 'userId');
+        final accessToken = await storage.read(key: 'accessToken');
 
-      final url = Uri.parse(
-          "https://aplikace.skolaonline.cz/solapi/api/v1/students/$userId/marks/bySubject");
+        final url = Uri.parse(
+            "https://aplikace.skolaonline.cz/solapi/api/v1/students/$userId/marks/bySubject");
 
-      final response = await http.get(
-        url,
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
+        final response = await http.get(
+          url,
+          headers: {'Authorization': 'Bearer $accessToken'},
+        );
 
-      if (response.statusCode == 200) {
+        if (response.statusCode == 200) {
+          if (_mounted) {
+            setState(() {
+              subjects = json.decode(response.body)['subjects'];
+              isLoading = false;
+            });
+          }
+        } else {
+          throw Exception('Failed to load marks');
+        }
+      } catch (e) {
+        print('Error fetching marks: $e');
         if (_mounted) {
           setState(() {
-            subjects = json.decode(response.body)['subjects'];
             isLoading = false;
           });
         }
-      } else {
-        throw Exception('Failed to load marks');
-      }
-    } catch (e) {
-      print('Error fetching marks: $e');
-      if (_mounted) {
-        setState(() {
-          isLoading = false;
-        });
       }
     }
   }
@@ -104,7 +113,7 @@ class SubjectCard extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
-                  ),
+                ),
               )
             ])),
         children: [
@@ -118,11 +127,13 @@ class SubjectCard extends StatelessWidget {
                 children: [
                   ListTile(
                     title: Text(
-                      mark['theme'].substring(0, 1).toUpperCase() + mark['theme'].substring(1),
+                      mark['theme'].substring(0, 1).toUpperCase() +
+                          mark['theme'].substring(1),
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     // subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
-                    subtitle: Text(formatDateToDate(mark['markDate']), style: TextStyle(fontSize: 12)),
+                    subtitle: Text(formatDateToDate(mark['markDate']),
+                        style: TextStyle(fontSize: 12)),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -133,8 +144,9 @@ class SubjectCard extends StatelessWidget {
                               right:
                                   6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
                           // child: Text('Weight: ${mark['weight']}',
-                          child: Text('${(mark['weight']*10).toInt()}',
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300)),
+                          child: Text('${(mark['weight'] * 10).toInt()}',
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w300)),
                         ),
                         SizedBox(width: 8),
                         Container(
@@ -166,7 +178,9 @@ class SubjectCard extends StatelessWidget {
                     onTap: () =>
                         _showMarkDetails(context, mark, subject['teachers']),
                   ),
-                  Divider(height: 0,),
+                  Divider(
+                    height: 0,
+                  ),
                 ],
               );
             },
@@ -193,14 +207,11 @@ class SubjectCard extends StatelessWidget {
     }
   }
 
-
   String formatDateToDate(String date) {
     // final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
     final dateFormatter = DateFormat('dd.MM.yyyy');
     return dateFormatter.format(DateTime.parse(date));
   }
-
-
 
   void _showMarkDetails(
       BuildContext context, Map<String, dynamic> mark, List<dynamic> teachers) {

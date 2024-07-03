@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:skola_offline/dummy_app_state.dart';
 
 class MessagesScreen extends StatefulWidget {
   @override
@@ -21,42 +22,47 @@ class MessagesScreenState extends State<MessagesScreen> {
   }
 
   Future<void> downloadMessages() async {
-    try {
-      final storage = FlutterSecureStorage();
-      final accessToken = await storage.read(key: 'accessToken');
+    final dummyAppState = DummyAppState();
+    bool useDummyData = dummyAppState.useDummyData;
+    if (useDummyData) {
+    } else {
+      try {
+        final storage = FlutterSecureStorage();
+        final accessToken = await storage.read(key: 'accessToken');
 
-      final now = DateTime.now();
-      final params = {
-        'dateFrom': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS')
-            .format(now.subtract(Duration(days: 30))),
-        'dateTo': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').format(now),
-      };
+        final now = DateTime.now();
+        final params = {
+          'dateFrom': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS')
+              .format(now.subtract(Duration(days: 30))),
+          'dateTo': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').format(now),
+        };
 
-      final url = Uri.parse(
-              'https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
-          .replace(queryParameters: params);
+        final url = Uri.parse(
+                'https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
+            .replace(queryParameters: params);
 
-      final response = await http.get(
-        url,
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
+        final response = await http.get(
+          url,
+          headers: {'Authorization': 'Bearer $accessToken'},
+        );
 
-      if (response.statusCode == 200) {
+        if (response.statusCode == 200) {
+          setState(() {
+            messageList = parseMessages(response.body);
+            isLoading = false;
+          });
+        } else {
+          throw Exception('Failed to load messages: ${response.statusCode}');
+        }
+      } catch (e) {
         setState(() {
-          messageList = parseMessages(response.body);
           isLoading = false;
         });
-      } else {
-        throw Exception('Failed to load messages: ${response.statusCode}');
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading messages: $e')),
+        );
       }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading messages: $e')),
-      );
     }
   }
 
