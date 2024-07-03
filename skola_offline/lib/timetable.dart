@@ -50,6 +50,8 @@ class TimetableScreenState extends State<TimetableScreen> {
 
     var currentLessonIndex = -1;
 
+    print(isLoading);
+
     if (!isLoading) {
       for (var i = weekTimetable[now.weekday - 1].length - 1; i >= 0; i--) {
         if (now.isBefore(dateFormatter
@@ -140,8 +142,10 @@ class TimetableScreenState extends State<TimetableScreen> {
 
       final params = {
         'studentId': userId,
-        'dateFrom': dateFormatter.format(monday),
-        'dateTo': dateFormatter.format(friday),
+        // 'dateFrom': dateFormatter.format(monday),
+        // 'dateTo': dateFormatter.format(friday),
+        'dateFrom': dateFormatter.format(DateTime(2024, 6, 3, 0, 0, 0)),
+        'dateTo': dateFormatter.format(DateTime(2024, 6, 7, 0, 0, 0)),
         'schoolYearId': syID
       };
 
@@ -155,6 +159,9 @@ class TimetableScreenState extends State<TimetableScreen> {
       );
       if (response.statusCode == 200) {
         return response.body;
+      } else if (response.statusCode == 401) {
+        await refreshToken();
+        return downloadTimetable(dateTime);
       } else {
         throw Exception(
             'Failed to load timetable\n${response.statusCode}\n${response.body}');
@@ -196,7 +203,7 @@ class TimetableScreen extends StatefulWidget {
   TimetableScreenState createState() => TimetableScreenState();
 }
 
-// todo test
+// TODO test
 Future<void> refreshToken() async {
   final storage = FlutterSecureStorage();
   // refresh token
@@ -211,7 +218,48 @@ Future<void> refreshToken() async {
       "scope": "offline_access sol_api",
     },
   );
+  print(r.body);
   print('refresh response: ${r.statusCode}');
+
+  if (r.statusCode == 200) {
+    final accessToken = jsonDecode(r.body)['access_token'];
+    final newRefreshToken = jsonDecode(r.body)['refresh_token'];
+    await storage.write(key: 'accessToken', value: accessToken);
+    await storage.write(key: 'refreshToken', value: newRefreshToken);
+
+    print('refreshed token');
+  } else if (r.statusCode == 400) {
+    await storage.delete(key: 'accessToken');
+    await storage.delete(key: 'refreshToken');
+    print('deleted token');
+
+    final response = await http.post(
+      Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: {
+        "grant_type": "password",
+        "username": await storage.read(key: 'username'),
+        "password": await storage.read(key: 'password'),
+        "client_id": "test_client",
+        "scope": "openid offline_access profile sol_api",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final accessToken = jsonDecode(response.body)['access_token'];
+      final refreshToken = jsonDecode(response.body)['refresh_token'];
+      await storage.write(key: 'accessToken', value: accessToken);
+      await storage.write(key: 'refreshToken', value: refreshToken);
+    } else {
+      throw Exception('Failed to login again after token refresh');
+    }
+  } else {
+    throw Exception('Failed to refresh token');
+  }
+
+
+  throw Exception('too lazy to implement');
+  // exit(1);
 }
 
 class CurrentLessonCard extends StatelessWidget {
