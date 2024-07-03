@@ -89,6 +89,7 @@ class SubjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(8),
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: ExpansionTile(
         title: Text(
           subject['subject']['name'],
@@ -117,6 +118,8 @@ class SubjectCard extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
+                    tileColor: Theme.of(context).colorScheme.onSecondary,
+                    // focusColor: Theme.of(context).colorScheme.secondaryContainer,
                     title: Text(
                       mark['theme'].substring(0, 1).toUpperCase() + mark['theme'].substring(1),
                       style: TextStyle(fontWeight: FontWeight.w600),
@@ -134,7 +137,7 @@ class SubjectCard extends StatelessWidget {
                                   6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
                           // child: Text('Weight: ${mark['weight']}',
                           child: Text('${(mark['weight']*10).toInt()}',
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300)),
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
                         ),
                         SizedBox(width: 8),
                         Container(
