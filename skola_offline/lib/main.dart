@@ -1,17 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';
-
-
-
-
+import 'package:skola_offline/absences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +33,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-
   int _currentIndex = 3;
 
   final List<Widget> _tabs = [
@@ -68,9 +60,11 @@ class MyHomePageState extends State<MyHomePage> {
         },
         destinations: [
           NavigationDestination(icon: Icon(Icons.schedule), label: 'Timetable'),
-          NavigationDestination(icon: Icon(Icons.format_list_numbered), label: 'Marks'),
+          NavigationDestination(
+              icon: Icon(Icons.format_list_numbered), label: 'Marks'),
           NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),
-          NavigationDestination(icon: Icon(Icons.person_off), label: 'Absences'),
+          NavigationDestination(
+              icon: Icon(Icons.person_off), label: 'Absences'),
           NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
