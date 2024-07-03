@@ -10,7 +10,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   final storage = FlutterSecureStorage();
-  storage.write(key: 'accessToken', value: 'your_access_token_here');
+  // TODO invalidate the access token
+  // storage.write(key: 'accessToken', value: 'your_access_token_here');
 
   runApp(MyApp());
 }
