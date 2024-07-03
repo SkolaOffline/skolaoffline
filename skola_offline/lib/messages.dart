@@ -33,7 +33,7 @@ class MessagesScreenState extends State<MessagesScreen> {
         final now = DateTime.now();
         final params = {
           'dateFrom': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS')
-              .format(now.subtract(Duration(days: 30))),
+              .format(now.subtract(Duration(days: 100))),
           'dateTo': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').format(now),
         };
 
@@ -155,6 +155,14 @@ class _MessageWidgetState extends State<MessageWidget> {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -187,15 +195,22 @@ class _MessageWidgetState extends State<MessageWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: _isExpanded ? 8 : 0),
                   Html(
-                    data: widget.content,
+                    data: _isExpanded ? widget.content : '',
                     style: {
                       'p': Style(
                         fontSize: FontSize(16),
                       ),
+                      'span': Style(
+                        fontSize: FontSize(16),
+                      ),
+                      'a': Style(
+                        fontSize: FontSize(16),
+                      ),
                     },
                   ),
+                  // Text(_isExpanded ? widget.content : ''),
                 ],
               ),
             ),
