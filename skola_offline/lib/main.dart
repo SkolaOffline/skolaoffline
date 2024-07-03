@@ -46,24 +46,48 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Škola Offline'),
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Škola Offline',
+              style: TextStyle(
+                fontSize: 28,
+                // fontFamily: 'SansSerif',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            // Icon(Icons.school),
+            Image(
+              image: AssetImage('lib/assets/skolaoffline_logo.png'),
+              height: 40,
+              // width: MediaQuery.of(context).size.width * 0.5,
+            ),
+          ],
+        ),
       ),
+
+
+
+      
       body: _tabs[_currentIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        elevation: 10,
         onDestinationSelected: (int index) {
           setState(() {
-            _currentIndex = index;
+        _currentIndex = index;
           });
         },
         destinations: [
           NavigationDestination(icon: Icon(Icons.schedule), label: 'Timetable'),
           NavigationDestination(
-              icon: Icon(Icons.format_list_numbered), label: 'Marks'),
+          icon: Icon(Icons.format_list_numbered), label: 'Marks'),
           NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),
           NavigationDestination(
-              icon: Icon(Icons.person_off), label: 'Absences'),
+          icon: Icon(Icons.person_off), label: 'Absences'),
           NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),

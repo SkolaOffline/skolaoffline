@@ -88,6 +88,7 @@ class SubjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
       margin: EdgeInsets.all(8),
       color: Theme.of(context).colorScheme.primaryContainer,
       child: ExpansionTile(
