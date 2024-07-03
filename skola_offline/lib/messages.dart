@@ -26,18 +26,18 @@ class MessagesScreenState extends State<MessagesScreen> {
     final storage = FlutterSecureStorage();
     final accessToken = await storage.read(key: 'accessToken');
 
-    final params = { 
+    final params = {
       // TODO - not hardcoded
       'dateFrom': '2024-04-01T00:00:00.000',
       'dateTo': '2024-08-01T00:00:00.000',
     };
 
-    final url = 
-      Uri.parse('https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
-      .replace(queryParameters: params);
+    final url = Uri.parse(
+            'https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
+        .replace(queryParameters: params);
 
     final response = await http.get(
-      url, 
+      url,
       headers: {'Authorization': 'Bearer $accessToken'},
     );
 
@@ -46,7 +46,8 @@ class MessagesScreenState extends State<MessagesScreen> {
       return response.body;
     } else {
       // TODO - handle exceptions
-      throw Exception('Failed to load messages\n${response.statusCode}\n${response.body}');
+      throw Exception(
+          'Failed to load messages\n${response.statusCode}\n${response.body}');
     }
   }
 
@@ -62,12 +63,11 @@ class MessagesScreenState extends State<MessagesScreen> {
         'sender': message['sender']['name'],
         'attachments': message['attachemnts'].toString(),
         'title': message['title'],
-        'text': 
-        message['text']
-          // parse(message['text'])
-          // .outerHtml
-          // .replaceAll(RegExp(r''), '')
-          ,
+        'text': message['text']
+        // parse(message['text'])
+        // .outerHtml
+        // .replaceAll(RegExp(r''), '')
+        ,
         'id': message['id'],
       };
       messages.add(messg);
@@ -76,128 +76,127 @@ class MessagesScreenState extends State<MessagesScreen> {
     return messages;
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: ListView(children: [
+        // body: ListView(children: [
         // Text(
-          // 'Zprávy',
-          // style: Theme.of(context).textTheme.displayMedium!.copyWith(),
-          // ),
+        // 'Zprávy',
+        // style: Theme.of(context).textTheme.displayMedium!.copyWith(),
+        // ),
         body: Messages(messageList: messageList, context: context)
-      // ],)
-    );
- }
+        // ],)
+        );
+  }
 
   String formatDateToDate(String date) {
     DateTime dateTime = DateTime.parse(date);
     //TODO: USE DateFormat - better build-in version of the same thing
-    String formatedDate = '${dateTime.day}. ${dateTime.month}. ${dateTime.year}';
+    String formatedDate =
+        '${dateTime.day}. ${dateTime.month}. ${dateTime.year}';
     // print(formatedDate);
     return formatedDate;
   }
 
   // ignore: non_constant_identifier_names
-  Widget Messages({required List<dynamic> messageList, required BuildContext context}) {
+  Widget Messages(
+      {required List<dynamic> messageList, required BuildContext context}) {
     if (messageList.isEmpty) {
-          return Column(
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 10,),
-                Text('Loading...'),
-              ],
+              CircularProgressIndicator(),
+              SizedBox(
+                width: 10,
               ),
+              Text('Loading...'),
             ],
-          );
+          ),
+        ],
+      );
     } else {
-    return Scaffold(
-      body: Padding(
+      return Scaffold(
+          body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: ListView(children: [
-          for (var message in messageList)
-          MessageWidget(
-            title: message['title'], 
-            content: message['text'], 
-            context: context,
-            from: message['sender'],
-            date: message['sentDate'],
-            message: message
-            ),
-        ],),
-      )
-    );
+        child: ListView(
+          children: [
+            for (var message in messageList)
+              MessageWidget(
+                  title: message['title'],
+                  content: message['text'],
+                  context: context,
+                  from: message['sender'],
+                  date: message['sentDate'],
+                  message: message),
+          ],
+        ),
+      ));
     }
   }
- 
+
   // ignore: non_constant_identifier_names
   Widget MessageWidget({
-    required String title, 
-    required String content, 
-    required BuildContext context, 
+    required String title,
+    required String content,
+    required BuildContext context,
     required String from,
     required String date,
     required final message,
-    }) {
+  }) {
     return Column(
       children: [
         Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  // TODO - fix, so it doesn't depend on the length of the title
-                  // because this is embarassing
-                    // ignore: prefer_interpolation_to_compose_strings
-                    title.length > 25 ? title.substring(0, 25) + '...' : title,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Column(
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      from,),
-                    Text(
-                      formatDateToDate(date),)
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(from),
+                        Text(formatDateToDate(date)),
+                      ],
+                    ),
                   ],
-                )
+                ),
+                SizedBox(height: 8),
+                Html(
+                  data: content,
+                  style: {
+                    'p': Style(
+                      fontSize: FontSize(16),
+                    ),
+                  },
+                ),
               ],
             ),
-
-            // Text(content),
-            // HtmlWidget(
-            //   content
-            // )
-            Html(
-              data: content,
-              style: {
-                'p': Style(
-                  fontSize: FontSize(16),
-                ),
-              },
-            ),
-          ],
+          ),
         ),
-      ),
-      ),
-      SizedBox(height: 15,),
+        SizedBox(height: 15),
       ],
     );
-  }  
+  }
 }
