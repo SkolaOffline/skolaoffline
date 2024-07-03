@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:skola_offline/dummy_app_state.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -11,6 +12,18 @@ class ProfileScreen extends StatefulWidget {
 class ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final DummyAppState _dummyAppState = DummyAppState();
+
+  // Dummy data
+  final Map<String, dynamic> _dummyLoginResponse = {
+    "access_token": "dummy_access_token",
+    "refresh_token": "dummy_refresh_token",
+  };
+
+  final Map<String, dynamic> _dummyUserResponse = {
+    "personID": "dummy_person_id",
+    "schoolYearId": "dummy_school_year_id",
+  };
 
   Future<void> login(String username, String password) async {
     showDialog(
@@ -34,35 +47,43 @@ class ProfileScreenState extends State<ProfileScreen> {
     await storage.write(key: 'password', value: password);
 
     try {
-      final response = await http.post(
-        Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
-        headers: <String, String>{
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: <String, String>{
-          'grant_type': 'password',
-          'username': username,
-          'password': password,
-          'client_id': 'test_client',
-          'scope': 'openid offline_access profile sol_api',
-        },
-      );
+      Map<String, dynamic> data;
 
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop(); // Close the loading dialog
+      if (_dummyAppState.useDummyData) {
+        // Use dummy data
+        data = _dummyLoginResponse;
+      } else {
+        // Make the actual network request
+        final response = await http.post(
+          Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
+          headers: <String, String>{
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: <String, String>{
+            'grant_type': 'password',
+            'username': username,
+            'password': password,
+            'client_id': 'test_client',
+            'scope': 'openid offline_access profile sol_api',
+          },
+        );
 
-      if (response.statusCode == 400) {
-        _showErrorDialog(
-            'Wrong credentials', 'Please check your username and password.');
-        return;
+        if (response.statusCode == 400) {
+          Navigator.of(context).pop(); // Close the loading dialog
+          _showErrorDialog(
+              'Wrong credentials', 'Please check your username and password.');
+          return;
+        }
+
+        if (response.statusCode != 200) {
+          Navigator.of(context).pop(); // Close the loading dialog
+          _showErrorDialog('Error', 'An error occurred while logging in.');
+          return;
+        }
+
+        data = json.decode(response.body);
       }
 
-      if (response.statusCode != 200) {
-        _showErrorDialog('Error', 'An error occurred while logging in.');
-        return;
-      }
-
-      Map<String, dynamic> data = json.decode(response.body);
       String accessToken = data['access_token'];
       String refreshToken = data['refresh_token'];
 
@@ -70,20 +91,27 @@ class ProfileScreenState extends State<ProfileScreen> {
       await storage.write(key: 'refreshToken', value: refreshToken);
 
       // Get user data
-      final userResponse = await http.get(
-        Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/user"),
-        headers: {'Authorization': 'Bearer $accessToken'},
-      );
+      Map<String, dynamic> jsonResponse;
 
-      Map<String, dynamic> jsonResponse = json.decode(userResponse.body);
+      if (_dummyAppState.useDummyData) {
+        // Use dummy user data
+        jsonResponse = _dummyUserResponse;
+      } else {
+        // Make the actual network request
+        final userResponse = await http.get(
+          Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/user"),
+          headers: {'Authorization': 'Bearer $accessToken'},
+        );
+        jsonResponse = json.decode(userResponse.body);
+      }
 
       await storage.write(key: 'userId', value: jsonResponse['personID']);
       await storage.write(
           key: 'schoolYearId', value: jsonResponse['schoolYearId']);
 
+      Navigator.of(context).pop(); // Close the loading dialog
       _showSuccessDialog('Success', 'You have been logged in.');
     } catch (e) {
-      // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
       _showErrorDialog('Error', 'An unexpected error occurred: $e');
     }
@@ -153,6 +181,15 @@ class ProfileScreenState extends State<ProfileScreen> {
                 labelText: 'Password',
                 border: OutlineInputBorder(),
               ),
+            ),
+            SwitchListTile(
+              title: Text('Use Dummy Data'),
+              value: _dummyAppState.useDummyData,
+              onChanged: (bool value) {
+                setState(() {
+                  _dummyAppState.useDummyData = value;
+                });
+              },
             ),
             SizedBox(height: 20),
             ElevatedButton.icon(

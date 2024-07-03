@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:skola_offline/dummy_app_state.dart';
 
 class AbsencesScreen extends StatefulWidget {
   @override
@@ -105,43 +106,50 @@ class AbsencesScreenState extends State<AbsencesScreen> {
   }
 
   Future<String> downloadAbsences() async {
-    final storage = FlutterSecureStorage();
-    final accessToken = await storage.read(key: 'accessToken');
+    final dummyAppState = DummyAppState();
+    bool useDummyData = dummyAppState.useDummyData;
 
-    String dateFrom() {
-      final today = DateTime.now();
-
-      if (today.month > 2 && today.month < 9) {
-        // Second half of the academic year (Spring semester)
-        final secondSemester = DateTime(today.year, 2, 1);
-        return secondSemester.toIso8601String().split('T')[0];
-      } else {
-        // First half of the academic year (Fall semester)
-        final firstSemester = DateTime(today.year, 9, 1);
-        return firstSemester.toIso8601String().split('T')[0];
-      }
-    }
-
-    final params = {
-      'dateFrom': dateFrom(),
-      'dateTo':
-          DateTime(DateTime.now().year, 6, 30).toIso8601String().split('T')[0],
-    };
-
-    final url = Uri.parse(
-      'https://aplikace.skolaonline.cz/solapi/api/v1/absences/inSubject',
-    ).replace(queryParameters: params);
-
-    final response = await http.get(
-      url,
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
-
-    if (response.statusCode == 200) {
-      return response.body;
+    if (useDummyData) {
+      return "TODO"; //TODO: Add dummy data
     } else {
-      throw Exception(
-          'Failed to load absences\n${response.statusCode}\n${response.body}');
+      final storage = FlutterSecureStorage();
+      final accessToken = await storage.read(key: 'accessToken');
+
+      String dateFrom() {
+        final today = DateTime.now();
+
+        if (today.month > 2 && today.month < 9) {
+          // Second half of the academic year (Spring semester)
+          final secondSemester = DateTime(today.year, 2, 1);
+          return secondSemester.toIso8601String().split('T')[0];
+        } else {
+          // First half of the academic year (Fall semester)
+          final firstSemester = DateTime(today.year, 9, 1);
+          return firstSemester.toIso8601String().split('T')[0];
+        }
+      }
+
+      final params = {
+        'dateFrom': dateFrom(),
+        'dateTo': DateTime(DateTime.now().year, 6, 30)
+            .toIso8601String()
+            .split('T')[0],
+      };
+
+      final url = Uri.parse(
+        'https://aplikace.skolaonline.cz/solapi/api/v1/absences/inSubject',
+      ).replace(queryParameters: params);
+
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        throw Exception(
+            'Failed to load absences\n${response.statusCode}\n${response.body}');
+      }
     }
   }
 
