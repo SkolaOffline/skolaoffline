@@ -1,0 +1,91 @@
+{
+    "summaryAbsenceAll": 69,
+    "summaryNumberOfHours": 420,
+    "summaryNumberOfExcused": 45,
+    "summaryNumberOfUnexcused": 5,
+    "summaryNumberOfNotCounted": 4,
+    "summaryNumberOfUnevaluated": 2,
+    "summaryNumberOfUnevaluatedWithApology": 3,
+    "subjects": [
+        {
+            "subject": {
+                "id": "testID",
+                "name": "Český jazyk a literatura"
+            },
+            "absenceAll": 8,
+            "absenceAllPercentage": 18.18,
+            "numberOfHours": 44,
+            "numberOfExcused": 8,
+            "numberOfUnexcused": 0,
+            "numberOfNotCounted": 3,
+            "numberOfUnevaluated": 0,
+            "numberOfUnevaluatedWithApology": 0,
+            "allowedAbsence": 11,
+            "allowedAbsencePercentage": 25
+        },
+        {
+            "subject": {
+                "id": "testID",
+                "name": "Český jazyk a literatura - cvičení"
+            },
+            "absenceAll": 3,
+            "absenceAllPercentage": 20,
+            "numberOfHours": 15,
+            "numberOfExcused": 3,
+            "numberOfUnexcused": 0,
+            "numberOfNotCounted": 2,
+            "numberOfUnevaluated": 0,
+            "numberOfUnevaluatedWithApology": 0,
+            "allowedAbsence": null,
+            "allowedAbsencePercentage": null
+        },
+        {
+            "subject": {
+                "id": "testID",
+                "name": "Matematika"
+            },
+            "absenceAll": 12,
+            "absenceAllPercentage": 15.38,
+            "numberOfHours": 78,
+            "numberOfExcused": 10,
+            "numberOfUnexcused": 2,
+            "numberOfNotCounted": 1,
+            "numberOfUnevaluated": 0,
+            "numberOfUnevaluatedWithApology": 1,
+            "allowedAbsence": 15,
+            "allowedAbsencePercentage": 19.23
+        },
+        {
+            "subject": {
+                "id": "testID",
+                "name": "Biologie"
+            },
+            "absenceAll": 7,
+            "absenceAllPercentage": 14,
+            "numberOfHours": 50,
+            "numberOfExcused": 6,
+            "numberOfUnexcused": 1,
+            "numberOfNotCounted": 0,
+            "numberOfUnevaluated": 0,
+            "numberOfUnevaluatedWithApology": 0,
+            "allowedAbsence": 10,
+            "allowedAbsencePercentage": 20
+        },
+        {
+            "subject": {
+                "id": "testID",
+                "name": "Chemie"
+            },
+            "absenceAll": 5,
+            "absenceAllPercentage": 10,
+            "numberOfHours": 50,
+            "numberOfExcused": 4,
+            "numberOfUnexcused": 1,
+            "numberOfNotCounted": 0,
+            "numberOfUnevaluated": 0,
+            "numberOfUnevaluatedWithApology": 0,
+            "allowedAbsence": 8,
+            "allowedAbsencePercentage": 16
+        }
+    ]
+}

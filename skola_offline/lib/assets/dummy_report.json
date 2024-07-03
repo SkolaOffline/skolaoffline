@@ -1,0 +1,305 @@
+{
+    "certificateTerms": [
+        {
+            "finalMarks": [
+                {
+                    "markDate": "2024-06-18T08:15:00.000",
+                    "editDate": "2024-06-18T18:00:00.000",
+                    "markText": "2",
+                    "shortcutToDisplay": "2",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "CHOVANI",
+                    "order": 1
+                },
+                {
+                    "markDate": "2024-06-18T08:30:00.000",
+                    "editDate": "2024-06-18T18:15:00.000",
+                    "markText": "2",
+                    "shortcutToDisplay": "2",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "1",
+                    "order": 2
+                },
+                {
+                    "markDate": "2024-06-18T08:45:00.000",
+                    "editDate": "2024-06-18T18:30:00.000",
+                    "markText": "1",
+                    "shortcutToDisplay": "1",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "2",
+                    "order": 3
+                },
+                {
+                    "markDate": "2024-06-18T09:00:00.000",
+                    "editDate": "2024-06-18T18:45:00.000",
+                    "markText": "3",
+                    "shortcutToDisplay": "3",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "3",
+                    "order": 4
+                },
+                {
+                    "markDate": "2024-06-18T09:15:00.000",
+                    "editDate": "2024-06-18T19:00:00.000",
+                    "markText": "1",
+                    "shortcutToDisplay": "1",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "4",
+                    "order": 5
+                },
+                {
+                    "markDate": "2024-06-18T09:30:00.000",
+                    "editDate": "2024-06-18T19:15:00.000",
+                    "markText": "2",
+                    "shortcutToDisplay": "2",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "5",
+                    "order": 6
+                },
+                {
+                    "markDate": "2024-06-18T09:45:00.000",
+                    "editDate": "2024-06-18T19:30:00.000",
+                    "markText": "1",
+                    "shortcutToDisplay": "1",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "6",
+                    "order": 7
+                },
+                {
+                    "markDate": "2024-06-18T10:00:00.000",
+                    "editDate": "2024-06-18T19:45:00.000",
+                    "markText": "3",
+                    "shortcutToDisplay": "3",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "7",
+                    "order": 8
+                },
+                {
+                    "markDate": "2024-06-18T10:15:00.000",
+                    "editDate": "2024-06-18T20:00:00.000",
+                    "markText": "2",
+                    "shortcutToDisplay": "2",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "8",
+                    "order": 9
+                },
+                {
+                    "markDate": "2024-06-18T10:30:00.000",
+                    "editDate": "2024-06-18T20:15:00.000",
+                    "markText": "1",
+                    "shortcutToDisplay": "1",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "9",
+                    "order": 10
+                },
+                {
+                    "markDate": "2024-06-18T10:45:00.000",
+                    "editDate": "2024-06-18T20:30:00.000",
+                    "markText": "2",
+                    "shortcutToDisplay": "2",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "10",
+                    "order": 11
+                },
+                {
+                    "markDate": "2024-06-18T11:00:00.000",
+                    "editDate": "2024-06-18T20:45:00.000",
+                    "markText": "1",
+                    "shortcutToDisplay": "1",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "11",
+                    "order": 12
+                },
+                {
+                    "markDate": "2024-06-18T11:15:00.000",
+                    "editDate": "2024-06-18T21:00:00.000",
+                    "markText": "2",
+                    "shortcutToDisplay": "2",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "12",
+                    "order": 13
+                },
+                {
+                    "markDate": "2024-06-18T11:30:00.000",
+                    "editDate": "2024-06-18T21:15:00.000",
+                    "markText": "1",
+                    "shortcutToDisplay": "1",
+                    "verbalEvaluation": null,
+                    "unclassified": false,
+                    "released": true,
+                    "unevaluated": false,
+                    "recognized": false,
+                    "hasVerbalEvaluation": false,
+                    "subjectId": "13",
+                    "order": 14
+                }
+            ],
+            "subjects": [
+                {
+                    "id": "CHOVANI",
+                    "abbrev": "CH",
+                    "name": "Chování",
+                    "kind": "N"
+                },
+                {
+                    "id": "1",
+                    "abbrev": "ČJ",
+                    "name": "Český jazyk",
+                    "kind": "P"
+                },
+                {
+                    "id": "2",
+                    "abbrev": "AJ",
+                    "name": "Anglický jazyk",
+                    "kind": "P"
+                },
+                {
+                    "id": "3",
+                    "abbrev": "ŠJ",
+                    "name": "Španělský jazyk",
+                    "kind": "P"
+                },
+                {
+                    "id": "4",
+                    "abbrev": "ZSV",
+                    "name": "Základy společenských věd",
+                    "kind": "P"
+                },
+                {
+                    "id": "5",
+                    "abbrev": "D",
+                    "name": "Dějepis",
+                    "kind": "P"
+                },
+                {
+                    "id": "6",
+                    "abbrev": "M",
+                    "name": "Matematika",
+                    "kind": "P"
+                },
+                {
+                    "id": "7",
+                    "abbrev": "Fy",
+                    "name": "Fyzika",
+                    "kind": "P"
+                },
+                {
+                    "id": "8",
+                    "abbrev": "Ch",
+                    "name": "Chemie",
+                    "kind": "P"
+                },
+                {
+                    "id": "9",
+                    "abbrev": "Bio",
+                    "name": "Biologie",
+                    "kind": "P"
+                },
+                {
+                    "id": "10",
+                    "abbrev": "TV",
+                    "name": "Tělesná výchova",
+                    "kind": "P"
+                },
+                {
+                    "id": "11",
+                    "abbrev": "INF",
+                    "name": "Informatika",
+                    "kind": "P"
+                },
+                {
+                    "id": "12",
+                    "abbrev": "FS",
+                    "name": "Úžasný seminář",
+                    "kind": "P"
+                },
+                {
+                    "id": "13",
+                    "abbrev": "MS",
+                    "name": "Matematický seminář",
+                    "kind": "P"
+                }
+            ],
+            "gradeName": "6. ročník",
+            "grade": "6",
+            "schoolYearName": "2023/2024",
+            "schoolYearOrder": 8,
+            "semesterName": "1. pololetí",
+            "semesterAbbrev": "1. pololet",
+            "semesterOrder": 1,
+            "closed": true,
+            "achievementText": "prospěl(a)",
+            "achievement": "passed",
+            "marksAverage": 1.5,
+            "absentHours": 80,
+            "excusedHours": 80,
+            "notExcusedHours": 0,
+            "finalVerbalEvaluation": null
+        }
+    ]
+}
