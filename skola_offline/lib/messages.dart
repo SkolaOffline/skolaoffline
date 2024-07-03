@@ -4,7 +4,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:intl/intl.dart';
 
 class MessagesScreen extends StatefulWidget {
   @override
@@ -54,6 +53,7 @@ class MessagesScreenState extends State<MessagesScreen> {
       setState(() {
         isLoading = false;
       });
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error loading messages: $e')),
       );
