@@ -9,7 +9,7 @@ environment:
   sdk: ^3.1.1
 
 dependencies:
-  pluto_grid: ^8.0.0
+  # pluto_grid: ^8.0.0
   flutter_secure_storage: ^8.1.0
   http: ^1.2.1
   html: ^0.15.4

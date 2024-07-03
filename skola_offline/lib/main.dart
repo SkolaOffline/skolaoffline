@@ -169,15 +169,40 @@ class AbsencesScreenState extends State<AbsencesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final absenceHeader = {
+      'absences': 'Abse',
+      'percentage': '%',
+      'numberOfHours': 'Hodin',
+      'excused': 'Omluv',
+      'unexcused': 'Neomluveno',
+      'notCounted': 'Nezapočítáváno',
+      'allowedAbsences': 'Povolone',
+      'allowedPercentage': 'Povoleno'
+    };
+
+  if (absencesSubjectList.isEmpty) {
+    return Scaffold(
+      body: Center(child: 
+      CircularProgressIndicator(),)
+    );
+  } else {
     return ListView(children: [
-      for (var subject in absencesSubjectList)
-      AbsenceInSubjectCard(absence: subject, context: context)
-    ],);
+        AbsenceInSubjectCard(
+          absence: absenceHeader,
+          context: context
+        ),
+        for (var subject in absencesSubjectList)
+        AbsenceInSubjectCard(absence: subject, context: context)
+      ],);
+    }
   }
 
   Future<String> downloadAbsences() async {
     final storage = FlutterSecureStorage();
     final accessToken = await storage.read(key: 'accessToken');
+
+    final startPololeti = (DateTime.now().month >= 2 && DateTime.now().month <= 7) ? '2.' : '1';
+
 
     final params = {
       // TODO - pololeti
@@ -206,45 +231,69 @@ class AbsencesScreenState extends State<AbsencesScreen> {
   Widget AbsenceInSubjectCard({required final absence, required final context}) {
     return Card(
       elevation: 5,
-      child: Row(children: [
-        SizedBox(
-          width: 200,
-          height: 80,
-          child: Row(
-            children: [
-              Text(
-                absence['subjectName'],
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,          
+          children: [
+          // SizedBox(width: 20,),
+          SizedBox(
+            width: 200,
+            height: 30,
+            child: Row(
+              children: [
+                SizedBox(width: 5,),
+                Text(
+                    absence['subjectName'].length > 25
+                      ? absence['subjectName'].substring(0, 25) + '...'
+                      : absence['subjectName'],
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Container(),
-              ),
-            ],
+                Expanded(
+                  child: Container(),
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(
-          width: 50,
-          child: Row(
-            children: [
-              Text(absence['absences'].toString()),
-              Expanded(child: Container()),
-            ],
+          SizedBox(
+            width: 50,
+            child: Row(
+              children: [
+                Text(absence['absences'].toString()),
+                Expanded(child: Container()),
+              ],
+            ),
           ),
-        ),
-        SizedBox(
-          width: 50,
-          child: Row(children: [
-            Text(absence['percentage'].toString()),
-            Expanded(child: Container(),),
-          ],),
-        ),
-        Text('.....'),
-
-
-      ],),
+          SizedBox(
+            width: 50,
+            child: Row(children: [
+              Text(absence['percentage'].toString()),
+              Expanded(child: Container(),),
+            ],),
+          ),
+          SizedBox(
+            width: 50,
+            child: Row(children: [
+              Text(absence['numberOfHours'].toString()),
+              Expanded(child: Container(),),
+            ],),
+          ),
+          // SizedBox(
+          //   width: 50,
+          //   child: Row(children: [
+          //     Text(absence['excused'].toString()),
+          //     Expanded(child: Container()),
+          //   ],),
+          // )
+          // atd
+          // TODO - how to show it nicely
+        
+        
+        ],),
+      ),
     );
   }
 }

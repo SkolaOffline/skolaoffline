@@ -65,9 +65,15 @@ class TimetableScreenState extends State<TimetableScreen> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: isLoading ? Center(child: CircularProgressIndicator()) : (currentLessonIndex ==-1 ?Center(child:Text('There are no lessons left for today')) : CurrentLessonCard(lesson: weekTimetable[now.weekday-1][currentLessonIndex]))
+                padding: const EdgeInsets.all(3.0),
+                child: isLoading 
+                ? Center(child: CircularProgressIndicator()) 
+                : (currentLessonIndex ==-1 ?Center(child:Text('There are no lessons left for today')) 
+                : CurrentLessonCard(lesson: weekTimetable[now.weekday-1][currentLessonIndex]))
               ),
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(height: 10,)
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -89,7 +95,7 @@ class TimetableScreenState extends State<TimetableScreen> {
                         final lesson = weekTimetable[now.weekday-1][index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 8.0),
+                              horizontal: 16.0, vertical: 0.0),
                           child: LessonCard(lesson: lesson),
                         );
                       },
@@ -160,6 +166,8 @@ class TimetableScreenState extends State<TimetableScreen> {
               'teacher': lesson['teachers'][0]['displayName'],
               'teacherAbbrev': lesson['teachers'][0]['abbrev'],
               'lessonOrder': lesson['detailHours'][0]['order'],
+              'lessonIdFrom': lesson['lessonIdFrom'],
+              'lessonIdTo': lesson['lessonIdTo'],
               'beginTime': lesson['beginTime'],
               'endTime': lesson['endTime'],
             })
@@ -199,9 +207,7 @@ class CurrentLessonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      child: Padding(
+      return Padding(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,11 +216,26 @@ class CurrentLessonCard extends StatelessWidget {
               'Current Lesson',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
-            SizedBox(height: 8),
-            LessonCard(lesson: lesson)
+            // SizedBox(height: 8),
+            Container(
+                decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(17),
+                boxShadow: [
+                  BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 5,
+                  spreadRadius: 2,
+                  offset: Offset(7, 7),
+                  ),
+                ],
+                ),
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: LessonCard(lesson: lesson),
+              ))
           ],
         ),
-      ),
     );
   }
 }
@@ -223,15 +244,15 @@ class LessonCard extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
   const LessonCard({Key? key, required this.lesson}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return 
     Card(
       elevation: 2,
+      color: Theme.of(context).colorScheme.secondaryContainer,
       child: 
       Padding(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(0),
         child: 
         Row(
           children: [
@@ -246,10 +267,12 @@ class LessonCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    // TODO - when lesson is 90 minutes
-                    lesson['lessonOrder'].toString(),
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                    // lesson['lessonOrder'].toString(),
+                      lesson['lessonIdFrom'] == lesson['lessonIdTo']
+                          ? lesson['lessonIdFrom'].toString()
+                          : '${lesson['lessonIdFrom']}-${lesson['lessonIdTo']}',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   Text(
                     formatTime(lesson['beginTime']),
                     style: TextStyle(fontSize: 10),
@@ -261,16 +284,17 @@ class LessonCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 16),
+            SizedBox(width: 19),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     '${lesson['lessonAbbrev']} - ${lesson['lessonName']}',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 5),
                   Text(
                     lesson['classroomAbbrev'],
                     style: TextStyle(fontSize: 14),

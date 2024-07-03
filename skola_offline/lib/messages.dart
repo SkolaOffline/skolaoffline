@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class MessagesScreen extends StatefulWidget {
   @override
@@ -27,9 +28,10 @@ class MessagesScreenState extends State<MessagesScreen> {
     final accessToken = await storage.read(key: 'accessToken');
 
     final params = { 
-      // TODO - not hardcoded
-      'dateFrom': '2024-04-01T00:00:00.000',
-      'dateTo': '2024-08-01T00:00:00.000',
+      // 'dateFrom': '2024-04-01T00:00:00.000',
+      // 'dateTo': '2024-08-01T00:00:00.000',
+      'dateFrom': DateTime(DateTime.now().year-1, 9, 1).toIso8601String(),
+      'dateTo': DateTime(DateTime.now().year, 9, 1).toIso8601String(),
     };
 
     final url = 
@@ -163,7 +165,8 @@ class MessagesScreenState extends State<MessagesScreen> {
                   // TODO - fix, so it doesn't depend on the length of the title
                   // because this is embarassing
                     // ignore: prefer_interpolation_to_compose_strings
-                    title.length > 25 ? title.substring(0, 25) + '...' : title,
+                    // title,
+                  title.length > 25 ? title.substring(0, 25) + '...' : title,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
