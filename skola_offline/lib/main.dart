@@ -1,19 +1,83 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';
 import 'package:skola_offline/absences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   final storage = FlutterSecureStorage();
   // TODO invalidate the access token
-  // storage.write(key: 'accessToken', value: 'your_access_token_here');
+  storage.write(key: 'accessToken', value: 'your_access_token_here');
 
   runApp(MyApp());
+}
+
+
+
+Future<http.Response> makeRequest(
+  String rawUrl,
+  Map<String, dynamic>? params,
+  ) async {
+  // TODO - we could cache the requests...
+  // but it would be SO much work
+
+  var url = Uri.parse('https://aplikace.skolaonline.cz/solapi/$rawUrl');
+  if (params != null) {
+    url = url.replace(queryParameters: params);
+  }
+
+  final storage = FlutterSecureStorage();
+  final accessToken = await storage.read(key: 'accessToken');
+
+  final response = await http.get(
+    url,
+    headers: {'Authorization': 'Bearer $accessToken'},
+  );
+
+
+  if (response.statusCode == 200) {
+    return response;
+  } else if (response.statusCode == 401) {
+    print('refreshing token...');
+    // TODO refresh the token
+    final refreshToken = await storage.read(key: 'refreshToken');
+    final resp = await http.post(
+      Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'grant_type': 'refresh_token',
+        'refresh_token': refreshToken,
+        'client_id': 'web',
+        'client_secret': 'web',
+      },
+    );
+    print('refresh response is ${resp.statusCode}');
+
+    if (resp.statusCode == 200) {
+      final jsn = jsonDecode(resp.body);
+      final accessToken = jsn['access_token'];
+      final refreshToken = jsn['refresh_token'];
+
+      await storage.write(key: 'accessToken', value: accessToken);
+      await storage.write(key: 'refreshToken', value: refreshToken);
+    } else {
+      // TODO show dialog
+      throw Exception('Failed to refresh token');
+    }
+
+
+    throw Exception('Failed to load data');
+  } else {
+    throw Exception('Failed to load data');
+  }
+
+
 }
 
 class MyApp extends StatelessWidget {
