@@ -7,11 +7,5 @@ class DummyAppState {
 
   DummyAppState._internal();
 
-  bool _useDummyData = false;
-
-  bool get useDummyData => _useDummyData;
-
-  set useDummyData(bool value) {
-    _useDummyData = value;
-  }
+  bool useDummyData = false;
 }

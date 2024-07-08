@@ -182,15 +182,6 @@ class ProfileScreenState extends State<ProfileScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SwitchListTile(
-              title: Text('Use Dummy Data'),
-              value: _dummyAppState.useDummyData,
-              onChanged: (bool value) {
-                setState(() {
-                  _dummyAppState.useDummyData = value;
-                });
-              },
-            ),
             SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () async {
@@ -204,6 +195,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                 minimumSize: Size(double.infinity, 50),
               ),
             ),
+            SwitchListTile(
+              title: Text('Use Dummy Data'),
+              value: _dummyAppState.useDummyData,
+              onChanged: (bool value) {
+                setState(() {
+                  _dummyAppState.useDummyData = value;
+                });
+              },
+            ),
+            
           ],
         ),
       ),

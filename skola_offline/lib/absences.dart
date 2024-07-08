@@ -30,7 +30,7 @@ class AbsencesScreenState extends State<AbsencesScreen> {
   Future<void> _fetchAbsences() async {
     try {
       final absencesData = await downloadAbsences();
-      print(absencesData);
+      // print(absencesData);
       if (_mounted) {
         setState(() {
           absencesSubjectList = parseAbsences(absencesData);

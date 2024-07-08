@@ -11,9 +11,9 @@ import 'dart:convert';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final storage = FlutterSecureStorage();
+  // final storage = FlutterSecureStorage();
   // TODO invalidate the access token
-  storage.write(key: 'accessToken', value: 'your_access_token_here');
+  // storage.write(key: 'accessToken', value: 'your_access_token_here');
 
   runApp(MyApp());
 }
@@ -23,6 +23,7 @@ void main() {
 Future<http.Response> makeRequest(
   String rawUrl,
   Map<String, dynamic>? params,
+  BuildContext context,
   ) async {
   // TODO - we could cache the requests...
   // but it would be SO much work
@@ -44,8 +45,8 @@ Future<http.Response> makeRequest(
   if (response.statusCode == 200) {
     return response;
   } else if (response.statusCode == 401) {
+    // trying to refresh token
     print('refreshing token...');
-    // TODO refresh the token
     final refreshToken = await storage.read(key: 'refreshToken');
     final resp = await http.post(
       Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
@@ -53,12 +54,13 @@ Future<http.Response> makeRequest(
       body: {
         'grant_type': 'refresh_token',
         'refresh_token': refreshToken,
-        'client_id': 'web',
-        'client_secret': 'web',
+        'client_id': 'test_client',
+        'scope': 'offline_access sol_api',
       },
     );
     print('refresh response is ${resp.statusCode}');
 
+    // if successful, save the new tokens and retry the request
     if (resp.statusCode == 200) {
       final jsn = jsonDecode(resp.body);
       final accessToken = jsn['access_token'];
@@ -66,13 +68,50 @@ Future<http.Response> makeRequest(
 
       await storage.write(key: 'accessToken', value: accessToken);
       await storage.write(key: 'refreshToken', value: refreshToken);
+
+
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        throw Exception('failed to load data after refresh token');
+      }
     } else {
-      // TODO show dialog
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //   title: Text('Přihlašování nefunguje'),
+      //   content: Column(
+      //     children: [
+      //       Text('Buď jsou špatné přihlašovací údaje, anebo aplikace blbne.'),
+      //       Text('Každopádně to vyřešíš tak, že se znovu přihlásíš.')
+      //     ],
+      //   ),
+      //   actions: [
+      //     TextButton(
+      //       onPressed: () {
+      //         onDestinationSelected: (int index) {
+      //           setState(() {
+      //             _currentIndex = index;
+      //           });
+      //         };
+      //       },
+      //       child: Text('OK'),
+      //     ),
+      //   ],
+      //     );
+      //   },
+      // );
       throw Exception('Failed to refresh token');
+
+
     }
 
-
-    throw Exception('Failed to load data');
   } else {
     throw Exception('Failed to load data');
   }

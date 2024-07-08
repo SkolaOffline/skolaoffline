@@ -51,7 +51,7 @@ class TimetableScreenState extends State<TimetableScreen> {
 
     var currentLessonIndex = -1;
 
-    print(isLoading);
+    // print(isLoading);
 
     if (!isLoading) {
       for (var i = weekTimetable[now.weekday - 1].length - 1; i >= 0; i--) {
@@ -164,6 +164,7 @@ class TimetableScreenState extends State<TimetableScreen> {
       final response = await makeRequest(
         url,
         params,
+        context
         );
 
       if (response.statusCode == 200) {
@@ -212,10 +213,9 @@ class TimetableScreen extends StatefulWidget {
   TimetableScreenState createState() => TimetableScreenState();
 }
 
-// // TODO test
 // Future<void> refreshToken() async {
 //   final storage = FlutterSecureStorage();
-//   // refresh token
+  // refresh token
 //   final refreshToken = await storage.read(key: 'refreshToken');
 //   final r = await http.post(
 //     Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
@@ -227,7 +227,7 @@ class TimetableScreen extends StatefulWidget {
 //       "scope": "offline_access sol_api",
 //     },
 //   );
-//   // print(r.body);
+  // print(r.body);
 //   print('refresh response: ${r.statusCode}');
 
 //   if (r.statusCode == 200) {
