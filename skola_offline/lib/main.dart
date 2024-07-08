@@ -12,8 +12,10 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   // final storage = FlutterSecureStorage();
+  // storage.deleteAll();
   // TODO invalidate the access token
   // storage.write(key: 'accessToken', value: 'your_access_token_here');
+
 
   runApp(MyApp());
 }
@@ -41,10 +43,11 @@ Future<http.Response> makeRequest(
     headers: {'Authorization': 'Bearer $accessToken'},
   );
 
+  print('response is ${response.statusCode}');
 
   if (response.statusCode == 200) {
     return response;
-  } else if (response.statusCode == 401) {
+  } else if (response.statusCode == 401 && accessToken != null) {
     // trying to refresh token
     print('refreshing token...');
     final refreshToken = await storage.read(key: 'refreshToken');
@@ -81,38 +84,14 @@ Future<http.Response> makeRequest(
         throw Exception('failed to load data after refresh token');
       }
     } else {
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return AlertDialog(
-      //   title: Text('Přihlašování nefunguje'),
-      //   content: Column(
-      //     children: [
-      //       Text('Buď jsou špatné přihlašovací údaje, anebo aplikace blbne.'),
-      //       Text('Každopádně to vyřešíš tak, že se znovu přihlásíš.')
-      //     ],
-      //   ),
-      //   actions: [
-      //     TextButton(
-      //       onPressed: () {
-      //         onDestinationSelected: (int index) {
-      //           setState(() {
-      //             _currentIndex = index;
-      //           });
-      //         };
-      //       },
-      //       child: Text('OK'),
-      //     ),
-      //   ],
-      //     );
-      //   },
-      // );
       throw Exception('Failed to refresh token');
-
-
     }
 
   } else {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProfileScreen()),
+    );
     throw Exception('Failed to load data');
   }
 
@@ -124,6 +103,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Škola Offline',
+      // TODO - dark theme + theme changing
+      // darkTheme: ThemeData.dark(
+      //   useMaterial3: true,
+      //   // colorScheme: ColorScheme.fromSeed(
+      //     // seedColor: Colors.deepPurple,
+      //   // ),
+      // ),
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -141,7 +127,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 
   final List<Widget> _tabs = [
     TimetableScreen(),

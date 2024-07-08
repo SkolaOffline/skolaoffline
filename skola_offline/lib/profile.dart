@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:skola_offline/dummy_app_state.dart';
+import 'package:skola_offline/main.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -111,6 +112,10 @@ class ProfileScreenState extends State<ProfileScreen> {
 
       Navigator.of(context).pop(); // Close the loading dialog
       _showSuccessDialog('Success', 'You have been logged in.');
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => MyHomePage()),
+      // );
     } catch (e) {
       Navigator.of(context).pop(); // Close the loading dialog
       _showErrorDialog('Error', 'An unexpected error occurred: $e');
@@ -144,7 +149,10 @@ class ProfileScreenState extends State<ProfileScreen> {
           content: Text(message),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed:() {
+                Navigator.of(context).pop();  
+                Navigator.of(context).pop();  
+              },
               child: Text('OK'),
             ),
           ],
@@ -156,6 +164,9 @@ class ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('Login'),
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -193,6 +204,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               label: Text('Login'),
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(double.infinity, 50),
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               ),
             ),
             SwitchListTile(

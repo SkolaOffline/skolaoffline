@@ -37,11 +37,11 @@ class TimetableScreenState extends State<TimetableScreen> {
       }
     } catch (e) {
       print('Error fetching timetable: $e');
-      if (_mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
+      // if (_mounted) {
+      //   setState(() {
+      //     isLoading = false;
+      //   });
+      // }
     }
   }
 
@@ -164,7 +164,7 @@ class TimetableScreenState extends State<TimetableScreen> {
       final response = await makeRequest(
         url,
         params,
-        context
+        context,
         );
 
       if (response.statusCode == 200) {

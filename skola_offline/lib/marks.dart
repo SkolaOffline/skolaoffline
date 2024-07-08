@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
+import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -42,14 +43,20 @@ class MarksScreenState extends State<MarksScreen> {
       try {
         final storage = FlutterSecureStorage();
         final userId = await storage.read(key: 'userId');
-        final accessToken = await storage.read(key: 'accessToken');
+        // final accessToken = await storage.read(key: 'accessToken');
 
-        final url = Uri.parse(
-            "https://aplikace.skolaonline.cz/solapi/api/v1/students/$userId/marks/bySubject");
+        // final url = Uri.parse(
+        //     "https://aplikace.skolaonline.cz/solapi/api/v1/students/$userId/marks/bySubject");
 
-        final response = await http.get(
-          url,
-          headers: {'Authorization': 'Bearer $accessToken'},
+        // final response = await http.get(
+        //   url,
+        //   headers: {'Authorization': 'Bearer $accessToken'},
+        // );
+
+        final response = await makeRequest(
+          'api/v1/students/$userId/marks/bySubject',
+          null,
+          context,
         );
 
         if (response.statusCode == 200) {

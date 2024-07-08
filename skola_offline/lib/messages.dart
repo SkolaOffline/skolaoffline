@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -34,8 +33,8 @@ class MessagesScreenState extends State<MessagesScreen> {
       });
     } else {
       try {
-        final storage = FlutterSecureStorage();
-        final accessToken = await storage.read(key: 'accessToken');
+        // final storage = FlutterSecureStorage();
+        // final accessToken = await storage.read(key: 'accessToken');
 
         final now = DateTime.now();
         final params = {
@@ -44,13 +43,19 @@ class MessagesScreenState extends State<MessagesScreen> {
           'dateTo': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').format(now),
         };
 
-        final url = Uri.parse(
-                'https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
-            .replace(queryParameters: params);
+        // final url = Uri.parse(
+        //         'https://aplikace.skolaonline.cz/solapi/api/v1/messages/received')
+        //     .replace(queryParameters: params);
 
-        final response = await http.get(
-          url,
-          headers: {'Authorization': 'Bearer $accessToken'},
+        // final response = await http.get(
+        //   url,
+        //   headers: {'Authorization': 'Bearer $accessToken'},
+        // );
+
+        final response = await makeRequest(
+          'api/v1/messages/received', 
+          params, 
+          context
         );
 
         if (response.statusCode == 200) {
