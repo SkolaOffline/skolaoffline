@@ -56,6 +56,7 @@ class MarksScreenState extends State<MarksScreen> {
         final response = await makeRequest(
           'api/v1/students/$userId/marks/bySubject',
           null,
+          // ignore: use_build_context_synchronously
           context,
         );
 

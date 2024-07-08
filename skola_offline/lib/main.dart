@@ -11,8 +11,8 @@ import 'dart:convert';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // final storage = FlutterSecureStorage();
-  // storage.deleteAll();
+  final storage = FlutterSecureStorage();
+  storage.deleteAll();
   // TODO invalidate the access token
   // storage.write(key: 'accessToken', value: 'your_access_token_here');
 
@@ -38,10 +38,16 @@ Future<http.Response> makeRequest(
   final storage = FlutterSecureStorage();
   final accessToken = await storage.read(key: 'accessToken');
 
+  print('starting request to $rawUrl');
+  final startTime = DateTime.now();
   final response = await http.get(
     url,
     headers: {'Authorization': 'Bearer $accessToken'},
   );
+  final endTime = DateTime.now();
+  final duration = endTime.difference(startTime);
+  print('request took ${duration.inMilliseconds} milliseconds');
+  print('ending request');
 
   print('response is ${response.statusCode}');
 
@@ -51,6 +57,8 @@ Future<http.Response> makeRequest(
     // trying to refresh token
     print('refreshing token...');
     final refreshToken = await storage.read(key: 'refreshToken');
+
+    print('starting refresh request');
     final resp = await http.post(
       Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -61,6 +69,8 @@ Future<http.Response> makeRequest(
         'scope': 'offline_access sol_api',
       },
     );
+    print('ending refresh request');
+
     print('refresh response is ${resp.statusCode}');
 
     // if successful, save the new tokens and retry the request
@@ -73,10 +83,12 @@ Future<http.Response> makeRequest(
       await storage.write(key: 'refreshToken', value: refreshToken);
 
 
+      print('starting request after refresh');
       final response = await http.get(
         url,
         headers: {'Authorization': 'Bearer $accessToken'},
       );
+      print('ending request after refresh');
 
       if (response.statusCode == 200) {
         return response;
@@ -89,6 +101,7 @@ Future<http.Response> makeRequest(
 
   } else {
     Navigator.push(
+      // ignore: use_build_context_synchronously
       context,
       MaterialPageRoute(builder: (context) => ProfileScreen()),
     );

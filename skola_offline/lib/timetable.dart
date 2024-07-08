@@ -137,7 +137,6 @@ class TimetableScreenState extends State<TimetableScreen> {
 
       final monday =
           getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
-      // ignore: unused_local_variable
       final friday = getMidnight(monday.add(Duration(days: 5)));
 
       final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
@@ -164,6 +163,7 @@ class TimetableScreenState extends State<TimetableScreen> {
       final response = await makeRequest(
         url,
         params,
+        // ignore: use_build_context_synchronously
         context,
         );
 

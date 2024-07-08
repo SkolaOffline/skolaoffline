@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:skola_offline/dummy_app_state.dart';
-import 'package:skola_offline/main.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -70,6 +69,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         );
 
         if (response.statusCode == 400) {
+          // ignore: use_build_context_synchronously
           Navigator.of(context).pop(); // Close the loading dialog
           _showErrorDialog(
               'Wrong credentials', 'Please check your username and password.');
@@ -77,6 +77,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         }
 
         if (response.statusCode != 200) {
+          // ignore: use_build_context_synchronously
           Navigator.of(context).pop(); // Close the loading dialog
           _showErrorDialog('Error', 'An error occurred while logging in.');
           return;
@@ -110,6 +111,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       await storage.write(
           key: 'schoolYearId', value: jsonResponse['schoolYearId']);
 
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
       _showSuccessDialog('Success', 'You have been logged in.');
       // Navigator.pushReplacement(
@@ -117,6 +119,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       //   MaterialPageRoute(builder: (context) => MyHomePage()),
       // );
     } catch (e) {
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
       _showErrorDialog('Error', 'An unexpected error occurred: $e');
     }
