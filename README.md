@@ -8,9 +8,13 @@ For those who don't know what [Skola Online](https://www.skolaonline.cz/) is, it
 
 ## Installation
 ### Android
-Currently, the only way to install SOF is by manually installing [this file](skola_offline.apk)(**missing, will correct**) to your phone, double clicking it and clicking through all the security warnings.
+#### GPlay
+We have internal testing program, if you want to join, write us an email to [bettateam.skolaoffline@gmail.com](bettateam.skolaoffline@gmail.com) and we will add you in.
 
-We are working on Google Play.
+#### APK
+The other way to install SOF is by manually installing [this file](skola_offline.apk)(**missing, will correct**) to your phone, double clicking it and clicking through all the security warnings.
+
+Be aware that this APK may be outdated.
 
 ### Windows
 In progress...
