@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'package:skola_offline/absences.dart';
+import 'package:skola_offline/login.dart';
 import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';
-import 'package:skola_offline/absences.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:convert';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -103,7 +105,7 @@ Future<http.Response> makeRequest(
     Navigator.push(
       // ignore: use_build_context_synchronously
       context,
-      MaterialPageRoute(builder: (context) => ProfileScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
     throw Exception('Failed to load data');
   }
@@ -140,7 +142,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 1;
+  int _currentIndex = 0;
 
   final List<Widget> _tabs = [
     TimetableScreen(),

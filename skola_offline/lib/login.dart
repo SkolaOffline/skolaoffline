@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:skola_offline/dummy_app_state.dart';
-import 'package:url_launcher/url_launcher.dart'; // Import the url_launcher package
 
-class ProfileScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  ProfileScreenState createState() => ProfileScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class ProfileScreenState extends State<ProfileScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final DummyAppState _dummyAppState = DummyAppState();
@@ -155,6 +154,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             TextButton(
               onPressed:() {
                 Navigator.of(context).pop();  
+                Navigator.of(context).pop();  
               },
               child: Text('OK'),
             ),
@@ -210,28 +210,6 @@ class ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               ),
             ),
-            SizedBox(height: 20), 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.settings),
-                SizedBox(width: 5,),
-                Text(
-                  'Settings',
-                    style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Text('Here (in the future) you can change the settings of the app.'),
-                Text('Like the color or theme of the app.'),
-                Text('For now, you can only use dummy data.'),
-              ],
-            ),
             SwitchListTile(
               title: Text('Use Dummy Data'),
               value: _dummyAppState.useDummyData,
@@ -241,45 +219,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                 });
               },
             ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              Icon(Icons.info),
-              Text(
-                'About',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            TextButton(
-              onPressed: () {
-                launchUrl(Uri.parse('https://github.com/SkolaOffline/skolaoffline'));
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.code),
-                  Text('Github (Issues, Code, etc.)'),
-                ],
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                launchUrl(Uri.parse('mailto:bettateam.skolaoffline@gmail.com'));
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.email),
-                  Text('Email us'),
-                ],
-              ),
-            ),
-           ],
+            
+          ],
         ),
       ),
     );
