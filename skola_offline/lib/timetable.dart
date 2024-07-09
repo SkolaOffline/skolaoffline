@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -124,7 +125,9 @@ class TimetableScreenState extends State<TimetableScreen> {
     bool useDummyData = dummyAppState.useDummyData;
 
     if (useDummyData) {
-      return "TODO"; //TODO: Add dummy data
+      String dummyData = 
+        await rootBundle.loadString('lib/assets/dummy_timetable.json');
+        return dummyData;
     } else {
       final storage = FlutterSecureStorage();
       final userId = await storage.read(key: 'userId');
