@@ -27,10 +27,10 @@ In progress...
 
 
 ### Web
-Basic version is at [https://skolaoffline.github.io/](https://skolaoffline.github.io/).
+Basic version is at [https://SkolaOffline.github.io/](https://SkolaOffline.github.io/).
 
 ## Usage
-After installing, you can try out the app without any credentials by activating *Dummy mode*. Instead of downloading data straight from servers, it uses prepared data.
+After installing, you can try out the app without any credentials by activating *Dummy mode*. Instead of downloading data straight from servers, it uses prepared data. You can activate it by clicking *Dummy mode* on the login screen and hitting *Login*.
 
 If you decide Skola Offline is worth it, login using your normal, Skola Online credentials. The same you use every day. After that, you'll gain access to all the features
 
