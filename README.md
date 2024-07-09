@@ -12,7 +12,7 @@ For those who don't know what [Skola Online](https://www.skolaonline.cz/) is, it
 We have internal testing program, if you want to join, write us an email to [bettateam.skolaoffline@gmail.com](bettateam.skolaoffline@gmail.com) and we will add you in.
 
 #### APK
-The other way to install SOF is by manually installing [this file](skola_offline.apk)(**missing, will correct**) to your phone, double clicking it and clicking through all the security warnings.
+The other way to install SOF is by manually installing [this file](skola_offline.apk) to your phone, double clicking it and clicking through all the security warnings.
 
 Be aware that this APK may be outdated.
 
@@ -27,7 +27,7 @@ In progress...
 
 
 ### Web
-In progress...
+Basic version is at [https://skolaoffline.github.io/](https://skolaoffline.github.io/).
 
 ## Usage
 After installing, you can try out the app without any credentials by activating *Dummy mode*. Instead of downloading data straight from servers, it uses prepared data.
@@ -49,8 +49,8 @@ Show messages from the past year, from newest to oldest. After clicking any, it 
 Shows number and percent of your absences in each lesson.
 
 ## Contributing
-Write us an email to 
-<!-- TODO -->
+Write us an email to bettateam.skolaoffline@gmail.com for more info
+
 
 ### List of things we would like
 - [ ] caching requests for offline access (and faster loading)
