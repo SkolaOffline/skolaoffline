@@ -48,3 +48,9 @@ Shows number and percent of your absences in each lesson.
 Write us an email to 
 <!-- TODO -->
 
+### List of things we would like
+- [ ] caching requests for offline access (and faster loading)
+- [ ] theme colour changing
+- [ ] dark mode
+- [ ] *'if I get 3 from geography, what will be my average?* - in other words, 'mark average predictor'
+

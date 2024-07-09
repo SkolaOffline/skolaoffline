@@ -11,8 +11,8 @@ import 'dart:convert';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final storage = FlutterSecureStorage();
-  storage.deleteAll();
+  // final storage = FlutterSecureStorage();
+  // storage.deleteAll();
   // TODO invalidate the access token
   // storage.write(key: 'accessToken', value: 'your_access_token_here');
 
