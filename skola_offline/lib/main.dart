@@ -18,17 +18,14 @@ void main() {
   // TODO invalidate the access token
   // storage.write(key: 'accessToken', value: 'your_access_token_here');
 
-
   runApp(MyApp());
 }
-
-
 
 Future<http.Response> makeRequest(
   String rawUrl,
   Map<String, dynamic>? params,
   BuildContext context,
-  ) async {
+) async {
   // TODO - we could cache the requests...
   // but it would be SO much work
 
@@ -84,7 +81,6 @@ Future<http.Response> makeRequest(
       await storage.write(key: 'accessToken', value: accessToken);
       await storage.write(key: 'refreshToken', value: refreshToken);
 
-
       print('starting request after refresh');
       final response = await http.get(
         url,
@@ -100,7 +96,6 @@ Future<http.Response> makeRequest(
     } else {
       throw Exception('Failed to refresh token');
     }
-
   } else {
     Navigator.push(
       // ignore: use_build_context_synchronously
@@ -109,8 +104,6 @@ Future<http.Response> makeRequest(
     );
     throw Exception('Failed to load data');
   }
-
-
 }
 
 class MyApp extends StatelessWidget {
@@ -142,7 +135,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
+  int _currentIndex = 4;
 
   final List<Widget> _tabs = [
     TimetableScreen(),
@@ -177,10 +170,6 @@ class MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-
-
-
-      
       body: _tabs[_currentIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
@@ -188,16 +177,16 @@ class MyHomePageState extends State<MyHomePage> {
         elevation: 10,
         onDestinationSelected: (int index) {
           setState(() {
-        _currentIndex = index;
+            _currentIndex = index;
           });
         },
         destinations: [
           NavigationDestination(icon: Icon(Icons.schedule), label: 'Timetable'),
           NavigationDestination(
-          icon: Icon(Icons.format_list_numbered), label: 'Marks'),
+              icon: Icon(Icons.format_list_numbered), label: 'Marks'),
           NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),
           NavigationDestination(
-          icon: Icon(Icons.person_off), label: 'Absences'),
+              icon: Icon(Icons.person_off), label: 'Absences'),
           NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),

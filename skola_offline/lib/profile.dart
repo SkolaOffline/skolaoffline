@@ -202,6 +202,12 @@ class ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () async {
                   String username = _usernameController.text;
                   String password = _passwordController.text;
+
+                  if (username == 'dummy' && password == 'mode') {
+                    _dummyAppState.useDummyData = ! _dummyAppState.useDummyData;
+                    _showSuccessDialog('Success', 'Dummy data mode ${_dummyAppState.useDummyData ? 'enabled' : 'disabled'}.');
+                    return;
+                  }
                   await login(username, password);
                 },
                 icon: Icon(Icons.login),
@@ -230,18 +236,18 @@ class ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Text('Here (in the future) you can change the settings of the app.'),
                   Text('Like the color or theme of the app.'),
-                  Text('For now, you can only use dummy data.'),
+                  Text('You can enable dummy mode by logging in with username "dummy" and password "mode".'),
                 ],
               ),
-              SwitchListTile(
-                title: Text('Use Dummy Data'),
-                value: _dummyAppState.useDummyData,
-                onChanged: (bool value) {
-                  setState(() {
-                    _dummyAppState.useDummyData = value;
-                  });
-                },
-              ),
+              // SwitchListTile(
+              //   title: Text('Use Dummy Data'),
+              //   value: _dummyAppState.useDummyData,
+              //   onChanged: (bool value) {
+              //     setState(() {
+              //       _dummyAppState.useDummyData = value;
+              //     });
+              //   },
+              // ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
