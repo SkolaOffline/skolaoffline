@@ -135,14 +135,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 4;
+  int _currentIndex = 3;
 
   final List<Widget> _tabs = [
     TimetableScreen(),
     MarksScreen(),
     MessagesScreen(),
     AbsencesScreen(),
-    ProfileScreen(),
+    // ProfileScreen(),
   ];
 
   @override
@@ -161,11 +161,38 @@ class MyHomePageState extends State<MyHomePage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            // Icon(Icons.school),
-            Image(
-              image: AssetImage('lib/assets/skolaoffline_logo.png'),
-              height: 40,
-              // width: MediaQuery.of(context).size.width * 0.5,
+            Row(
+              children: [
+                Image(
+                  image: AssetImage('lib/assets/skolaoffline_logo.png'),
+                  height: 40,
+                  // width: MediaQuery.of(context).size.width * 0.5,
+                ),
+                PopupMenuButton(
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem(
+                      value: 'profile',
+                      child: Row(children: [
+                        Icon(Icons.person),
+                        SizedBox(width: 5),
+                        Text('Profile'),
+                      ],),
+                    ),
+                    PopupMenuItem(value: 'option2', child: Text('Another option')),
+                  ],
+                  onSelected: (value) {
+                    // Handle menu item selection
+                    if (value == 'profile') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                      );
+                    } else if (value == 'option2') {
+                      print('option 2');
+                    }
+                  },
+                )
+              ],
             ),
           ],
         ),
@@ -187,7 +214,7 @@ class MyHomePageState extends State<MyHomePage> {
           NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),
           NavigationDestination(
               icon: Icon(Icons.person_off), label: 'Absences'),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+          // NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
