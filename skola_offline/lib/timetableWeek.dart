@@ -5,12 +5,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
-// import 'package:skola_offline/main.dart';
+import 'package:skola_offline/main.dart';
 // import 'package:skola_offline/main.dart';
 
 // ! TOTALLY NOT WORKING
 
-class TimetableScreenState extends State<TimetableScreen> {
+class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> weekTimetable = [];
   bool isLoading = true;
   bool _mounted = true;
@@ -19,7 +19,7 @@ class TimetableScreenState extends State<TimetableScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchTimetable();
+    _fetchTimetableWeek();
   }
 
   @override
@@ -107,7 +107,7 @@ class TimetableScreenState extends State<TimetableScreen> {
                               now = value;
                               isLoading = true;
                             });
-                            _fetchTimetable();
+                            _fetchTimetableWeek();
                           }
                         });
                       },
@@ -147,7 +147,6 @@ class TimetableScreenState extends State<TimetableScreen> {
 
     if (useDummyData) {
       String dummyData = 
-        // TODO: make dummy data for one day
         await rootBundle.loadString('lib/assets/dummy_timetable.json');
         return dummyData;
     }

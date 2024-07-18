@@ -95,24 +95,60 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                       style: Theme.of(context).textTheme.headlineSmall,
                       textAlign: TextAlign.center,
                     ),
-                    IconButton(
-                      icon: Icon(Icons.date_range),
-                      onPressed: () {
-                        showDatePicker(
-                                context: context,
-                                firstDate: DateTime(0),
-                                lastDate: DateTime(9999),
-                                initialDate: now)
-                            .then((value) {
-                          if (value != null) {
+                    Text(
+                        '${DateFormat('EE').format(now)}, ${DateFormat('d.M.y',).format(now)}',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: () {
                             setState(() {
-                              now = value;
+                              if (now.weekday == 1) {
+                              now = now.subtract(Duration(days: 3));
+                              } else {
+                              now = now.subtract(Duration(days: 1));
+                              }
+                              
                               isLoading = true;
                             });
                             _fetchTimetable();
-                          }
-                        });
-                      },
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.date_range),
+                          onPressed: () {
+                            showDatePicker(
+                                    context: context,
+                                    firstDate: DateTime(0),
+                                    lastDate: DateTime(9999),
+                                    initialDate: now)
+                                .then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  now = value;
+                                  isLoading = true;
+                                });
+                                _fetchTimetable();
+                              }
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.arrow_forward),
+                          onPressed: () {
+                            if (now.weekday == 5) {
+                              now = now.add(Duration(days: 3));
+                            } else {
+                              now = now.add(Duration(days: 1));
+                            }
+                            isLoading = true;
+                                                                                    
+                            _fetchTimetable();
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -258,6 +294,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   List<dynamic> parseDayTimetable(Map<String, dynamic> day) {
     return day['schedules']
         .where((lesson) =>
+            // TODO parse different types of lessons
             lesson['hourType']['id'] != 'SKOLNI_AKCE' &&
             lesson['hourType']['id'] != 'SUPLOVANA')
         .map((lesson) => {
