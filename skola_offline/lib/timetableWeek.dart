@@ -66,79 +66,94 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     }
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _fetchTimetableWeek,
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : (currentLessonIndex == -1
-                          ? Center(
-                              child:
-                                  Text('There are no lessons left for today'))
-                          : CurrentLessonCard(
-                              lesson: weekTimetable[now.weekday - 1]
-                                  [currentLessonIndex]))),
-            ),
-            // SliverToBoxAdapter(
-            //     child: SizedBox(
-            //   height: 10,
-            // )),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Rozvrh hodin',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.date_range),
-                      onPressed: () {
-                        showDatePicker(context: context, firstDate: DateTime(0), lastDate: DateTime(9999), initialDate: now).then((value) {
-                          if (value != null) {
-                            setState(() {
-                              now = value;
-                              isLoading = true;
-                            });
-                            _fetchTimetableWeek();
-                          }
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            isLoading
-                ? SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final lesson = weekTimetable[now.weekday - 1][index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 0.0),
-                          child: LessonCard(lesson: lesson),
-                        );
-                      },
-                      childCount: weekTimetable.isEmpty
-                          ? 0
-                          : weekTimetable[now.weekday - 1].length,
-                    ),
-                  ),
-          ],
-        ),
-      ),
+      body: Center(child: 
+        Placeholder(child: Text('Timetable Week Screen'))
+    //         'lessonIdFrom': '1',
+    //         'lessonIdTo': '1',
+    //         'beginTime': '2024-06-03T08:00:00',
+    //         'endTime': '2024-06-03T08:45:00',
+    //         'lessonAbbrev': 'Abbrev',
+    //         'lessonName': 'Full Name',
+    //         'classroomAbbrev': 'Class Abbr',
+    //         'teacher': 'Tea Cher',
+    //       },)
+      )
     );
+
+    // return Scaffold(
+    //   body: RefreshIndicator(
+    //     onRefresh: _fetchTimetableWeek,
+    //     child: CustomScrollView(
+    //       slivers: [
+    //         SliverToBoxAdapter(
+    //           child: Padding(
+    //               padding: const EdgeInsets.all(3.0),
+    //               child: isLoading
+    //                   ? Center(child: CircularProgressIndicator())
+    //                   : (currentLessonIndex == -1
+    //                       ? Center(
+    //                           child:
+    //                               Text('There are no lessons left for today'))
+    //                       : CurrentLessonCardShort(
+    //                           lesson: weekTimetable[now.weekday - 1]
+    //                               [currentLessonIndex]))),
+    //         ),
+    //         // SliverToBoxAdapter(
+    //         //     child: SizedBox(
+    //         //   height: 10,
+    //         // )),
+    //         SliverToBoxAdapter(
+    //           child: Padding(
+    //             padding: const EdgeInsets.symmetric(horizontal: 20.0),
+    //             child: Row(
+    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //               children: [
+    //                 Text(
+    //                   'Rozvrh hodin',
+    //                   style: Theme.of(context).textTheme.headlineSmall,
+    //                   textAlign: TextAlign.center,
+    //                 ),
+    //                 IconButton(
+    //                   icon: Icon(Icons.date_range),
+    //                   onPressed: () {
+    //                     showDatePicker(context: context, firstDate: DateTime(0), lastDate: DateTime(9999), initialDate: now).then((value) {
+    //                       if (value != null) {
+    //                         setState(() {
+    //                           now = value;
+    //                           isLoading = true;
+    //                         });
+    //                         _fetchTimetableWeek();
+    //                       }
+    //                     });
+    //                   },
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //         isLoading
+    //             ? SliverFillRemaining(
+    //                 child: Center(child: CircularProgressIndicator()),
+    //               )
+    //             : SliverList(
+    //                 delegate: SliverChildBuilderDelegate(
+    //                   (context, index) {
+    //                     final lesson = weekTimetable[now.weekday - 1][index];
+    //                     return Padding(
+    //                       padding: const EdgeInsets.symmetric(
+    //                           horizontal: 16.0, vertical: 0.0),
+    //                       child: LessonCard(lesson: lesson),
+    //                     );
+    //                   },
+    //                   childCount: weekTimetable.isEmpty
+    //                       ? 0
+    //                       : weekTimetable[now.weekday - 1].length,
+    //                 ),
+    //               ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 
   Future<String> downloadTimetable(DateTime whichDay) async {
@@ -276,9 +291,9 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   }
 }
 
-class TimetableScreen extends StatefulWidget {
+class TimetableWeekScreen extends StatefulWidget {
   @override
-  TimetableScreenState createState() => TimetableScreenState();
+  TimetableWeekScreenState createState() => TimetableWeekScreenState();
 }
 
 // Future<void> refreshToken() async {
@@ -371,7 +386,7 @@ class CurrentLessonCard extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: LessonCard(lesson: lesson),
+                child: LessonCardAbbrev(lesson: lesson),
               ))
         ],
       ),
@@ -379,73 +394,29 @@ class CurrentLessonCard extends StatelessWidget {
   }
 }
 
-class LessonCard extends StatelessWidget {
+class LessonCardAbbrev extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
-  const LessonCard({Key? key, required this.lesson}) : super(key: key);
+  const LessonCardAbbrev({Key? key, required this.lesson}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
-      color: Theme.of(context).colorScheme.secondaryContainer,
       child: Padding(
-        padding: EdgeInsets.all(0),
-        child: Row(
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    // lesson['lessonOrder'].toString(),
-                    lesson['lessonIdFrom'] == lesson['lessonIdTo']
-                        ? lesson['lessonIdFrom'].toString()
-                        : '${lesson['lessonIdFrom']}-${lesson['lessonIdTo']}',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    formatTime(lesson['beginTime']),
-                    style: TextStyle(fontSize: 10),
-                  ),
-                  Text(
-                    formatTime(lesson['endTime']),
-                    style: TextStyle(fontSize: 10),
-                  ),
-                ],
-              ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+            children: [
+            Text(
+              lesson['lessonAbbrev'],
+              softWrap: true,
             ),
-            SizedBox(width: 19),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${lesson['lessonAbbrev']} - ${lesson['lessonName']}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    lesson['classroomAbbrev'],
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    lesson['teacher'],
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
-              ),
+            Text(
+              lesson['classroomAbbrev'],
+              softWrap: true,
             ),
+
           ],
         ),
-      ),
+      )
     );
   }
 

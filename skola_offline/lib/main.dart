@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:skola_offline/absences.dart';
 import 'package:skola_offline/login.dart';
+import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/timetableDay.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
@@ -138,7 +139,7 @@ class MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _tabs = [
-    TimetableDayScreen(),
+    TimetableScreen(),
     MarksScreen(),
     MessagesScreen(),
     AbsencesScreen(),
