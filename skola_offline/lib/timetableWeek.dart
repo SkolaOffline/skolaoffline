@@ -12,6 +12,7 @@ import 'package:skola_offline/main.dart';
 
 class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> weekTimetable = [];
+  List<dynamic> listifiedTimetable = [];
   bool isLoading = true;
   bool _mounted = true;
   DateTime now = DateTime(2024, 6, 3, 12, 00, 03);
@@ -35,6 +36,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
       if (_mounted) {
         setState(() {
           weekTimetable = parseWeekTimetable(timetableData);
+          listifiedTimetable = listify(weekTimetable);
           isLoading = false;
         });
       }
@@ -65,95 +67,25 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
       }
     }
 
-    return Scaffold(
-      body: Center(child: 
-        Placeholder(child: Text('Timetable Week Screen'))
-    //         'lessonIdFrom': '1',
-    //         'lessonIdTo': '1',
-    //         'beginTime': '2024-06-03T08:00:00',
-    //         'endTime': '2024-06-03T08:45:00',
-    //         'lessonAbbrev': 'Abbrev',
-    //         'lessonName': 'Full Name',
-    //         'classroomAbbrev': 'Class Abbr',
-    //         'teacher': 'Tea Cher',
-    //       },)
+
+    return isLoading
+    ? Center(child: CircularProgressIndicator())
+    : 
+    Scaffold(
+      body: 
+        GridView.count(
+        scrollDirection: Axis.horizontal,
+        crossAxisCount: 8,
+        childAspectRatio: 
+          MediaQuery.of(context).size.height / (MediaQuery.of(context).size.width) * 6 / 11, 
+        children: [
+          for (var i = 0; i < listifiedTimetable.length; i++)
+          LessonCardAbbrev(lesson:  
+            listifiedTimetable[i]
+          )
+        ]
       )
     );
-
-    // return Scaffold(
-    //   body: RefreshIndicator(
-    //     onRefresh: _fetchTimetableWeek,
-    //     child: CustomScrollView(
-    //       slivers: [
-    //         SliverToBoxAdapter(
-    //           child: Padding(
-    //               padding: const EdgeInsets.all(3.0),
-    //               child: isLoading
-    //                   ? Center(child: CircularProgressIndicator())
-    //                   : (currentLessonIndex == -1
-    //                       ? Center(
-    //                           child:
-    //                               Text('There are no lessons left for today'))
-    //                       : CurrentLessonCardShort(
-    //                           lesson: weekTimetable[now.weekday - 1]
-    //                               [currentLessonIndex]))),
-    //         ),
-    //         // SliverToBoxAdapter(
-    //         //     child: SizedBox(
-    //         //   height: 10,
-    //         // )),
-    //         SliverToBoxAdapter(
-    //           child: Padding(
-    //             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-    //             child: Row(
-    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //               children: [
-    //                 Text(
-    //                   'Rozvrh hodin',
-    //                   style: Theme.of(context).textTheme.headlineSmall,
-    //                   textAlign: TextAlign.center,
-    //                 ),
-    //                 IconButton(
-    //                   icon: Icon(Icons.date_range),
-    //                   onPressed: () {
-    //                     showDatePicker(context: context, firstDate: DateTime(0), lastDate: DateTime(9999), initialDate: now).then((value) {
-    //                       if (value != null) {
-    //                         setState(() {
-    //                           now = value;
-    //                           isLoading = true;
-    //                         });
-    //                         _fetchTimetableWeek();
-    //                       }
-    //                     });
-    //                   },
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //         ),
-    //         isLoading
-    //             ? SliverFillRemaining(
-    //                 child: Center(child: CircularProgressIndicator()),
-    //               )
-    //             : SliverList(
-    //                 delegate: SliverChildBuilderDelegate(
-    //                   (context, index) {
-    //                     final lesson = weekTimetable[now.weekday - 1][index];
-    //                     return Padding(
-    //                       padding: const EdgeInsets.symmetric(
-    //                           horizontal: 16.0, vertical: 0.0),
-    //                       child: LessonCard(lesson: lesson),
-    //                     );
-    //                   },
-    //                   childCount: weekTimetable.isEmpty
-    //                       ? 0
-    //                       : weekTimetable[now.weekday - 1].length,
-    //                 ),
-    //               ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 
   Future<String> downloadTimetable(DateTime whichDay) async {
@@ -265,6 +197,30 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> parseWeekTimetable(String jsonString) {
     Map<String, dynamic> data = jsonDecode(jsonString);
     return data['days'].map((day) => parseDayTimetable(day)).toList();
+  }
+
+  List<dynamic> listify(List<dynamic> timetable) {
+    List<Map<String, dynamic>> listified = [];
+    for (var day in timetable) {
+      int len = 0;
+      for (var lesson in day) {
+        print(lesson['lessonTo']);
+        print(lesson['lessonFrom']);
+        if (lesson['lessonTo'].toString() == '-' || lesson['lessonFrom'].toString() == '-') {
+          listified.add(Map<String, dynamic>.from(lesson));
+          len += 1;
+          continue;
+        }
+        for (var i = 0; i < int.parse(lesson['lessonTo']) - int.parse(lesson['lessonFrom']) + 1; i++) {
+          listified.add(Map<String, dynamic>.from(lesson));
+          len += 1;
+        }
+      }
+      for (var i = 0; i < 8 - len; i++) {
+        listified.add({});
+      }
+    }
+    return listified;
   }
 
   List<dynamic> parseDayTimetable(Map<String, dynamic> day) {
@@ -400,19 +356,47 @@ class LessonCardAbbrev extends StatelessWidget {
   const LessonCardAbbrev({Key? key, required this.lesson}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    print(lesson);
+    print(lesson.isEmpty);
+    if (lesson.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Text(''),
+              Text(''),
+            ],
+          ),
+        ),
+      );
+    }
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
             Text(
               lesson['lessonAbbrev'],
               softWrap: true,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              )
             ),
             Text(
-              lesson['classroomAbbrev'],
+              lesson['classroomAbbrev'].replaceAll(RegExp(r'\([^()]*\)'), ''),
               softWrap: true,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              )
             ),
+            Text(
+              lesson['teacherAbbrev'],
+            )
+            // Text
 
           ],
         ),
