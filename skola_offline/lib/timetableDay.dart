@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:skola_offline/main.dart';
+import 'package:skola_offline/timetable.dart';
 // import 'package:skola_offline/main.dart';
 
 class TimetableDayScreenState extends State<TimetableDayScreen> {
@@ -378,11 +379,16 @@ class TimetableDayScreen extends StatefulWidget {
 //   // exit(1);
 // }
 
-class CurrentLessonCard extends StatelessWidget {
+class CurrentLessonCard extends StatefulWidget {
   final Map<String, dynamic> lesson;
 
   const CurrentLessonCard({Key? key, required this.lesson}) : super(key: key);
 
+  @override
+  _CurrentLessonCardState createState() => _CurrentLessonCardState();
+}
+
+class _CurrentLessonCardState extends State<CurrentLessonCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -390,10 +396,29 @@ class CurrentLessonCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Current Lesson',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(
+          //       'Current Lesson',
+          //       style: Theme.of(context).textTheme.headlineSmall,
+          //     ),
+          //     ButtonBar(
+          //       children: [
+          //         IconButton(
+          //           icon: Icon(Icons.calendar_today),
+          //           onPressed: () {
+          //             setState(() {
+          //               TimetableScreenState().setWeekScreen(); 
+          //             // //   isLoading = true;
+          //             });
+          //             // _fetchTimetable();
+          //           },
+          //         ),
+          //       ],
+          //     ),
+            // ],
+          // ),
           // SizedBox(height: 8),
           Container(
               decoration: BoxDecoration(
@@ -410,7 +435,7 @@ class CurrentLessonCard extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: LessonCard(lesson: lesson),
+                child: LessonCard(lesson: widget.lesson),
               ))
         ],
       ),

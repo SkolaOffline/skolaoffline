@@ -113,12 +113,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Škola Offline',
       // TODO - dark theme + theme changing
-      // darkTheme: ThemeData.dark(
-      //   useMaterial3: true,
-      //   // colorScheme: ColorScheme.fromSeed(
-      //     // seedColor: Colors.deepPurple,
-      //   // ),
-      // ),
+      darkTheme: ThemeData.dark(
+        useMaterial3: true,
+        // colorScheme: ColorScheme.fromSeed(
+        //   seedColor: Colors.deepPurple,
+        // ),
+      ),
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(

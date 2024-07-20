@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:skola_offline/main.dart';
+import 'package:skola_offline/timetable.dart';
 // import 'package:skola_offline/main.dart';
 
 // ! TOTALLY NOT WORKING
@@ -69,27 +70,91 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     }
 
 
-    return isLoading
-    ? Center(child: CircularProgressIndicator())
-    : 
-    Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Scaffold(
+    if (isLoading) {
+      return Center(child: CircularProgressIndicator());
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title:
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+            Text(
+              'Rozvrh hodin',
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(width: 10),
+            Text(
+                // '${DateFormat('EE').format(now)}, ${DateFormat('d.M.y',).format(now)}',
+                '${DateFormat('d.M').format(now)} - ${DateFormat('d.M.y',).format(now.add(Duration(days: 4)))}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() {
+                      now = now.subtract(Duration(days: 7));
+                      isLoading = true;
+                    });
+                    _fetchTimetableWeek();
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.date_range),
+                  onPressed: () {
+                    showDatePicker(
+                            context: context,
+                            firstDate: DateTime(0),
+                            lastDate: DateTime(9999),
+                            initialDate: now)
+                        .then((value) {
+                      if (value != null) {
+                        setState(() {
+                          now = value;
+                          isLoading = true;
+                        });
+                        _fetchTimetableWeek();
+                      }
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.arrow_forward),
+                  onPressed: () {
+                    now = now.add(Duration(days: 7));
+                    isLoading = true;
+                                                                            
+                    _fetchTimetableWeek();
+                  },
+                ),
+              ],
+            ),
+          ],
+        )),
         body: 
-          GridView.count(
-          scrollDirection: Axis.horizontal,
-          crossAxisCount: 8,
-          childAspectRatio: 
-            MediaQuery.of(context).size.height / (MediaQuery.of(context).size.width) * 6 / 11, 
-          children: [
-            for (var i = 0; i < listifiedTimetable.length; i++)
-            LessonCardAbbrev(lesson:  
-              listifiedTimetable[i]
-            )
-          ]
-        )
-      ),
-    );
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Scaffold(
+                body: 
+                  GridView.count(
+                  scrollDirection: Axis.horizontal,
+                  crossAxisCount: 8,
+                  childAspectRatio: 
+                    MediaQuery.of(context).size.height / (MediaQuery.of(context).size.width) * 11 / 24, 
+                  children: [
+                    for (var i = 0; i < listifiedTimetable.length; i++)
+                    LessonCardAbbrev(lesson:  
+                      listifiedTimetable[i]
+                    )
+                  ]
+                )
+              ),
+            ),
+      );
+    }
   }
 
   Future<String> downloadTimetable(DateTime whichDay) async {
@@ -163,10 +228,10 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
       Map<String, dynamic> params = {
         'studentId': userId,
         // TODO change to dateTime
-        // 'dateFrom': dateFormatter.format(monday),
-        // 'dateTo': dateFormatter.format(friday),
-        'dateFrom': dateFormatter.format(DateTime(2024, 6, 3, 0, 0, 0)),
-        'dateTo': dateFormatter.format(DateTime(2024, 6, 7, 0, 0, 0)),
+        'dateFrom': dateFormatter.format(monday),
+        'dateTo': dateFormatter.format(friday),
+        // 'dateFrom': dateFormatter.format(DateTime(2024, 6, 3, 0, 0, 0)),
+        // 'dateTo': dateFormatter.format(DateTime(2024, 6, 7, 0, 0, 0)),
         'schoolYearId': syID
       };
 
@@ -208,8 +273,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     for (var day in timetable) {
       int len = 0;
       for (var lesson in day) {
-        print(lesson['lessonTo']);
-        print(lesson['lessonFrom']);
+        // print(lesson['lessonTo']);
+        // print(lesson['lessonFrom']);
         if (lesson['lessonTo'].toString() == '-' || lesson['lessonFrom'].toString() == '-') {
           listified.add(Map<String, dynamic>.from(lesson));
           len += 1;
@@ -322,7 +387,7 @@ class CurrentLessonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
