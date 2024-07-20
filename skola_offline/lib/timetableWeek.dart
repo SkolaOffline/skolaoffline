@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -71,20 +72,23 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     return isLoading
     ? Center(child: CircularProgressIndicator())
     : 
-    Scaffold(
-      body: 
-        GridView.count(
-        scrollDirection: Axis.horizontal,
-        crossAxisCount: 8,
-        childAspectRatio: 
-          MediaQuery.of(context).size.height / (MediaQuery.of(context).size.width) * 6 / 11, 
-        children: [
-          for (var i = 0; i < listifiedTimetable.length; i++)
-          LessonCardAbbrev(lesson:  
-            listifiedTimetable[i]
-          )
-        ]
-      )
+    Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Scaffold(
+        body: 
+          GridView.count(
+          scrollDirection: Axis.horizontal,
+          crossAxisCount: 8,
+          childAspectRatio: 
+            MediaQuery.of(context).size.height / (MediaQuery.of(context).size.width) * 6 / 11, 
+          children: [
+            for (var i = 0; i < listifiedTimetable.length; i++)
+            LessonCardAbbrev(lesson:  
+              listifiedTimetable[i]
+            )
+          ]
+        )
+      ),
     );
   }
 
@@ -356,10 +360,12 @@ class LessonCardAbbrev extends StatelessWidget {
   const LessonCardAbbrev({Key? key, required this.lesson}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    print(lesson);
-    print(lesson.isEmpty);
+    // print(lesson);
+    // print(lesson.isEmpty);
     if (lesson.isEmpty) {
       return Card(
+        color: Theme.of(context).colorScheme.surface,
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -378,7 +384,10 @@ class LessonCardAbbrev extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
             Text(
-              lesson['lessonAbbrev'],
+              lesson['lessonAbbrev'].substring(
+                0,
+                lesson['lessonAbbrev'].length > 5 ? 5 : lesson['lessonAbbrev'].length,
+              ),
               softWrap: true,
               style: TextStyle(
                 fontSize: 16,
@@ -386,7 +395,7 @@ class LessonCardAbbrev extends StatelessWidget {
               )
             ),
             Text(
-              lesson['classroomAbbrev'].replaceAll(RegExp(r'\([^()]*\)'), ''),
+              lesson['classroomAbbrev'].replaceAll(RegExp(r'\([^()]*\)'), '').substring(0, 4),
               softWrap: true,
               style: TextStyle(
                 fontSize: 12,
