@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:ffi';
+// import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,7 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:skola_offline/main.dart';
-import 'package:skola_offline/timetable.dart';
+// import 'package:skola_offline/timetable.dart';
 // import 'package:skola_offline/main.dart';
 
 // ! TOTALLY NOT WORKING
@@ -143,7 +143,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                   scrollDirection: Axis.horizontal,
                   crossAxisCount: 8,
                   childAspectRatio: 
-                    MediaQuery.of(context).size.height / (MediaQuery.of(context).size.width) * 11 / 24, 
+                    MediaQuery.of(context).size.height / (MediaQuery.of(context).size.width) * 12 / 25, 
                   children: [
                     for (var i = 0; i < listifiedTimetable.length; i++)
                     LessonCardAbbrev(lesson:  
