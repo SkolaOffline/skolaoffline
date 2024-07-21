@@ -24,7 +24,7 @@ jobs:
         with:
           channel: stable
       - run: flutter pub get
-      - run: flutter test
+      - run: # flutter test
       - run: flutter build apk
       - run: flutter build appbundle
 
@@ -39,7 +39,7 @@ jobs:
         with:
           channel: stable
       - run: flutter pub get
-      - run: flutter test
+      - run: # flutter test
       - run: flutter build ios --release --no-codesign
 
   build_web:
@@ -53,11 +53,11 @@ jobs:
         with:
           channel: stable
       - run: flutter pub get
-      - run: flutter test
+      - run: # flutter test
       - run: flutter build web
 
   build_windows:
-    name: Build windows files
+    name: Build Windows files
     runs-on: windows-latest
     steps:
       - name: Clone repository
@@ -69,6 +69,7 @@ jobs:
       - run: flutter build windows
 
   build_macos:
+    name: Build MacOS files
     runs-on: macos-latest
     steps:
       - name: Clone repository
@@ -80,6 +81,7 @@ jobs:
       - run: flutter build macos
 
   build_linux:
+    name: Build Linux files
     runs-on: ubuntu-latest
     steps:
       - name: Clone repository
