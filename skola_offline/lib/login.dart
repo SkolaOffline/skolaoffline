@@ -152,9 +152,9 @@ class LoginScreenState extends State<LoginScreen> {
           content: Text(message),
           actions: [
             TextButton(
-              onPressed:() {
-                Navigator.of(context).pop();  
-                Navigator.of(context).pop();  
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
               child: Text('OK'),
             ),
@@ -167,62 +167,63 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Login'),
-      // ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              child: Icon(Icons.person, size: 50),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 12),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () async {
-                String username = _usernameController.text;
-                String password = _passwordController.text;
-                await login(username, password);
-              },
-              icon: Icon(Icons.login),
-              label: Text('Login'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              ),
-            ),
-            SwitchListTile(
-              title: Text('Use Dummy Data'),
-              value: _dummyAppState.useDummyData,
-              onChanged: (bool value) {
-                setState(() {
-                  _dummyAppState.useDummyData = value;
-                });
-              },
-            ),
-            
-          ],
+        appBar: AppBar(
+          title: Text('Profile'),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  child: Icon(Icons.person, size: 50),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 12),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    String username = _usernameController.text;
+                    String password = _passwordController.text;
+
+                    if (username == 'dummy' && password == 'mode') {
+                      _dummyAppState.useDummyData =
+                          !_dummyAppState.useDummyData;
+                      _showSuccessDialog('Success',
+                          'Dummy data mode ${_dummyAppState.useDummyData ? 'enabled' : 'disabled'}.');
+                      return;
+                    }
+                    await login(username, password);
+                  },
+                  icon: Icon(Icons.login),
+                  label: Text('Login'),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }

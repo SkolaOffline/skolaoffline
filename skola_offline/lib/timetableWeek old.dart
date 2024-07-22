@@ -1,12 +1,16 @@
 import 'dart:convert';
-import 'dart:math';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+// import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:skola_offline/main.dart';
 import 'package:skola_offline/timetable.dart';
+// import 'package:skola_offline/main.dart';
+
+// ! TOTALLY NOT WORKING
 
 class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> weekTimetable = [];
@@ -30,6 +34,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   Future<void> _fetchTimetableWeek() async {
     try {
       final timetableData = await downloadTimetableWeek(now);
+      // print(timetableData);
       if (_mounted) {
         setState(() {
           weekTimetable = parseWeekTimetable(timetableData);
@@ -39,6 +44,11 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
       }
     } catch (e) {
       print('Error fetching timetable: $e');
+      // if (_mounted) {
+      //   setState(() {
+      //     isLoading = false;
+      //   });
+      // }
     }
   }
 
@@ -47,6 +57,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss');
 
     var currentLessonIndex = -1;
+
+    // print(isLoading);
 
     if (!isLoading) {
       for (var i = weekTimetable[now.weekday - 1].length - 1; i >= 0; i--) {
@@ -62,83 +74,80 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Rozvrh hodin',
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(width: 10),
-              Text(
-                '${DateFormat('d.M').format(now)} - ${DateFormat(
-                  'd.M.y',
-                ).format(now.add(Duration(days: 4)))}',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back, size: 20),
-                    onPressed: () {
-                      setState(() {
-                        now = now.subtract(Duration(days: 7));
-                        isLoading = true;
-                      });
-                      _fetchTimetableWeek();
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.date_range, size: 20),
-                    onPressed: () {
-                      showDatePicker(
-                              context: context,
-                              firstDate: DateTime(0),
-                              lastDate: DateTime(9999),
-                              initialDate: now)
-                          .then((value) {
-                        if (value != null) {
-                          setState(() {
-                            now = value;
-                            isLoading = true;
-                          });
-                          _fetchTimetableWeek();
-                        }
-                      });
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward, size: 20),
-                    onPressed: () {
-                      setState(() {
-                        now = now.add(Duration(days: 7));
-                        isLoading = true;
-                      });
-                      _fetchTimetableWeek();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+            title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Rozvrh hodin',
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(width: 10),
+            Text(
+              // '${DateFormat('EE').format(now)}, ${DateFormat('d.M.y',).format(now)}',
+              '${DateFormat('d.M').format(now)} - ${DateFormat(
+                'd.M.y',
+              ).format(now.add(Duration(days: 4)))}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() {
+                      now = now.subtract(Duration(days: 7));
+                      isLoading = true;
+                    });
+                    _fetchTimetableWeek();
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.date_range),
+                  onPressed: () {
+                    showDatePicker(
+                            context: context,
+                            firstDate: DateTime(0),
+                            lastDate: DateTime(9999),
+                            initialDate: now)
+                        .then((value) {
+                      if (value != null) {
+                        setState(() {
+                          now = value;
+                          isLoading = true;
+                        });
+                        _fetchTimetableWeek();
+                      }
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.arrow_forward),
+                  onPressed: () {
+                    now = now.add(Duration(days: 7));
+                    isLoading = true;
+
+                    _fetchTimetableWeek();
+                  },
+                ),
+              ],
+            ),
+          ],
+        )),
         body: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: GridView.count(
-            scrollDirection: Axis.horizontal,
-            crossAxisCount: 8,
-            childAspectRatio: MediaQuery.of(context).size.height /
-                (MediaQuery.of(context).size.width) *
-                9 /
-                24,
-            mainAxisSpacing: 2,
-            crossAxisSpacing: 2,
-            children: [
-              for (var i = 0; i < listifiedTimetable.length; i++)
-                LessonCardAbbrev(lesson: listifiedTimetable[i]),
-            ],
-          ),
+          padding: const EdgeInsets.all(10.0),
+          child: Scaffold(
+              body: GridView.count(
+                  scrollDirection: Axis.horizontal,
+                  crossAxisCount: 8,
+                  childAspectRatio: MediaQuery.of(context).size.height /
+                      (MediaQuery.of(context).size.width) *
+                      11 /
+                      24,
+                  children: [
+                for (var i = 0; i < listifiedTimetable.length; i++)
+                  LessonCardAbbrev(lesson: listifiedTimetable[i])
+              ])),
         ),
       );
     }
@@ -174,7 +183,10 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     };
 
     String url = 'api/v1/timeTable';
+    // Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/timeTable")
+    // .replace(queryParameters: params);
 
+    // ignore: use_build_context_synchronously
     final response = await makeRequest(url, params, context);
     if (response.statusCode == 200) {
       return response.body;
@@ -196,6 +208,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
       final storage = FlutterSecureStorage();
       final userId = await storage.read(key: 'userId');
       final syID = await storage.read(key: 'schoolYearId');
+      // final accessToken = await storage.read(key: 'accessToken');
 
       DateTime getMidnight(DateTime datetime) {
         return DateTime(datetime.year, datetime.month, datetime.day);
@@ -209,21 +222,35 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
 
       Map<String, dynamic> params = {
         'studentId': userId,
+        // TODO change to dateTime
         'dateFrom': dateFormatter.format(monday),
         'dateTo': dateFormatter.format(friday),
+        // 'dateFrom': dateFormatter.format(DateTime(2024, 6, 3, 0, 0, 0)),
+        // 'dateTo': dateFormatter.format(DateTime(2024, 6, 7, 0, 0, 0)),
         'schoolYearId': syID
       };
 
       String url = 'api/v1/timeTable';
+      // Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/timeTable")
+      // .replace(queryParameters: params);
+
+      // final response = await http.get(
+      //   url,
+      //   headers: {'Authorization': 'Bearer $accessToken'},
+      // );
 
       final response = await makeRequest(
         url,
         params,
+        // ignore: use_build_context_synchronously
         context,
       );
 
       if (response.statusCode == 200) {
         return response.body;
+        // } else if (response.statusCode == 401) {
+        //   await refreshToken();
+        //   return downloadTimetable(dateTime);
       } else {
         throw Exception(
             'Failed to load timetable\n${response.statusCode}\n${response.body}');
@@ -241,6 +268,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     for (var day in timetable) {
       int len = 0;
       for (var lesson in day) {
+        // print(lesson['lessonTo']);
+        // print(lesson['lessonFrom']);
         if (lesson['lessonTo'].toString() == '-' ||
             lesson['lessonFrom'].toString() == '-') {
           listified.add(Map<String, dynamic>.from(lesson));
@@ -293,6 +322,63 @@ class TimetableWeekScreen extends StatefulWidget {
   TimetableWeekScreenState createState() => TimetableWeekScreenState();
 }
 
+// Future<void> refreshToken() async {
+//   final storage = FlutterSecureStorage();
+// refresh token
+//   final refreshToken = await storage.read(key: 'refreshToken');
+//   final r = await http.post(
+//     Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
+//     headers: {"Content-Type": "application/x-www-form-urlencoded"},
+//     body: {
+//       "grant_type": "refresh_token",
+//       "refresh_token": refreshToken,
+//       "client_id": "test_client",
+//       "scope": "offline_access sol_api",
+//     },
+//   );
+// print(r.body);
+//   print('refresh response: ${r.statusCode}');
+
+//   if (r.statusCode == 200) {
+//     final accessToken = jsonDecode(r.body)['access_token'];
+//     final newRefreshToken = jsonDecode(r.body)['refresh_token'];
+//     await storage.write(key: 'accessToken', value: accessToken);
+//     await storage.write(key: 'refreshToken', value: newRefreshToken);
+
+//     print('refreshed token');
+//   } else if (r.statusCode == 400) {
+//     await storage.delete(key: 'accessToken');
+//     await storage.delete(key: 'refreshToken');
+//     print('deleted token');
+
+//     final response = await http.post(
+//       Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
+//       headers: {"Content-Type": "application/x-www-form-urlencoded"},
+//       body: {
+//         "grant_type": "password",
+//         "username": await storage.read(key: 'username'),
+//         "password": await storage.read(key: 'password'),
+//         "client_id": "test_client",
+//         "scope": "openid offline_access profile sol_api",
+//       },
+//     );
+
+//     if (response.statusCode == 200) {
+//       final accessToken = jsonDecode(response.body)['access_token'];
+//       final refreshToken = jsonDecode(response.body)['refresh_token'];
+//       await storage.write(key: 'accessToken', value: accessToken);
+//       await storage.write(key: 'refreshToken', value: refreshToken);
+//     } else {
+//       throw Exception('Failed to login again after token refresh');
+//     }
+//   } else {
+//     throw Exception('Failed to refresh token');
+//   }
+
+//   throw Exception('too lazy to implement');
+//   // exit(1);
+// }
+
 class CurrentLessonCard extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
@@ -309,6 +395,7 @@ class CurrentLessonCard extends StatelessWidget {
             'Current Lesson',
             style: Theme.of(context).textTheme.headlineSmall,
           ),
+          // SizedBox(height: 8),
           Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
@@ -336,54 +423,63 @@ class LessonCardAbbrev extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
   const LessonCardAbbrev({Key? key, required this.lesson}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    // print(lesson);
+    // print(lesson.isEmpty);
     if (lesson.isEmpty) {
       return Card(
         color: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        margin: EdgeInsets.zero,
-        child: const SizedBox.shrink(),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Text(''),
+              Text(''),
+            ],
+          ),
+        ),
       );
     }
     return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
+        child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
               lesson['lessonAbbrev'].substring(
                 0,
-                lesson['lessonAbbrev'].length > 4
-                    ? 4
+                lesson['lessonAbbrev'].length > 5
+                    ? 5
                     : lesson['lessonAbbrev'].length,
               ),
               softWrap: true,
-              style: const TextStyle(
-                fontSize: 12,
+              style: TextStyle(
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
+              )),
+          Text(
               lesson['classroomAbbrev']
                   .replaceAll(RegExp(r'\([^()]*\)'), '')
-                  .substring(0, min<int>(3, lesson['classroomAbbrev'].length)),
+                  .substring(0, 4),
               softWrap: true,
-              style: const TextStyle(
-                fontSize: 9,
+              style: TextStyle(
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              lesson['teacherAbbrev'],
-              style: const TextStyle(fontSize: 9),
-            ),
-          ],
-        ),
+              )),
+          Text(
+            lesson['teacherAbbrev'],
+          )
+          // Text
+        ],
       ),
-    );
+    ));
+  }
+
+  String formatTime(String time) {
+    final dateTime = DateTime.parse(time);
+    return DateFormat('HH:mm').format(dateTime);
   }
 }

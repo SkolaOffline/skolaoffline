@@ -10,7 +10,7 @@ environment:
 
 dependencies:
   # pluto_grid: ^8.0.0
-  flutter_secure_storage: ^8.1.0
+  flutter_secure_storage: ^9.2.2
   http: ^1.2.1
   html: ^0.15.4
   # flutter_html: ^2.1.2
@@ -28,7 +28,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
