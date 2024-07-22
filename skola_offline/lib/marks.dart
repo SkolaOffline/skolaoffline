@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // import 'package:http/http.dart' as http;
 import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
@@ -122,7 +124,7 @@ class SubjectCard extends StatelessWidget {
           ),
           subtitle: RichText(
               text: TextSpan(
-                  text: 'Average: ', // Normal text
+                  text: AppLocalizations.of(context)!.average + ': ', // Normal text
                   style: DefaultTextStyle.of(context).style,
                   children: <TextSpan>[
                 TextSpan(
@@ -188,7 +190,9 @@ class SubjectCard extends StatelessWidget {
                               child: Text(
                                 mark['markText'],
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                                    fontWeight: FontWeight.bold, fontSize: 20,
+                                    color:Colors.black,
+                                    ),
                               ),
                             ),
                           ),
@@ -219,7 +223,7 @@ class SubjectCard extends StatelessWidget {
           ),
           subtitle: RichText(
               text: TextSpan(
-                  text: 'Average: ', // Normal text
+                  text: AppLocalizations.of(context)!.average + ': ', // Normal text
                   style: DefaultTextStyle.of(context).style,
                   children: <TextSpan>[
                 TextSpan(
@@ -332,7 +336,7 @@ class SubjectCard extends StatelessWidget {
 
   void _showMarkDetails(
       BuildContext context, Map<String, dynamic> mark, List<dynamic> teachers) {
-    String teacherName = 'Unknown';
+    String teacherName = AppLocalizations.of(context)!.unknown;
     for (var teacher in teachers) {
       if (teacher['id'] == mark['teacherId']) {
         teacherName = teacher['displayName'];
@@ -369,7 +373,7 @@ class SubjectCard extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Close'),
+              child: Text(AppLocalizations.of(context)!.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },

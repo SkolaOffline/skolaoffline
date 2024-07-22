@@ -7,13 +7,15 @@ import 'package:intl/intl.dart';
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:skola_offline/main.dart';
 import 'package:skola_offline/timetable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> weekTimetable = [];
   List<dynamic> listifiedTimetable = [];
   bool isLoading = true;
   bool _mounted = true;
-  DateTime now = DateTime(2024, 6, 3, 12, 00, 03);
+  DateTime date = DateTime.now();
 
   @override
   void initState() {
@@ -29,7 +31,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
 
   Future<void> _fetchTimetableWeek() async {
     try {
-      final timetableData = await downloadTimetableWeek(now);
+      final timetableData = await downloadTimetableWeek(date);
       if (_mounted) {
         setState(() {
           weekTimetable = parseWeekTimetable(timetableData);
@@ -49,9 +51,9 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     var currentLessonIndex = -1;
 
     if (!isLoading) {
-      for (var i = weekTimetable[now.weekday - 1].length - 1; i >= 0; i--) {
-        if (now.isBefore(dateFormatter
-            .parse(weekTimetable[now.weekday - 1][i]['endTime']))) {
+      for (var i = weekTimetable[date.weekday - 1].length - 1; i >= 0; i--) {
+        if (date.isBefore(dateFormatter
+            .parse(weekTimetable[date.weekday - 1][i]['endTime']))) {
           currentLessonIndex = i;
         }
       }
@@ -66,15 +68,15 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Rozvrh hodin',
+                AppLocalizations.of(context)!.timetable,
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
               SizedBox(width: 10),
               Text(
-                '${DateFormat('d.M').format(now)} - ${DateFormat(
+                '${DateFormat('d.M').format(date)} - ${DateFormat(
                   'd.M.y',
-                ).format(now.add(Duration(days: 4)))}',
+                ).format(date.add(Duration(days: 4)))}',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
               ),
               Row(
@@ -83,7 +85,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                     icon: Icon(Icons.arrow_back, size: 20),
                     onPressed: () {
                       setState(() {
-                        now = now.subtract(Duration(days: 7));
+                        date = date.subtract(Duration(days: 7));
                         isLoading = true;
                       });
                       _fetchTimetableWeek();
@@ -96,11 +98,11 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                               context: context,
                               firstDate: DateTime(0),
                               lastDate: DateTime(9999),
-                              initialDate: now)
+                              initialDate: date)
                           .then((value) {
                         if (value != null) {
                           setState(() {
-                            now = value;
+                            date = value;
                             isLoading = true;
                           });
                           _fetchTimetableWeek();
@@ -112,7 +114,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                     icon: Icon(Icons.arrow_forward, size: 20),
                     onPressed: () {
                       setState(() {
-                        now = now.add(Duration(days: 7));
+                        date = date.add(Duration(days: 7));
                         isLoading = true;
                       });
                       _fetchTimetableWeek();
@@ -306,7 +308,7 @@ class CurrentLessonCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Current Lesson',
+            AppLocalizations.of(context)!.current_lesson,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           Container(

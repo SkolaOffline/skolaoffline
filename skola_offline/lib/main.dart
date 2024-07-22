@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:skola_offline/absences.dart';
 import 'package:skola_offline/login.dart';
@@ -107,7 +110,20 @@ Future<http.Response> makeRequest(
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget{
+  @override
+  _MyAppState createState()=> _MyAppState();
+
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+}
+
+class _MyAppState extends State<MyApp>{
+  Locale _locale = Locale('en');
+  void setLocale(Locale value){
+    setState(() {
+      _locale = value;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -125,10 +141,13 @@ class MyApp extends StatelessWidget {
           seedColor: Colors.deepPurple,
         ),
       ),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale:_locale,
       home: MyHomePage(),
     );
   }
-}
+  }
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -162,6 +181,20 @@ class MyHomePageState extends State<MyHomePage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            StreamBuilder(
+            stream: Stream.periodic(const Duration(seconds: 1)),
+            builder: (context, snapshot){
+              return Text(
+                          DateFormat('d.M H:m:s').format(DateTime.now()),
+                          textAlign:TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18,
+                              // fontFamily: 'SansSerif',
+                            ),
+            );
+            }
+            ),
+
             Row(
               children: [
                 Image(
@@ -176,7 +209,7 @@ class MyHomePageState extends State<MyHomePage> {
                       child: Row(children: [
                         Icon(Icons.person),
                         SizedBox(width: 5),
-                        Text('Profile'),
+                        Text(AppLocalizations.of(context)!.profile),
                       ],),
                     ),
                     PopupMenuItem(value: 'option2', child: Text('Another option')),
@@ -209,12 +242,12 @@ class MyHomePageState extends State<MyHomePage> {
           });
         },
         destinations: [
-          NavigationDestination(icon: Icon(Icons.schedule), label: 'Timetable'),
+          NavigationDestination(icon: Icon(Icons.schedule), label: AppLocalizations.of(context)!.timetable),
           NavigationDestination(
-              icon: Icon(Icons.format_list_numbered), label: 'Marks'),
-          NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),
+              icon: Icon(Icons.format_list_numbered), label: AppLocalizations.of(context)!.marks),
+          NavigationDestination(icon: Icon(Icons.message), label: AppLocalizations.of(context)!.messages),
           NavigationDestination(
-              icon: Icon(Icons.person_off), label: 'Absences'),
+              icon: Icon(Icons.person_off), label: AppLocalizations.of(context)!.absence),
           // NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),

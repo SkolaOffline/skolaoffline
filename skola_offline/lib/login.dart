@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:skola_offline/dummy_app_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -35,7 +37,7 @@ class LoginScreenState extends State<LoginScreen> {
             children: [
               CircularProgressIndicator(),
               SizedBox(width: 20),
-              Text('Logging in...'),
+              Text(AppLocalizations.of(context)!.logging_loading),
             ],
           ),
         );
@@ -114,10 +116,6 @@ class LoginScreenState extends State<LoginScreen> {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
       _showSuccessDialog('Success', 'You have been logged in.');
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => MyHomePage()),
-      // );
     } catch (e) {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
@@ -168,7 +166,7 @@ class LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Profile'),
+          title: Text(AppLocalizations.of(context)!.profile),
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         ),
         body: SingleChildScrollView(
@@ -185,7 +183,7 @@ class LoginScreenState extends State<LoginScreen> {
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
-                    labelText: 'Username',
+                    labelText: AppLocalizations.of(context)!.username,
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -194,7 +192,7 @@ class LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: AppLocalizations.of(context)!.password,
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -214,7 +212,7 @@ class LoginScreenState extends State<LoginScreen> {
                     await login(username, password);
                   },
                   icon: Icon(Icons.login),
-                  label: Text('Login'),
+                  label: Text(AppLocalizations.of(context)!.login),
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50),
                     backgroundColor:

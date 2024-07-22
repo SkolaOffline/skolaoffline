@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skola_offline/timetableDay.dart';
 import 'package:skola_offline/timetableWeek.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TimetableScreenState extends State<TimetableScreen> {
   bool isDayScreen = true;
@@ -21,7 +22,7 @@ class TimetableScreenState extends State<TimetableScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Timetable'),
+        title: Text(AppLocalizations.of(context)!.current_lesson),
         actions: [
           IconButton(
             icon: Icon(Icons.calendar_today),

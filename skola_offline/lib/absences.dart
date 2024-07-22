@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:skola_offline/main.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class AbsencesScreen extends StatefulWidget {
   @override
@@ -174,7 +176,7 @@ class AbsencesScreenState extends State<AbsencesScreen> {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    absence['subjectName'] ?? 'Unknown Subject',
+                    absence['subjectName'] ?? AppLocalizations.of(context)!.unknown_subject,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -187,7 +189,7 @@ class AbsencesScreenState extends State<AbsencesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'Absences',
+                        AppLocalizations.of(context)!.absence,
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                       Text(

@@ -4,6 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:skola_offline/dummy_app_state.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import the url_launcher package
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/main.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -36,7 +38,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             children: [
               CircularProgressIndicator(),
               SizedBox(width: 20),
-              Text('Logging in...'),
+              Text(AppLocalizations.of(context)!.logging_loading),
             ],
           ),
         );
@@ -114,7 +116,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
-      _showSuccessDialog('Success', 'You have been logged in.');
+      _showSuccessDialog(AppLocalizations.of(context)!.success, AppLocalizations.of(context)!.success_message);
       // Navigator.pushReplacement(
       //   context,
       //   MaterialPageRoute(builder: (context) => MyHomePage()),
@@ -122,7 +124,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
-      _showErrorDialog('Error', 'An unexpected error occurred: $e');
+      _showErrorDialog(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.error_message + ': $e');
     }
   }
 
@@ -166,9 +168,10 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text(AppLocalizations.of(context)!.profile),
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: SingleChildScrollView(
@@ -185,7 +188,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               TextField(
                 controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  labelText: AppLocalizations.of(context)!.username,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -194,7 +197,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: AppLocalizations.of(context)!.password,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -212,7 +215,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   await login(username, password);
                 },
                 icon: Icon(Icons.login),
-                label: Text('Login'),
+                label: Text(AppLocalizations.of(context)!.login),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                   backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -225,7 +228,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   Icon(Icons.settings),
                   SizedBox(width: 5,),
                   Text(
-                    'Settings',
+                    AppLocalizations.of(context)!.settings,
                       style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -233,11 +236,26 @@ class ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(AppLocalizations.of(context)!.language+ ': '),
+                  DropdownButton<Locale>(value:Localizations.localeOf(context) ,items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale value){
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Text(value.languageCode)
+                      );
+                  }).toList(),
+                  onChanged: (Locale? value){
+                    MyApp.of(context)?.setLocale(value ?? Locale('en'));
+                  })
+                ],
+              ),
               Column(
                 children: [
-                  Text('Here (in the future) you can change the settings of the app.'),
-                  Text('Like the color or theme of the app.'),
-                  Text('You can enable dummy mode by logging in with username "dummy" and password "mode".'),
+                  Text(AppLocalizations.of(context)!.settings_placeholder_text_1),
+                  Text(AppLocalizations.of(context)!.settings_placeholder_text_2),
+                  Text(AppLocalizations.of(context)!.settings_placeholder_text_3),
                 ],
               ),
               // SwitchListTile(
@@ -255,7 +273,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 children: [
                 Icon(Icons.info),
                 Text(
-                  'About',
+                  AppLocalizations.of(context)!.about,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -271,7 +289,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.code),
-                    Text('Github (Issues, Code, etc.)'),
+                    Text(AppLocalizations.of(context)!.github),
                   ],
                 ),
               ),
@@ -283,7 +301,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.email),
-                    Text('Email us'),
+                    Text(AppLocalizations.of(context)!.email_us),
                   ],
                 ),
               ),

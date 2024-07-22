@@ -17,12 +17,14 @@ dependencies:
   flutter_html: 3.0.0-beta.2
   flutter_html_all: 3.0.0-beta.2
   # flutter_widget_from_html: ^0.15.1
-  intl: 0.19.0
+  intl: any
   url_launcher: ^6.3.0
   flutter:
     sdk: flutter
-
+    
   provider: ^6.0.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -32,5 +34,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
+
   assets:
     - lib/assets/
