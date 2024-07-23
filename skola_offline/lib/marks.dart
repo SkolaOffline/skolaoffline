@@ -109,206 +109,206 @@ class SubjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dummyAppState = DummyAppState();
-    bool useDummyData = dummyAppState.useDummyData;
-    //TODO: this is shitty workaround, fix dummy data to have 'subject' key somehow, probably error in loading dummy data
-    if (useDummyData) {
-      return Card(
-        elevation: 4,
-        margin: EdgeInsets.all(8),
-        color: Theme.of(context).colorScheme.primaryContainer,
-        child: ExpansionTile(
-          title: Text(
-            subject['name'],
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: RichText(
-              text: TextSpan(
-                  text: AppLocalizations.of(context)!.average + ': ', // Normal text
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                TextSpan(
-                  text: '${subject['averageText']}', // Bold text
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                )
-              ])),
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: subject['marks'].length,
-              itemBuilder: (context, index) {
-                final mark = subject['marks'][index];
-                return Column(
-                  children: [
-                    ListTile(
-                      tileColor: Theme.of(context).colorScheme.onSecondary,
-                      // focusColor: Theme.of(context).colorScheme.secondaryContainer,
-                      title: Text(
-                        mark['theme'].substring(0, 1).toUpperCase() +
-                            mark['theme'].substring(1),
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      // subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
-                      subtitle: Text(formatDateToDate(mark['markDate']),
-                          style: TextStyle(fontSize: 12)),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(width: 8),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 6.0,
-                                right:
-                                    6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
-                            // child: Text('Weight: ${mark['weight']}',
-                            child: Text('${(mark['weight'] * 10).toInt()}',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w400)),
-                          ),
-                          SizedBox(width: 8),
-                          Container(
-                            width: 30,
-                            height: 40,
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: _getMarkColor(mark['markText']),
-                              borderRadius: BorderRadius.circular(5),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 6,
-                                  offset: Offset(4, 4),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                mark['markText'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20,
-                                    color:Colors.black,
-                                    ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      onTap: () =>
-                          _showMarkDetails(context, mark, subject['teachers']),
-                    ),
-                    Divider(
-                      height: 0,
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
+    // final dummyAppState = DummyAppState();
+    // bool useDummyData = dummyAppState.useDummyData;
+    //Done: this is shitty workaround, fix dummy data to have 'subject' key somehow, probably error in loading dummy data
+    // if (useDummyData) {
+    //   return Card(
+    //     elevation: 4,
+    //     margin: EdgeInsets.all(8),
+    //     color: Theme.of(context).colorScheme.primaryContainer,
+    //     child: ExpansionTile(
+    //       title: Text(
+    //         subject['name'],
+    //         style: TextStyle(fontWeight: FontWeight.bold),
+    //       ),
+    //       subtitle: RichText(
+    //           text: TextSpan(
+    //               text: AppLocalizations.of(context)!.average + ': ', // Normal text
+    //               style: DefaultTextStyle.of(context).style,
+    //               children: <TextSpan>[
+    //             TextSpan(
+    //               text: '${subject['averageText']}', // Bold text
+    //               style: TextStyle(
+    //                 fontWeight: FontWeight.bold,
+    //                 fontSize: 16,
+    //               ),
+    //             )
+    //           ])),
+    //       children: [
+    //         ListView.builder(
+    //           shrinkWrap: true,
+    //           physics: NeverScrollableScrollPhysics(),
+    //           itemCount: subject['marks'].length,
+    //           itemBuilder: (context, index) {
+    //             final mark = subject['marks'][index];
+    //             return Column(
+    //               children: [
+    //                 ListTile(
+    //                   tileColor: Theme.of(context).colorScheme.onSecondary,
+    //                   // focusColor: Theme.of(context).colorScheme.secondaryContainer,
+    //                   title: Text(
+    //                     mark['theme'].substring(0, 1).toUpperCase() +
+    //                         mark['theme'].substring(1),
+    //                     style: TextStyle(fontWeight: FontWeight.w600),
+    //                   ),
+    //                   // subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
+    //                   subtitle: Text(formatDateToDate(mark['markDate']),
+    //                       style: TextStyle(fontSize: 12)),
+    //                   trailing: Row(
+    //                     mainAxisSize: MainAxisSize.min,
+    //                     children: [
+    //                       SizedBox(width: 8),
+    //                       Padding(
+    //                         padding: const EdgeInsets.only(
+    //                             left: 6.0,
+    //                             right:
+    //                                 6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
+    //                         // child: Text('Weight: ${mark['weight']}',
+    //                         child: Text('${(mark['weight'] * 10).toInt()}',
+    //                             style: TextStyle(
+    //                                 fontSize: 15, fontWeight: FontWeight.w400)),
+    //                       ),
+    //                       SizedBox(width: 8),
+    //                       Container(
+    //                         width: 30,
+    //                         height: 40,
+    //                         padding: EdgeInsets.all(8),
+    //                         decoration: BoxDecoration(
+    //                           color: _getMarkColor(mark['markText']),
+    //                           borderRadius: BorderRadius.circular(5),
+    //                           boxShadow: [
+    //                             BoxShadow(
+    //                               color: Colors.grey.withOpacity(0.5),
+    //                               spreadRadius: 2,
+    //                               blurRadius: 6,
+    //                               offset: Offset(4, 4),
+    //                             ),
+    //                           ],
+    //                         ),
+    //                         child: Center(
+    //                           child: Text(
+    //                             mark['markText'],
+    //                             style: TextStyle(
+    //                                 fontWeight: FontWeight.bold, fontSize: 20,
+    //                                 color:Colors.black,
+    //                                 ),
+    //                           ),
+    //                         ),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                   onTap: () =>
+    //                       _showMarkDetails(context, mark, subject['teachers']),
+    //                 ),
+    //                 Divider(
+    //                   height: 0,
+    //                 ),
+    //               ],
+    //             );
+    //           },
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // } else {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.all(8),
+      color: Theme.of(context).colorScheme.primaryContainer,
+      child: ExpansionTile(
+        title: Text(
+          subject['subject']['name'],
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-      );
-    } else {
-      return Card(
-        elevation: 4,
-        margin: EdgeInsets.all(8),
-        color: Theme.of(context).colorScheme.primaryContainer,
-        child: ExpansionTile(
-          title: Text(
-            subject['subject']['name'],
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: RichText(
-              text: TextSpan(
-                  text: AppLocalizations.of(context)!.average + ': ', // Normal text
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                TextSpan(
-                  text: '${subject['averageText']}', // Bold text
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                )
-              ])),
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: subject['marks'].length,
-              itemBuilder: (context, index) {
-                final mark = subject['marks'][index];
-                return Column(
-                  children: [
-                    ListTile(
-                      tileColor: Theme.of(context).colorScheme.onSecondary,
-                      // focusColor: Theme.of(context).colorScheme.secondaryContainer,
-                      title: Text(
-                        mark['theme'].substring(0, 1).toUpperCase() +
-                            mark['theme'].substring(1),
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      // subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
-                      subtitle: Text(formatDateToDate(mark['markDate']),
-                          style: TextStyle(fontSize: 12)),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(width: 8),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 6.0,
-                                right:
-                                    6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
-                            // child: Text('Weight: ${mark['weight']}',
-                            child: Text('${(mark['weight'] * 10).toInt()}',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w400)),
-                          ),
-                          SizedBox(width: 8),
-                          Container(
-                            width: 30,
-                            height: 40,
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: _getMarkColor(mark['markText']),
-                              borderRadius: BorderRadius.circular(5),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 6,
-                                  offset: Offset(4, 4),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                mark['markText'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+        subtitle: RichText(
+            text: TextSpan(
+                text:
+                    AppLocalizations.of(context)!.average + ': ', // Normal text
+                style: DefaultTextStyle.of(context).style,
+                children: <TextSpan>[
+              TextSpan(
+                text: '${subject['averageText']}', // Bold text
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              )
+            ])),
+        children: [
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: subject['marks'].length,
+            itemBuilder: (context, index) {
+              final mark = subject['marks'][index];
+              return Column(
+                children: [
+                  ListTile(
+                    tileColor: Theme.of(context).colorScheme.onSecondary,
+                    // focusColor: Theme.of(context).colorScheme.secondaryContainer,
+                    title: Text(
+                      mark['theme'].substring(0, 1).toUpperCase() +
+                          mark['theme'].substring(1),
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    // subtitle: Text('Date: ${mark['markDate'].split('T')[0]}'),
+                    subtitle: Text(formatDateToDate(mark['markDate']),
+                        style: TextStyle(fontSize: 12)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(width: 8),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 6.0,
+                              right:
+                                  6.0), // Adds 16 pixels of padding on the left and 32 pixels on the right
+                          // child: Text('Weight: ${mark['weight']}',
+                          child: Text('${(mark['weight'] * 10).toInt()}',
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w400)),
+                        ),
+                        SizedBox(width: 8),
+                        Container(
+                          width: 30,
+                          height: 40,
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: _getMarkColor(mark['markText']),
+                            borderRadius: BorderRadius.circular(5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 6,
+                                offset: Offset(4, 4),
                               ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              mark['markText'],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
                             ),
                           ),
-                        ],
-                      ),
-                      onTap: () =>
-                          _showMarkDetails(context, mark, subject['teachers']),
+                        ),
+                      ],
                     ),
-                    Divider(
-                      height: 0,
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
-      );
-    }
+                    onTap: () =>
+                        _showMarkDetails(context, mark, subject['teachers']),
+                  ),
+                  Divider(
+                    height: 0,
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Color _getMarkColor(String mark) {
