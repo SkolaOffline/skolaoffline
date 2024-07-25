@@ -290,7 +290,10 @@ class SubjectCard extends StatelessWidget {
                             child: Text(
                               mark['markText'],
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
                             ),
                           ),
                         ),
