@@ -24,8 +24,8 @@
           "cycle": "bez cyklů",
           "subject": {
             "id": "1",
-            "abbrev": "Š",
-            "name": "Španělský jazyk",
+            "abbrev": "S",
+            "name": "Spanish",
             "kind": "v"
           },
           "hourColour": "255,204,153",
@@ -136,11 +136,11 @@
             "name": "",
             "description": ""
           },
-          "cycle": "--xx",
+          "cycle": "cycle",
           "subject": {
             "id": "2",
-            "abbrev": "A",
-            "name": "Anglický jazyk",
+            "abbrev": "E",
+            "name": "English",
             "kind": "p"
           },
           "hourColour": "238,238,238",
@@ -215,20 +215,20 @@
           "beginTime": "2024-05-27T08:55:00",
           "endTime": "2024-05-27T09:40:00",
           "hourType": {
-            "id": "SUPLOVANI",
-            "description": "Suplování",
-            "displayName": "SUPL"
+            "id": "SUBSTITUTION",
+            "description": "Substitution",
+            "displayName": "SUB"
           },
           "hourKind": {
-            "id": "SUPLOVANI",
-            "name": "Suplování",
-            "description": "Suplování předmětu"
+            "id": "SUBSTITUTION",
+            "name": "Substitution",
+            "description": "Substitution of the subject"
           },
           "cycle": null,
           "subject": {
             "id": "2",
             "abbrev": "A",
-            "name": "Anglický jazyk",
+            "name": "English",
             "kind": "p"
           },
           "hourColour": "255,4,4",
@@ -296,394 +296,826 @@
           "description": null
         },
         {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730559",
-          "className": "Class B",
-          "studentId": "E2211136",
-          "firstName": "Student D",
-          "lastname": "Student D",
-          "cvtv": "24"
+          "scheduledHourId": "4",
+          "scheduledHourOrder": 16,
+          "lessonIdFrom": "3",
+          "lessonIdTo": "3",
+          "beginTime": "2024-05-27T10:00:00",
+          "endTime": "2024-05-27T10:45:00",
+          "hourType": {
+            "id": "ROZVRH",
+            "description": "Rozvrh",
+            "displayName": null
+          },
+          "hourKind": { "id": "", "name": "", "description": "" },
+          "cycle": "bez cyklů",
+          "subject": {
+            "id": "4",
+            "abbrev": "PE",
+            "name": "Physical exercises",
+            "kind": "p"
+          },
+          "hourColour": "255,204,153",
+          "hourColourText": "0,0,0",
+          "groups": [
+            {
+              "id": "A",
+              "name": "Group A",
+              "kind": "g",
+              "classId": "A",
+              "className": "A"
+            },
+            {
+              "id": "B",
+              "name": "B",
+              "kind": "g",
+              "classId": "B",
+              "className": "B"
+            }
+          ],
+          "rooms": [
+            {
+              "id": "D",
+              "abbrev": "D",
+              "name": "Room D"
+            }
+          ],
+          "teachers": [
+            {
+              "id": "G",
+              "abbrev": "G",
+              "name": "Teacher",
+              "surname": "G",
+              "displayName": "Teacher G"
+            }
+          ],
+          "contextMenu": [],
+          "onLineMeeting": false,
+          "entryClassBook": null,
+          "detailHours": [
+            {
+              "id": "3",
+              "name": "3",
+              "order": 3,
+              "timeFrom": "10:00:00",
+              "timeto": "10:45:00"
+            }
+          ],
+          "orderlyService": [
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "A",
+              "firstName": "Student",
+              "lastname": "A",
+              "cvtv": "18"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "B",
+              "firstName": "Student",
+              "lastname": "B",
+              "cvtv": "19"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "B",
+              "className": "B",
+              "studentId": "C",
+              "firstName": "Student",
+              "lastname": "C",
+              "cvtv": "23"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "B",
+              "className": "B",
+              "studentId": "D",
+              "firstName": "Student",
+              "lastname": "D",
+              "cvtv": "24"
+            }
+          ],
+          "title": null,
+          "description": "Description"
+        },
+        {
+          "scheduledHourId": "5",
+          "scheduledHourOrder": 16,
+          "lessonIdFrom": "4",
+          "lessonIdTo": "4",
+          "beginTime": "2024-05-27T10:55:00",
+          "endTime": "2024-05-27T11:40:00",
+          "hourType": {
+            "id": "SUPLOVANA",
+            "description": "Suplovaná",
+            "displayName": null
+          },
+          "hourKind": { "id": "", "name": "", "description": "" },
+          "cycle": "bez cyklů",
+          "subject": {
+            "id": "5",
+            "abbrev": "Che",
+            "name": "Chemistry",
+            "kind": "p"
+          },
+          "hourColour": "238,238,238",
+          "hourColourText": "0,0,0",
+          "groups": [
+            {
+              "id": "A",
+              "name": "A",
+              "kind": "c",
+              "classId": "A",
+              "className": "A"
+            }
+          ],
+          "rooms": [
+            {
+              "id": "A",
+              "abbrev": "A",
+              "name": "Room A"
+            }
+          ],
+          "teachers": [
+            {
+              "id": "H",
+              "abbrev": "H",
+              "name": "Teacher",
+              "surname": "H",
+              "displayName": "Teacher H"
+            }
+          ],
+          "contextMenu": [],
+          "onLineMeeting": false,
+          "entryClassBook": null,
+          "detailHours": [
+            {
+              "id": "4",
+              "name": "4",
+              "order": 4,
+              "timeFrom": "10:55:00",
+              "timeto": "11:40:00"
+            }
+          ],
+          "orderlyService": [
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "A",
+              "firstName": "Student",
+              "lastname": "A",
+              "cvtv": "18"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "B",
+              "firstName": "Student",
+              "lastname": "B",
+              "cvtv": "19"
+            }
+          ],
+          "title": null,
+          "description": "Description"
+        },
+        {
+          "scheduledHourId": "E29434393",
+          "scheduledHourOrder": 1,
+          "lessonIdFrom": "4",
+          "lessonIdTo": "4",
+          "beginTime": "2024-05-27T10:55:00",
+          "endTime": "2024-05-27T11:40:00",
+          "hourType": {
+            "id": "SUBSTITUTION",
+            "description": "Substitution",
+            "displayName": "SUB"
+          },
+          "hourKind": {
+            "id": "SUBSTITUTION",
+            "name": "Substitution",
+            "description": "Substitution of the subject"
+          },
+          "cycle": null,
+          "subject": {
+            "id": "7",
+            "abbrev": "SS",
+            "name": "Social Studies",
+            "kind": "p"
+          },
+          "hourColour": "255,4,4",
+          "hourColourText": "255,255,255",
+          "groups": [
+            {
+              "id": "A",
+              "name": "A",
+              "kind": "c",
+              "classId": "A",
+              "className": "A"
+            }
+          ],
+          "rooms": [
+            {
+              "id": "F",
+              "abbrev": "F",
+              "name": "Room F"
+            }
+          ],
+          "teachers": [
+            {
+              "id": "F",
+              "abbrev": "F",
+              "name": "Teacher",
+              "surname": "F",
+              "displayName": "Teacher F"
+            }
+          ],
+          "contextMenu": [],
+          "onLineMeeting": false,
+          "entryClassBook": null,
+          "detailHours": [
+            {
+              "id": "4",
+              "name": "4",
+              "order": 4,
+              "timeFrom": "10:55:00",
+              "timeto": "11:40:00"
+            }
+          ],
+          "orderlyService": [
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "A",
+              "firstName": "Student",
+              "lastname": "A",
+              "cvtv": "18"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "B",
+              "firstName": "Student",
+              "lastname": "B",
+              "cvtv": "19"
+            }
+          ],
+          "title": null,
+          "description": null
+        },
+        {
+          "scheduledHourId": "5",
+          "scheduledHourOrder": 16,
+          "lessonIdFrom": "5",
+          "lessonIdTo": "6",
+          "beginTime": "2024-05-27T12:00:00",
+          "endTime": "2024-05-27T13:30:00",
+          "hourType": {
+            "id": "ROZVRH",
+            "description": "Rozvrh",
+            "displayName": null
+          },
+          "hourKind": { "id": "", "name": "", "description": "" },
+          "cycle": "bez cyklů",
+          "subject": {
+            "id": "8",
+            "abbrev": "MS",
+            "name": "Mathematics Seminar",
+            "kind": "v"
+          },
+          "hourColour": "255,204,153",
+          "hourColourText": "0,0,0",
+          "groups": [
+            {
+              "id": "J",
+              "name": "Group J",
+              "kind": "g",
+              "classId": "D",
+              "className": "Class D"
+            },
+            {
+              "id": "E",
+              "name": "Group E",
+              "kind": "g",
+              "classId": "E",
+              "className": "Class E"
+            },
+            {
+              "id": "F",
+              "name": "Group F",
+              "kind": "g",
+              "classId": "A",
+              "className": "A"
+            },
+            {
+              "id": "G",
+              "name": "Group G",
+              "kind": "g",
+              "classId": "B",
+              "className": "B"
+            },
+            {
+              "id": "H",
+              "name": "Group H",
+              "kind": "g",
+              "classId": "H",
+              "className": "Class H"
+            },
+            {
+              "id": "I",
+              "name": "Group I",
+              "kind": "g",
+              "classId": "I",
+              "className": "Class I"
+            }
+          ],
+          "rooms": [
+            {
+              "id": "K",
+              "abbrev": "K",
+              "name": "Room K"
+            }
+          ],
+          "teachers": [
+            {
+              "id": "K",
+              "abbrev": "K",
+              "name": "Teacher",
+              "surname": "K",
+              "displayName": "Mgr. Teacher K"
+            }
+          ],
+          "contextMenu": [],
+          "onLineMeeting": false,
+          "entryClassBook": null,
+          "detailHours": [
+            {
+              "id": "5",
+              "name": "5",
+              "order": 5,
+              "timeFrom": "11:50:00",
+              "timeto": "12:35:00"
+            },
+            {
+              "id": "6",
+              "name": "6",
+              "order": 6,
+              "timeFrom": "12:45:00",
+              "timeto": "13:30:00"
+            }
+          ],
+          "orderlyService": [
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "A",
+              "firstName": "Student",
+              "lastname": "A",
+              "cvtv": "18"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "B",
+              "firstName": "Student",
+              "lastname": "B",
+              "cvtv": "19"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "B",
+              "className": "B",
+              "studentId": "E",
+              "firstName": "Student",
+              "lastname": "E",
+              "cvtv": "23"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "B",
+              "className": "B",
+              "studentId": "F",
+              "firstName": "Student",
+              "lastname": "F",
+              "cvtv": "24"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "H",
+              "className": "Class H",
+              "studentId": "G",
+              "firstName": "Student",
+              "lastname": "G",
+              "cvtv": "3"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "H",
+              "className": "Class H",
+              "studentId": "H",
+              "firstName": "Student",
+              "lastname": "H",
+              "cvtv": "4"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "Class D",
+              "className": "Class D",
+              "studentId": "I",
+              "firstName": "Student",
+              "lastname": "I",
+              "cvtv": "11"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "Class D",
+              "className": "Class D",
+              "studentId": "J",
+              "firstName": "Student",
+              "lastname": "J",
+              "cvtv": "23"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "E",
+              "className": "Class E",
+              "studentId": "K",
+              "firstName": "Student",
+              "lastname": "K",
+              "cvtv": "23"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "E",
+              "className": "Class E",
+              "studentId": "L",
+              "firstName": "Student",
+              "lastname": "L",
+              "cvtv": "24"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "I",
+              "className": "Class I",
+              "studentId": "M",
+              "firstName": "Student",
+              "lastname": "M",
+              "cvtv": "17"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "I",
+              "className": "Class I",
+              "studentId": "N",
+              "firstName": "Student",
+              "lastname": "N",
+              "cvtv": "18"
+            }
+          ],
+          "title": null,
+          "description": "Description"
+        },
+        {
+          "scheduledHourId": "E28251462",
+          "scheduledHourOrder": 16,
+          "lessonIdFrom": "7",
+          "lessonIdTo": "7",
+          "beginTime": "2024-05-27T14:00:00",
+          "endTime": "2024-05-27T14:45:00",
+          "hourType": {
+            "id": "ROZVRH",
+            "description": "Rozvrh",
+            "displayName": null
+          },
+          "hourKind": { "id": "", "name": "", "description": "" },
+          "cycle": "bez cyklů",
+          "subject": {
+            "id": "H",
+            "abbrev": "Hi",
+            "name": "History",
+            "kind": "p"
+          },
+          "hourColour": "255,204,153",
+          "hourColourText": "0,0,0",
+          "groups": [
+            {
+              "id": "A",
+              "name": "A",
+              "kind": "c",
+              "classId": "A",
+              "className": "A"
+            }
+          ],
+          "rooms": [
+            {
+              "id": "H",
+              "abbrev": "H",
+              "name": "Room H"
+            }
+          ],
+          "teachers": [
+            {
+              "id": "O",
+              "abbrev": "O",
+              "name": "Teacher",
+              "surname": "O",
+              "displayName": "Mgr. Teacher O"
+            }
+          ],
+          "contextMenu": [],
+          "onLineMeeting": false,
+          "entryClassBook": null,
+          "detailHours": [
+            {
+              "id": "7",
+              "name": "7",
+              "order": 7,
+              "timeFrom": "14:00:00",
+              "timeto": "14:45:00"
+            }
+          ],
+          "orderlyService": [
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "A",
+              "firstName": "Student",
+              "lastname": "A",
+              "cvtv": "18"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "B",
+              "firstName": "Student",
+              "lastname": "B",
+              "cvtv": "19"
+            }
+          ],
+          "title": null,
+          "description": "Description"
+        },
+        {
+          "scheduledHourId": "E28251644",
+          "scheduledHourOrder": 18,
+          "lessonIdFrom": "8",
+          "lessonIdTo": "8",
+          "beginTime": "2024-05-27T14:55:00",
+          "endTime": "2024-05-27T15:40:00",
+          "hourType": {
+            "id": "ROZVRH",
+            "description": "Rozvrh",
+            "displayName": null
+          },
+          "hourKind": { "id": "", "name": "", "description": "" },
+          "cycle": "cycle",
+          "subject": {
+            "id": "M",
+            "abbrev": "Ma-p",
+            "name": "Mathematics - practicals",
+            "kind": "p"
+          },
+          "hourColour": "255,204,153",
+          "hourColourText": "0,0,0",
+          "groups": [
+            {
+              "id": "M",
+              "name": "Group M",
+              "kind": "g",
+              "classId": "A",
+              "className": "A"
+            }
+          ],
+          "rooms": [
+            {
+              "id": "K",
+              "abbrev": "K",
+              "name": "Room K"
+            }
+          ],
+          "teachers": [
+            {
+              "id": "K",
+              "abbrev": "K",
+              "name": "Teacher",
+              "surname": "K",
+              "displayName": "Mgr. Teacher K"
+            }
+          ],
+          "contextMenu": [],
+          "onLineMeeting": false,
+          "entryClassBook": null,
+          "detailHours": [
+            {
+              "id": "8",
+              "name": "8",
+              "order": 8,
+              "timeFrom": "14:55:00",
+              "timeto": "15:40:00"
+            }
+          ],
+          "orderlyService": [
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "A",
+              "firstName": "Student",
+              "lastname": "A",
+              "cvtv": "18"
+            },
+            {
+              "dateFrom": "2024-05-27T00:00:00",
+              "dateTo": "2024-06-02T23:59:00",
+              "classId": "A",
+              "className": "A",
+              "studentId": "B",
+              "firstName": "Student",
+              "lastname": "B",
+              "cvtv": "19"
+            }
+          ],
+          "title": null,
+          "description": null
         }
       ],
-      "title": null,
-      "description": "Description"
+      "monitorings": [],
+      "emergencies": [],
+      "teachingInformations": [
+        {
+          "teachingInformationId": "K",
+          "lessonId": "5",
+          "teacherName": "Mgr. Teacher K",
+          "information": "Integral",
+          "hourType": {
+            "id": "POZNAMKA",
+            "description": "Poznámka",
+            "displayName": null
+          },
+          "subject": {
+            "id": "8",
+            "abbrev": "MS",
+            "name": "Mathematics Seminar",
+            "kind": "v"
+          },
+          "groups": [
+            {
+              "id": "8",
+              "name": "Group J",
+              "kind": "g",
+              "classId": "Class D",
+              "className": "Class D"
+            },
+            {
+              "id": "E",
+              "name": "Group E",
+              "kind": "g",
+              "classId": "E",
+              "className": "Class E"
+            },
+            {
+              "id": "F",
+              "name": "Group F",
+              "kind": "g",
+              "classId": "A",
+              "className": "A"
+            },
+            {
+              "id": "G",
+              "name": "Group G",
+              "kind": "g",
+              "classId": "B",
+              "className": "B"
+            },
+            {
+              "id": "H",
+              "name": "Group H",
+              "kind": "g",
+              "classId": "H",
+              "className": "Class H"
+            },
+            {
+              "id": "I",
+              "name": "Group I",
+              "kind": "g",
+              "classId": "I",
+              "className": "Class I"
+            }
+          ]
+        }
+      ],
+      "evaluations": [
+        {
+          "evaluationId": "1",
+          "lessonId": "5",
+          "scheduledHourId": "5",
+          "type": { "id": "5", "name": "Váha 8 ", "description": "" },
+          "theme": "Integral",
+          "weight": 0.8,
+          "comment": null,
+          "entred": true,
+          "valueToDisplay": "1",
+          "valueToAverage": "1",
+          "verbalEvaluation": null,
+          "teacher": { "id": "K", "name": "Mgr. Teacher K" },
+          "evaluationDate": "2024-05-27T00:00:00",
+          "schoolYearId": "testId",
+          "semesterId": "testId",
+          "subjectName": "Mathematics Seminar",
+          "evaluationMethod": "Marks",
+          "maxPoints": null
+        }
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "1",
+      "caption": "0.",
+      "beginTime": "1900-01-01T07:00:00",
+      "endTime": "1900-01-01T07:45:00"
     },
     {
-      "scheduledHourId": "E28251464",
-      "scheduledHourOrder": 16,
-      "lessonIdFrom": "4",
-      "lessonIdTo": "4",
-      "beginTime": "2024-05-27T10:55:00",
-      "endTime": "2024-05-27T11:40:00",
-      "hourType": {
-        "id": "SUPLOVANA",
-        "description": "Suplovaná",
-        "displayName": null
-      },
-      "hourKind": {
-        "id": "",
-        "name": "",
-        "description": ""
-      },
-      "cycle": "bez cyklů",
-      "subject": {
-        "id": "E138706",
-        "abbrev": "Che",
-        "name": "Chemie",
-        "kind": "p"
-      },
-      "hourColour": "238,238,238",
-      "hourColourText": "0,0,0",
-      "groups": [
-        {
-          "id": "E730557",
-          "name": "Class A",
-          "kind": "c",
-          "classId": "E730557",
-          "className": "Class A"
-        }
-      ],
-      "rooms": [
-        {
-          "id": "E23973",
-          "abbrev": "Room E",
-          "name": "Room 5"
-        }
-      ],
-      "teachers": [
-        {
-          "id": "E2193861",
-          "abbrev": "Teacher D",
-          "name": "Teacher D",
-          "surname": "Teacher D",
-          "displayName": "Mgr. Teacher D, Ph.D."
-        }
-      ],
-      "contextMenu": [],
-      "onLineMeeting": false,
-      "entryClassBook": null,
-      "detailHours": [
-        {
-          "id": "4",
-          "name": "4",
-          "order": 4,
-          "timeFrom": "10:55:00",
-          "timeto": "11:40:00"
-        }
-      ],
-      "orderlyService": [
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730557",
-          "className": "Class A",
-          "studentId": "E2211066",
-          "firstName": "Student A",
-          "lastname": "Student A",
-          "cvtv": "18"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730557",
-          "className": "Class A",
-          "studentId": "E2211068",
-          "firstName": "Student B",
-          "lastname": "Student B",
-          "cvtv": "19"
-        }
-      ],
-      "title": null,
-      "description": "Description"
+      "id": "1",
+      "caption": "1",
+      "beginTime": "1900-01-01T08:00:00",
+      "endTime": "1900-01-01T08:45:00"
     },
     {
-      "scheduledHourId": "E29434393",
-      "scheduledHourOrder": 1,
-      "lessonIdFrom": "4",
-      "lessonIdTo": "4",
-      "beginTime": "2024-05-27T10:55:00",
-      "endTime": "2024-05-27T11:40:00",
-      "hourType": {
-        "id": "SUPLOVANI",
-        "description": "Suplování",
-        "displayName": "SUPL"
-      },
-      "hourKind": {
-        "id": "SUPLOVANI",
-        "name": "Suplování",
-        "description": "Suplování předmětu"
-      },
-      "cycle": null,
-      "subject": {
-        "id": "E137430",
-        "abbrev": "ZSV",
-        "name": "Základy společenských věd",
-        "kind": "p"
-      },
-      "hourColour": "255,4,4",
-      "hourColourText": "255,255,255",
-      "groups": [
-        {
-          "id": "E730557",
-          "name": "Class A",
-          "kind": "c",
-          "classId": "E730557",
-          "className": "Class A"
-        }
-      ],
-      "rooms": [
-        {
-          "id": "E23966",
-          "abbrev": "Room C",
-          "name": "Room 3"
-        }
-      ],
-      "teachers": [
-        {
-          "id": "E2212846",
-          "abbrev": "Teacher E",
-          "name": "Teacher E",
-          "surname": "Teacher E",
-          "displayName": "Mgr. Teacher E"
-        }
-      ],
-      "contextMenu": [],
-      "onLineMeeting": false,
-      "entryClassBook": null,
-      "detailHours": [
-        {
-          "id": "4",
-          "name": "4",
-          "order": 4,
-          "timeFrom": "10:55:00",
-          "timeto": "11:40:00"
-        }
-      ],
-      "orderlyService": [
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730557",
-          "className": "Class A",
-          "studentId": "E2211066",
-          "firstName": "Student A",
-          "lastname": "Student A",
-          "cvtv": "18"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730557",
-          "className": "Class A",
-          "studentId": "E2211068",
-          "firstName": "Student B",
-          "lastname": "Student B",
-          "cvtv": "19"
-        }
-      ],
-      "title": null,
-      "description": null
+      "id": "2",
+      "caption": "2",
+      "beginTime": "1900-01-01T08:55:00",
+      "endTime": "1900-01-01T09:40:00"
     },
     {
-      "scheduledHourId": "E28251780",
-      "scheduledHourOrder": 16,
-      "lessonIdFrom": "5",
-      "lessonIdTo": "6",
-      "beginTime": "2024-05-27T12:00:00",
-      "endTime": "2024-05-27T13:30:00",
-      "hourType": {
-        "id": "ROZVRH",
-        "description": "Rozvrh",
-        "displayName": null
-      },
-      "hourKind": {
-        "id": "",
-        "name": "",
-        "description": ""
-      },
-      "cycle": "bez cyklů",
-      "subject": {
-        "id": "E147042",
-        "abbrev": "PSMA31",
-        "name": "Mathematics Seminar",
-        "kind": "v"
-      },
-      "hourColour": "255,204,153",
-      "hourColourText": "0,0,0",
-      "groups": [
-        {
-          "id": "E1008201",
-          "name": "Group C",
-          "kind": "g",
-          "classId": "E821790",
-          "className": "Class C"
-        },
-        {
-          "id": "E1008244",
-          "name": "Group D",
-          "kind": "g",
-          "classId": "E821791",
-          "className": "Class D"
-        },
-        {
-          "id": "E1008287",
-          "name": "Group A",
-          "kind": "g",
-          "classId": "E730557",
-          "className": "Class A"
-        },
-        {
-          "id": "E1008330",
-          "name": "Group B",
-          "kind": "g",
-          "classId": "E730559",
-          "className": "Class B"
-        },
-        {
-          "id": "E1008373",
-          "name": "Group E",
-          "kind": "g",
-          "classId": "E730564",
-          "className": "Class E"
-        },
-        {
-          "id": "E1008416",
-          "name": "Group F",
-          "kind": "g",
-          "classId": "E968235",
-          "className": "Class F"
-        }
-      ],
-      "rooms": [
-        {
-          "id": "E23965",
-          "abbrev": "Room F",
-          "name": "Room 6"
-        }
-      ],
-      "teachers": [
-        {
-          "id": "E2193807",
-          "abbrev": "Teacher F",
-          "name": "Teacher F",
-          "surname": "Teacher F",
-          "displayName": "Mgr. Teacher F"
-        }
-      ],
-      "contextMenu": [],
-      "onLineMeeting": false,
-      "entryClassBook": null,
-      "detailHours": [
-        {
-          "id": "5",
-          "name": "5",
-          "order": 5,
-          "timeFrom": "11:50:00",
-          "timeto": "12:35:00"
-        },
-        {
-          "id": "6",
-          "name": "6",
-          "order": 6,
-          "timeFrom": "12:45:00",
-          "timeto": "13:30:00"
-        }
-      ],
-      "orderlyService": [
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730557",
-          "className": "Class A",
-          "studentId": "E2211066",
-          "firstName": "Student A",
-          "lastname": "Student A",
-          "cvtv": "18"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730557",
-          "className": "Class A",
-          "studentId": "E2211068",
-          "firstName": "Student B",
-          "lastname": "Student B",
-          "cvtv": "19"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730559",
-          "className": "Class B",
-          "studentId": "E2211134",
-          "firstName": "Student C",
-          "lastname": "Student C",
-          "cvtv": "23"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730559",
-          "className": "Class B",
-          "studentId": "E2211136",
-          "firstName": "Student D",
-          "lastname": "Student D",
-          "cvtv": "24"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730564",
-          "className": "Class E",
-          "studentId": "E2196257",
-          "firstName": "Student E",
-          "lastname": "Student E",
-          "cvtv": "3"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E730564",
-          "className": "Class E",
-          "studentId": "E2196258",
-          "firstName": "Student F",
-          "lastname": "Student F",
-          "cvtv": "4"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E821790",
-          "className": "Class C",
-          "studentId": "E2292250",
-          "firstName": "Student G",
-          "lastname": "Student G",
-          "cvtv": "11"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E821790",
-          "className": "Class C",
-          "studentId": "E2292273",
-          "firstName": "Student H",
-          "lastname": "Student H",
-          "cvtv": "23"
-        },
-        {
-          "dateFrom": "2024-05-27T00:00:00",
-          "dateTo": "2024-06-02T23:59:00",
-          "classId": "E821791",
-          "className": "Class D",
-          "studentId": "E2292328",
-          "firstName": "Student I",
-          "lastname": "Student I",
-          "cvtv": "23"
-        }
-      ],
-      "title": null,
-      "description": "Description"
+      "id": "3",
+      "caption": "3",
+      "beginTime": "1900-01-01T10:00:00",
+      "endTime": "1900-01-01T10:45:00"
+    },
+    {
+      "id": "4",
+      "caption": "4",
+      "beginTime": "1900-01-01T10:55:00",
+      "endTime": "1900-01-01T11:40:00"
+    },
+    {
+      "id": "5",
+      "caption": "5",
+      "beginTime": "1900-01-01T11:50:00",
+      "endTime": "1900-01-01T12:35:00"
+    },
+    {
+      "id": "6",
+      "caption": "6",
+      "beginTime": "1900-01-01T12:45:00",
+      "endTime": "1900-01-01T13:30:00"
+    },
+    {
+      "id": "7",
+      "caption": "7",
+      "beginTime": "1900-01-01T14:00:00",
+      "endTime": "1900-01-01T14:45:00"
+    },
+    {
+      "id": "8",
+      "caption": "8",
+      "beginTime": "1900-01-01T14:55:00",
+      "endTime": "1900-01-01T15:40:00"
     }
   ]
 }
