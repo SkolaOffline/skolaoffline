@@ -58,7 +58,8 @@ Widget build(BuildContext context){
                             style: TextStyle(fontSize: 20),),
                             Switch(value: MyApp.of(context)?.getDarkMode() ?? false, onChanged: (value){
                               // MyApp.of(context)?.setDarkMode(value);
-                              value = true; // A bit of trolling while dark mode is not active. 
+                              value = true; // A bit of trolling while dark mode is not active.
+                              launchUrl(Uri.parse("https://www.youtube.com/watch?v=xvFZjo5PgG0"));
                               showDialog(context: context, builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text("Stay back brother!"),
