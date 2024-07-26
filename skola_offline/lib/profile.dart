@@ -58,23 +58,6 @@ class ProfileScreenState extends State<ProfileScreen> {
                 Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => LoginScreen()));
               }, child: Text(AppLocalizations.of(context)!.change_user)),
-              SizedBox(height: 20), 
-              Column(
-                children: [
-                  Text(AppLocalizations.of(context)!.settings_placeholder_text_1),
-                  Text(AppLocalizations.of(context)!.settings_placeholder_text_2),
-                  Text(AppLocalizations.of(context)!.settings_placeholder_text_3),
-                ],
-              ),
-              // SwitchListTile(
-              //   title: Text('Use Dummy Data'),
-              //   value: _dummyAppState.useDummyData,
-              //   onChanged: (bool value) {
-              //     setState(() {
-              //       _dummyAppState.useDummyData = value;
-              //     });
-              //   },
-              // ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

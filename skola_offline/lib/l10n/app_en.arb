@@ -27,7 +27,9 @@
     "messages":"Messages",
     "language":"Language",
     "loading":"Loading...",
-    "change_user":"Change profile"
+    "change_user":"Change profile",
+    "dark_mode":"Dark mode",
+    "dark_marks":"Dark marks"
 
 
 }

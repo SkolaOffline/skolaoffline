@@ -54,18 +54,30 @@ Widget build(BuildContext context){
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Dark mode',
+                            Text(AppLocalizations.of(context)!.dark_mode,
                             style: TextStyle(fontSize: 20),),
                             Switch(value: MyApp.of(context)?.getDarkMode() ?? false, onChanged: (value){
                               // MyApp.of(context)?.setDarkMode(value);
                               value = true; // A bit of trolling while dark mode is not active. 
+                              showDialog(context: context, builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Stay back brother!"),
+                                  content: Text("YOU SHALL NEVER TURN ON LIGHT MODE !!!!!"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(),
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },);
                             })
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Dark marks',
+                            Text(AppLocalizations.of(context)!.dark_marks,
                             style: TextStyle(fontSize: 20),),
                             Switch(value: MyApp.of(context)?.getDarkMarks() ?? false, onChanged: (value){
                               MyApp.of(context)?.setDarkMarks(value);

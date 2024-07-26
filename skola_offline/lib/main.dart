@@ -251,7 +251,11 @@ class MyHomePageState extends State<MyHomePage> {
                         Text(AppLocalizations.of(context)!.profile),
                       ],),
                     ),
-                    PopupMenuItem(value: 'settings', child: Text('Settings')),
+                    PopupMenuItem(value: 'settings', child: Row(children: [
+                        Icon(Icons.settings),
+                        SizedBox(width: 5),
+                        Text(AppLocalizations.of(context)!.settings),]
+                        ),)
                   ],
                   onSelected: (value) {
                     // Handle menu item selection

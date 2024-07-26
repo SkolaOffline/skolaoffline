@@ -27,5 +27,7 @@
     "messages":"Zprávy",
     "language":"Jazyk",
     "loading":"Načítám...",
-    "change_user":"Změnit profil"
+    "change_user":"Změnit profil",
+    "dark_mode":"Tmavý režim",
+    "dark_marks":"Černé známky"
 }
