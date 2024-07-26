@@ -25,5 +25,7 @@
     "absence":"Absence",
     "marks":"Známky",
     "messages":"Zprávy",
-    "language":"Jazyk"
+    "language":"Jazyk",
+    "loading":"Načítám...",
+    "change_user":"Změnit profil"
 }

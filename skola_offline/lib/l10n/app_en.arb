@@ -25,7 +25,9 @@
     "absence":"Absence",
     "marks":"Marks",
     "messages":"Messages",
-    "language":"Language"
+    "language":"Language",
+    "loading":"Loading...",
+    "change_user":"Change profile"
 
 
 }

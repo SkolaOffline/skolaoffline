@@ -25,6 +25,7 @@ class LoginScreenState extends State<LoginScreen> {
   final Map<String, dynamic> _dummyUserResponse = {
     "personID": "dummy_person_id",
     "schoolYearId": "dummy_school_year_id",
+    "fullName": "Dummy Mode"
   };
 
   Future<void> login(String username, String password) async {
@@ -110,8 +111,8 @@ class LoginScreenState extends State<LoginScreen> {
       }
 
       await storage.write(key: 'userId', value: jsonResponse['personID']);
-      await storage.write(
-          key: 'schoolYearId', value: jsonResponse['schoolYearId']);
+      await storage.write(key: 'schoolYearId', value: jsonResponse['schoolYearId']);
+      await storage.write(key:'fullName',value:jsonResponse['fullName']);
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
@@ -153,6 +154,7 @@ class LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
+                Navigator.of(context).pop(); //This has to be here, i have no fricking idea why
               },
               child: Text('OK'),
             ),
@@ -207,7 +209,6 @@ class LoginScreenState extends State<LoginScreen> {
                           !_dummyAppState.useDummyData;
                       _showSuccessDialog('Success',
                           'Dummy data mode ${_dummyAppState.useDummyData ? 'enabled' : 'disabled'}.');
-                      return;
                     }
                     await login(username, password);
                   },
