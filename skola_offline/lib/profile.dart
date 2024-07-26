@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:skola_offline/dummy_app_state.dart';
+import 'package:skola_offline/app_settings.dart';
 import 'package:skola_offline/login.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import the url_launcher package
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,7 +13,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  final _dummyAppState = DummyAppState();
   String _fullName='User';
   bool isLoading = true;
   @override
@@ -55,40 +54,11 @@ class ProfileScreenState extends State<ProfileScreen> {
                 style:TextStyle(fontSize: 30)
               ),
               ElevatedButton(onPressed: (){
-                _dummyAppState.useDummyData = false;
+                //TODO: Change dummy mode!!!
                 Navigator.push(context, 
                 MaterialPageRoute(builder: (context) => LoginScreen()));
               }, child: Text(AppLocalizations.of(context)!.change_user)),
               SizedBox(height: 20), 
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     Icon(Icons.settings),
-              //     SizedBox(width: 5,),
-              //     Text(
-              //       AppLocalizations.of(context)!.settings,
-              //         style: TextStyle(
-              //         fontSize: 20,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(AppLocalizations.of(context)!.language+ ': '),
-                  DropdownButton<Locale>(value:Localizations.localeOf(context) ,items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale value){
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Text(value.languageCode)
-                      );
-                  }).toList(),
-                  onChanged: (Locale? value){
-                    MyApp.of(context)?.setLocale(value ?? Locale('en'));
-                  })
-                ],
-              ),
               Column(
                 children: [
                   Text(AppLocalizations.of(context)!.settings_placeholder_text_1),

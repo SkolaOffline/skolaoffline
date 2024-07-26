@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
-import 'package:skola_offline/dummy_app_state.dart';
+import 'package:skola_offline/app_settings.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class MessagesScreen extends StatefulWidget {
@@ -22,9 +22,7 @@ class MessagesScreenState extends State<MessagesScreen> {
   }
 
   Future<void> downloadMessages() async {
-    final dummyAppState = DummyAppState();
-    bool useDummyData = dummyAppState.useDummyData;
-    if (useDummyData) {
+    if (MyApp.of(context)?.getDummyMode() ?? false) {
       final dummyData =
           await rootBundle.loadString("lib/assets/dummy_messages.json");
       setState(() {

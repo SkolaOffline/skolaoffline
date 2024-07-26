@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // import 'package:http/http.dart' as http;
 import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
-import 'package:skola_offline/dummy_app_state.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class MarksScreen extends StatefulWidget {
@@ -32,9 +30,7 @@ class MarksScreenState extends State<MarksScreen> {
   }
 
   Future<void> _fetchMarks() async {
-    final dummyAppState = DummyAppState();
-    bool useDummyData = dummyAppState.useDummyData;
-    if (useDummyData) {
+    if (MyApp.of(context)?.getDummyMode() ?? false) {
       final dummyData =
           await rootBundle.loadString('lib/assets/dummy_marks.json');
       setState(() {
@@ -290,7 +286,7 @@ class SubjectCard extends StatelessWidget {
                             child: Text(
                               mark['markText'],
                               style: TextStyle(
-                                color: Colors.black,
+                                color: (MyApp.of(context)?.getDarkMarks() ?? false) ? Colors.black:  Color.fromARGB(255,202, 196, 208),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),

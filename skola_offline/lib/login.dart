@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:skola_offline/dummy_app_state.dart';
+import 'package:skola_offline/main.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
@@ -14,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final DummyAppState _dummyAppState = DummyAppState();
 
   // Dummy data
   final Map<String, dynamic> _dummyLoginResponse = {
@@ -52,7 +52,7 @@ class LoginScreenState extends State<LoginScreen> {
     try {
       Map<String, dynamic> data;
 
-      if (_dummyAppState.useDummyData) {
+      if (MyApp.of(context)?.getDummyMode() ?? false) {
         // Use dummy data
         data = _dummyLoginResponse;
       } else {
@@ -98,7 +98,7 @@ class LoginScreenState extends State<LoginScreen> {
       // Get user data
       Map<String, dynamic> jsonResponse;
 
-      if (_dummyAppState.useDummyData) {
+      if (MyApp.of(context)?.getDummyMode() ?? false) {
         // Use dummy user data
         jsonResponse = _dummyUserResponse;
       } else {
@@ -205,10 +205,9 @@ class LoginScreenState extends State<LoginScreen> {
                     String password = _passwordController.text;
 
                     if (username == 'dummy' && password == 'mode') {
-                      _dummyAppState.useDummyData =
-                          !_dummyAppState.useDummyData;
+                      MyApp.of(context)?.setDummyMode(true);
                       _showSuccessDialog('Success',
-                          'Dummy data mode ${_dummyAppState.useDummyData ? 'enabled' : 'disabled'}.');
+                          'Dummy data mode enabled!');
                     }
                     await login(username, password);
                   },

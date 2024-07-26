@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:skola_offline/absences.dart';
+import 'package:skola_offline/app_settings.dart';
 import 'package:skola_offline/login.dart';
+import 'package:skola_offline/settings.dart';
 import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/timetableDay.dart';
 import 'package:skola_offline/marks.dart';
@@ -118,12 +120,49 @@ class MyApp extends StatefulWidget{
 }
 
 class _MyAppState extends State<MyApp>{
-  Locale _locale = Locale('en');
+  AppSettings _appSettings = AppSettings();
+
   void setLocale(Locale value){
     setState(() {
-      _locale = value;
+      _appSettings.language = value;
     });
   }
+
+  Locale getLocale(){
+    return _appSettings.language;
+  }
+
+  void setDarkMode(bool value){
+    setState(() {
+      _appSettings.useDarkMode = value;
+    });
+  }
+
+  bool getDarkMode(){
+      return _appSettings.useDarkMode;
+  }
+
+  void setDummyMode(bool value){
+    setState(() {
+      _appSettings.useDummyData = value;
+    });
+  }
+  
+  bool getDummyMode(){
+      return _appSettings.useDummyData;
+  }
+
+    void setDarkMarks(bool value){
+    setState(() {
+      _appSettings.darkMarks = value;
+    });
+  }
+  
+  bool getDarkMarks(){
+      return _appSettings.darkMarks;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -143,7 +182,7 @@ class _MyAppState extends State<MyApp>{
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      locale:_locale,
+      locale:_appSettings.language,
       home: MyHomePage(),
     );
   }
@@ -212,7 +251,7 @@ class MyHomePageState extends State<MyHomePage> {
                         Text(AppLocalizations.of(context)!.profile),
                       ],),
                     ),
-                    PopupMenuItem(value: 'option2', child: Text('Another option')),
+                    PopupMenuItem(value: 'settings', child: Text('Settings')),
                   ],
                   onSelected: (value) {
                     // Handle menu item selection
@@ -221,8 +260,11 @@ class MyHomePageState extends State<MyHomePage> {
                         context,
                         MaterialPageRoute(builder: (context) => ProfileScreen()),
                       );
-                    } else if (value == 'option2') {
-                      print('option 2');
+                    } else if (value == 'settings') {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingsScreen()),
+                        );
                     }
                   },
                 )

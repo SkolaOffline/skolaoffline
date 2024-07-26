@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:skola_offline/dummy_app_state.dart';
+import 'package:skola_offline/app_settings.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -108,10 +108,8 @@ class AbsencesScreenState extends State<AbsencesScreen> {
   }
 
   Future<String> downloadAbsences() async {
-    final dummyAppState = DummyAppState();
-    bool useDummyData = dummyAppState.useDummyData;
 
-    if (useDummyData) {
+    if (MyApp.of(context)?.getDummyMode() ?? false) {
       return await rootBundle.loadString('lib/assets/dummy_absences.json');
     } else {
 

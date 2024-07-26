@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:skola_offline/dummy_app_state.dart';
+import 'package:skola_offline/app_settings.dart';
 import 'package:skola_offline/main.dart';
 import 'package:skola_offline/timetable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -147,10 +147,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   }
 
   Future<String> downloadTimetable(DateTime whichDay) async {
-    final dummyAppState = DummyAppState();
-    bool useDummyData = dummyAppState.useDummyData;
 
-    if (useDummyData) {
+    if (MyApp.of(context)?.getDummyMode() ?? false) {
       String dummyData =
           await rootBundle.loadString('lib/assets/dummy_timetable.json');
       return dummyData;
@@ -187,10 +185,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   }
 
   Future<String> downloadTimetableWeek(DateTime dateTime) async {
-    final dummyAppState = DummyAppState();
-    bool useDummyData = dummyAppState.useDummyData;
 
-    if (useDummyData) {
+    if (MyApp.of(context)?.getDummyMode() ?? false) {
       String dummyData =
           await rootBundle.loadString('lib/assets/dummy_timetable.json');
       return dummyData;
