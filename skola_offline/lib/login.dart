@@ -6,7 +6,6 @@ import 'package:skola_offline/main.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class LoginScreen extends StatefulWidget {
   @override
   LoginScreenState createState() => LoginScreenState();
@@ -74,8 +73,8 @@ class LoginScreenState extends State<LoginScreen> {
         if (response.statusCode == 400) {
           // ignore: use_build_context_synchronously
           Navigator.of(context).pop(); // Close the loading dialog
-          _showErrorDialog(
-              'Wrong credentials', 'Please check your username and password.');
+          _showErrorDialog('Wrong credentials',
+              "Please check your username and password. If you don't have a skola online account you may try this app using dummy mode by loging in as 'dummy:mode'.");
           return;
         }
 
@@ -111,8 +110,9 @@ class LoginScreenState extends State<LoginScreen> {
       }
 
       await storage.write(key: 'userId', value: jsonResponse['personID']);
-      await storage.write(key: 'schoolYearId', value: jsonResponse['schoolYearId']);
-      await storage.write(key:'fullName',value:jsonResponse['fullName']);
+      await storage.write(
+          key: 'schoolYearId', value: jsonResponse['schoolYearId']);
+      await storage.write(key: 'fullName', value: jsonResponse['fullName']);
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
@@ -154,7 +154,8 @@ class LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
-                Navigator.of(context).pop(); //This has to be here, i have no fricking idea why
+                Navigator.of(context)
+                    .pop(); //This has to be here, i have no fricking idea why
               },
               child: Text('OK'),
             ),
@@ -206,8 +207,9 @@ class LoginScreenState extends State<LoginScreen> {
 
                     if (username == 'dummy' && password == 'mode') {
                       MyApp.of(context)?.setDummyMode(true);
-                      _showSuccessDialog('Success',
-                          'Dummy data mode enabled!');
+                      _showSuccessDialog('Success', 'Dummy data mode enabled!');
+                    } else {
+                      MyApp.of(context)?.setDummyMode(false);
                     }
                     await login(username, password);
                   },

@@ -112,56 +112,56 @@ Future<http.Response> makeRequest(
   }
 }
 
-class MyApp extends StatefulWidget{
+class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState()=> _MyAppState();
+  _MyAppState createState() => _MyAppState();
 
-  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+  static _MyAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>();
 }
 
-class _MyAppState extends State<MyApp>{
+class _MyAppState extends State<MyApp> {
   AppSettings _appSettings = AppSettings();
 
-  void setLocale(Locale value){
+  void setLocale(Locale value) {
     setState(() {
       _appSettings.language = value;
     });
   }
 
-  Locale getLocale(){
+  Locale getLocale() {
     return _appSettings.language;
   }
 
-  void setDarkMode(bool value){
+  void setDarkMode(bool value) {
     setState(() {
       _appSettings.useDarkMode = value;
     });
   }
 
-  bool getDarkMode(){
-      return _appSettings.useDarkMode;
+  bool getDarkMode() {
+    return _appSettings.useDarkMode;
   }
 
-  void setDummyMode(bool value){
+  void setDummyMode(bool value) {
     setState(() {
       _appSettings.useDummyData = value;
     });
   }
-  
-  bool getDummyMode(){
-      return _appSettings.useDummyData;
+
+  bool getDummyMode() {
+    return _appSettings.useDummyData;
   }
 
-    void setDarkMarks(bool value){
+  void setDarkMarks(bool value) {
     setState(() {
       _appSettings.darkMarks = value;
     });
   }
-  
-  bool getDarkMarks(){
-      return _appSettings.darkMarks;
-  }
 
+  bool getDarkMarks() {
+    return _appSettings.darkMarks;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,16 +177,16 @@ class _MyAppState extends State<MyApp>{
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
+          seedColor: const Color.fromARGB(255, 47, 23, 89),
         ),
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      locale:_appSettings.language,
+      locale: _appSettings.language,
       home: MyHomePage(),
     );
   }
-  }
+}
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -221,19 +221,17 @@ class MyHomePageState extends State<MyHomePage> {
               ),
             ),
             StreamBuilder(
-            stream: Stream.periodic(const Duration(seconds: 1)),
-            builder: (context, snapshot){
-              return Text(
-                          DateFormat('d.M H:m:s').format(DateTime.now()),
-                          textAlign:TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18,
-                              // fontFamily: 'SansSerif',
-                            ),
-            );
-            }
-            ),
-
+                stream: Stream.periodic(const Duration(seconds: 1)),
+                builder: (context, snapshot) {
+                  return Text(
+                    DateFormat('d.M H:mm:ss').format(DateTime.now()),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      // fontFamily: 'SansSerif',
+                    ),
+                  );
+                }),
             Row(
               children: [
                 Image(
@@ -245,30 +243,37 @@ class MyHomePageState extends State<MyHomePage> {
                   itemBuilder: (BuildContext context) => [
                     PopupMenuItem(
                       value: 'profile',
-                      child: Row(children: [
-                        Icon(Icons.person),
-                        SizedBox(width: 5),
-                        Text(AppLocalizations.of(context)!.profile),
-                      ],),
+                      child: Row(
+                        children: [
+                          Icon(Icons.person),
+                          SizedBox(width: 5),
+                          Text(AppLocalizations.of(context)!.profile),
+                        ],
+                      ),
                     ),
-                    PopupMenuItem(value: 'settings', child: Row(children: [
+                    PopupMenuItem(
+                      value: 'settings',
+                      child: Row(children: [
                         Icon(Icons.settings),
                         SizedBox(width: 5),
-                        Text(AppLocalizations.of(context)!.settings),]
-                        ),)
+                        Text(AppLocalizations.of(context)!.settings),
+                      ]),
+                    )
                   ],
                   onSelected: (value) {
                     // Handle menu item selection
                     if (value == 'profile') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
                       );
                     } else if (value == 'settings') {
-                        Navigator.push(
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SettingsScreen()),
-                        );
+                        MaterialPageRoute(
+                            builder: (context) => SettingsScreen()),
+                      );
                     }
                   },
                 )
@@ -288,12 +293,18 @@ class MyHomePageState extends State<MyHomePage> {
           });
         },
         destinations: [
-          NavigationDestination(icon: Icon(Icons.schedule), label: AppLocalizations.of(context)!.timetable),
           NavigationDestination(
-              icon: Icon(Icons.format_list_numbered), label: AppLocalizations.of(context)!.marks),
-          NavigationDestination(icon: Icon(Icons.message), label: AppLocalizations.of(context)!.messages),
+              icon: Icon(Icons.schedule),
+              label: AppLocalizations.of(context)!.timetable),
           NavigationDestination(
-              icon: Icon(Icons.person_off), label: AppLocalizations.of(context)!.absence),
+              icon: Icon(Icons.format_list_numbered),
+              label: AppLocalizations.of(context)!.marks),
+          NavigationDestination(
+              icon: Icon(Icons.message),
+              label: AppLocalizations.of(context)!.messages),
+          NavigationDestination(
+              icon: Icon(Icons.person_off),
+              label: AppLocalizations.of(context)!.absence),
           // NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
