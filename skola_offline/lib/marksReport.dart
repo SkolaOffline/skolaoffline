@@ -109,83 +109,88 @@ class TermCard extends StatelessWidget {
       elevation: 4,
       margin: EdgeInsets.all(8),
       color: Theme.of(context).colorScheme.primaryContainer,
-      child: ExpansionTile(
-        title: Text(
-          '${term['gradeName']} - ${term['semesterName']}',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text('School Year: ${term['schoolYearName']}'),
-        children: [
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: term['finalMarks'].length,
-            itemBuilder: (context, index) {
-              final mark = term['finalMarks'][index];
-              final subject = term['subjects'].firstWhere(
-                (s) => s['id'] == mark['subjectId'],
-                orElse: () => {'name': 'Unknown Subject'},
-              );
-              return Column(
-                children: [
-                  ListTile(
-                    tileColor: Theme.of(context).colorScheme.onSecondary,
-                    title: Text(
-                      subject['name'],
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Text(formatDateToDate(mark['markDate']),
-                        style: TextStyle(fontSize: 12)),
-                    trailing: Container(
-                      width: 30,
-                      height: 40,
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: _getMarkColor(mark['markText']),
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 6,
-                            offset: Offset(4, 4),
-                          ),
-                        ],
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          title: Text(
+            '${term['gradeName']} - ${term['semesterName']}',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text('School Year: ${term['schoolYearName']}'),
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: term['finalMarks'].length,
+              itemBuilder: (context, index) {
+                var mark = term['finalMarks'][index];
+                mark['markText'] ??= "NaN";
+                final subject = term['subjects'].firstWhere(
+                  (s) => s['id'] == mark['subjectId'],
+                  orElse: () => {'name': 'Unknown Subject'},
+                );
+                return Column(
+                  children: [
+                    ListTile(
+                      tileColor: Theme.of(context).colorScheme.onSecondary,
+                      title: Text(
+                        subject['name'],
+                        style: TextStyle(fontWeight: FontWeight.w600),
                       ),
-                      child: Center(
-                        child: Text(
-                          mark['markText'],
-                          style: TextStyle(
-                            color: (MyApp.of(context)?.getDarkMarks() ?? false)
-                                ? Colors.black
-                                : Color.fromARGB(255, 202, 196, 208),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                      subtitle: Text(formatDateToDate(mark['markDate']),
+                          style: TextStyle(fontSize: 12)),
+                      trailing: Container(
+                        width: 30,
+                        height: 40,
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: _getMarkColor(mark['markText']),
+                          borderRadius: BorderRadius.circular(5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 6,
+                              offset: Offset(4, 4),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            mark['markText'],
+                            style: TextStyle(
+                              color:
+                                  (MyApp.of(context)?.getDarkMarks() ?? false)
+                                      ? Colors.black
+                                      : Color.fromARGB(255, 202, 196, 208),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
                         ),
                       ),
+                      onTap: () => _showMarkDetails(context, mark, subject),
                     ),
-                    onTap: () => _showMarkDetails(context, mark, subject),
-                  ),
-                  Divider(height: 0),
-                ],
-              );
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Achievement: ${term['achievementText']}'),
-                Text('Marks Average: ${term['marksAverage']}'),
-                Text('Absent Hours: ${term['absentHours']}'),
-                Text('Excused Hours: ${term['excusedHours']}'),
-                Text('Not Excused Hours: ${term['notExcusedHours']}'),
-              ],
+                    Divider(height: 0),
+                  ],
+                );
+              },
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Achievement: ${term['achievementText']}'),
+                  Text('Marks Average: ${term['marksAverage']}'),
+                  Text('Absent Hours: ${term['absentHours']}'),
+                  Text('Excused Hours: ${term['excusedHours']}'),
+                  Text('Not Excused Hours: ${term['notExcusedHours']}'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

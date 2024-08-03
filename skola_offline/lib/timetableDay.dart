@@ -55,12 +55,10 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     }
   }
 
-
-
-
-    Future<void> _fetchTimetableForToday() async {
-
-    today =  (MyApp.of(context)?.getDummyMode() ?? false) ? DateTime(2024, 5, 27, 8, 46, 03) : DateTime.now();
+  Future<void> _fetchTimetableForToday() async {
+    today = (MyApp.of(context)?.getDummyMode() ?? false)
+        ? DateTime(2024, 5, 27, 8, 46, 03)
+        : DateTime.now();
 
     try {
       final timetableData = await downloadTimetable(today);
@@ -80,15 +78,14 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
         });
       }
     }
-    }
-
+  }
 
   @override
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss');
 
     var currentLessonIndex = -1;
-    if (!isLoadingToday){
+    if (!isLoadingToday) {
       for (var i = todayTimetable.length - 1; i >= 0; i--) {
         if (today.isBefore(dateFormatter.parse(todayTimetable[i]['endTime']))) {
           currentLessonIndex = i;
@@ -108,8 +105,8 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                       ? Center(child: CircularProgressIndicator())
                       : (currentLessonIndex == -1
                           ? Center(
-                              child:
-                                  Text(AppLocalizations.of(context)!.no_lessons_for_today))
+                              child: Text(AppLocalizations.of(context)!
+                                  .no_lessons_for_today))
                           : CurrentLessonCard(
                               lesson: todayTimetable[currentLessonIndex]))),
             ),
@@ -129,8 +126,11 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                        '${DateFormat('EE').format(date)}, ${DateFormat('d.M.y',).format(date)}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                      '${DateFormat('EE').format(date)}, ${DateFormat(
+                        'd.M.y',
+                      ).format(date)}',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
                     ),
                     Row(
                       children: [
@@ -139,11 +139,11 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                           onPressed: () {
                             setState(() {
                               if (date.weekday == 1) {
-                              date = date.subtract(Duration(days: 3));
+                                date = date.subtract(Duration(days: 3));
                               } else {
-                              date = date.subtract(Duration(days: 1));
+                                date = date.subtract(Duration(days: 1));
                               }
-                              
+
                               isLoading = true;
                             });
                             _fetchTimetable();
@@ -177,7 +177,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                               date = date.add(Duration(days: 1));
                             }
                             isLoading = true;
-                                                                                    
+
                             _fetchTimetable();
                           },
                         ),
@@ -202,9 +202,8 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                           child: LessonCard(lesson: lesson),
                         );
                       },
-                      childCount: dayTimetable.isEmpty
-                          ? 0
-                          : dayTimetable.length,
+                      childCount:
+                          dayTimetable.isEmpty ? 0 : dayTimetable.length,
                     ),
                   ),
           ],
@@ -214,7 +213,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   }
 
   Future<String> downloadTimetable(DateTime whichDay) async {
-
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       String dummyData =
           // TODO: make dummy data for one day
@@ -256,7 +254,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   }
 
   Future<String> downloadTimetableWeek(DateTime dateTime) async {
-
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       String dummyData =
           await rootBundle.loadString('lib/assets/dummy_timetable.json');
@@ -437,7 +434,7 @@ class _CurrentLessonCardState extends State<CurrentLessonCard> {
           //           icon: Icon(Icons.calendar_today),
           //           onPressed: () {
           //             setState(() {
-          //               TimetableScreenState().setWeekScreen(); 
+          //               TimetableScreenState().setWeekScreen();
           //             // //   isLoading = true;
           //             });
           //             // _fetchTimetable();
@@ -445,7 +442,7 @@ class _CurrentLessonCardState extends State<CurrentLessonCard> {
           //         ),
           //       ],
           //     ),
-            // ],
+          // ],
           // ),
           // SizedBox(height: 8),
           Container(
