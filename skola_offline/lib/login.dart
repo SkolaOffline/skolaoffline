@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:skola_offline/dummy_app_state.dart';
+import 'package:skola_offline/main.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final DummyAppState _dummyAppState = DummyAppState();
 
   // Dummy data
   final Map<String, dynamic> _dummyLoginResponse = {
@@ -23,6 +24,7 @@ class LoginScreenState extends State<LoginScreen> {
   final Map<String, dynamic> _dummyUserResponse = {
     "personID": "dummy_person_id",
     "schoolYearId": "dummy_school_year_id",
+    "fullName": "Dummy Mode"
   };
 
   Future<void> login(String username, String password) async {
@@ -35,7 +37,7 @@ class LoginScreenState extends State<LoginScreen> {
             children: [
               CircularProgressIndicator(),
               SizedBox(width: 20),
-              Text('Logging in...'),
+              Text(AppLocalizations.of(context)!.logging_loading),
             ],
           ),
         );
@@ -49,7 +51,7 @@ class LoginScreenState extends State<LoginScreen> {
     try {
       Map<String, dynamic> data;
 
-      if (_dummyAppState.useDummyData) {
+      if (MyApp.of(context)?.getDummyMode() ?? false) {
         // Use dummy data
         data = _dummyLoginResponse;
       } else {
@@ -71,8 +73,8 @@ class LoginScreenState extends State<LoginScreen> {
         if (response.statusCode == 400) {
           // ignore: use_build_context_synchronously
           Navigator.of(context).pop(); // Close the loading dialog
-          _showErrorDialog(
-              'Wrong credentials', 'Please check your username and password.');
+          _showErrorDialog('Wrong credentials',
+              "Please check your username and password. If you don't have a skola online account you may try this app using dummy mode by loging in as 'dummy:mode'.");
           return;
         }
 
@@ -95,7 +97,7 @@ class LoginScreenState extends State<LoginScreen> {
       // Get user data
       Map<String, dynamic> jsonResponse;
 
-      if (_dummyAppState.useDummyData) {
+      if (MyApp.of(context)?.getDummyMode() ?? false) {
         // Use dummy user data
         jsonResponse = _dummyUserResponse;
       } else {
@@ -110,14 +112,11 @@ class LoginScreenState extends State<LoginScreen> {
       await storage.write(key: 'userId', value: jsonResponse['personID']);
       await storage.write(
           key: 'schoolYearId', value: jsonResponse['schoolYearId']);
+      await storage.write(key: 'fullName', value: jsonResponse['fullName']);
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
       _showSuccessDialog('Success', 'You have been logged in.');
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => MyHomePage()),
-      // );
     } catch (e) {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
@@ -152,9 +151,11 @@ class LoginScreenState extends State<LoginScreen> {
           content: Text(message),
           actions: [
             TextButton(
-              onPressed:() {
-                Navigator.of(context).pop();  
-                Navigator.of(context).pop();  
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                Navigator.of(context)
+                    .pop(); //This has to be here, i have no fricking idea why
               },
               child: Text('OK'),
             ),
@@ -167,62 +168,62 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Login'),
-      // ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              child: Icon(Icons.person, size: 50),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 12),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () async {
-                String username = _usernameController.text;
-                String password = _passwordController.text;
-                await login(username, password);
-              },
-              icon: Icon(Icons.login),
-              label: Text('Login'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              ),
-            ),
-            SwitchListTile(
-              title: Text('Use Dummy Data'),
-              value: _dummyAppState.useDummyData,
-              onChanged: (bool value) {
-                setState(() {
-                  _dummyAppState.useDummyData = value;
-                });
-              },
-            ),
-            
-          ],
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.profile),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  child: Icon(Icons.person, size: 50),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.username,
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 12),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.password,
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    String username = _usernameController.text;
+                    String password = _passwordController.text;
+
+                    if (username == 'dummy' && password == 'mode') {
+                      MyApp.of(context)?.setDummyMode(true);
+                      _showSuccessDialog('Success', 'Dummy data mode enabled!');
+                    } else {
+                      MyApp.of(context)?.setDummyMode(false);
+                    }
+                    await login(username, password);
+                  },
+                  icon: Icon(Icons.login),
+                  label: Text(AppLocalizations.of(context)!.login),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }
