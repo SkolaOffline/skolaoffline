@@ -2,12 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter/foundation.dart';
 // import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:skola_offline/app_settings.dart';
 import 'package:skola_offline/main.dart';
-import 'package:skola_offline/timetable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // import 'package:skola_offline/main.dart';
@@ -270,7 +267,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
 
       final monday =
           getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
-      final friday = getMidnight(monday.add(Duration(days: 5)));
+      getMidnight(monday.add(Duration(days: 5)));
 
       final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
@@ -407,7 +404,7 @@ class TimetableDayScreen extends StatefulWidget {
 class CurrentLessonCard extends StatefulWidget {
   final Map<String, dynamic> lesson;
 
-  const CurrentLessonCard({Key? key, required this.lesson}) : super(key: key);
+  const CurrentLessonCard({super.key, required this.lesson});
 
   @override
   _CurrentLessonCardState createState() => _CurrentLessonCardState();
@@ -471,7 +468,7 @@ class _CurrentLessonCardState extends State<CurrentLessonCard> {
 class LessonCard extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
-  const LessonCard({Key? key, required this.lesson}) : super(key: key);
+  const LessonCard({super.key, required this.lesson});
   @override
   Widget build(BuildContext context) {
     return Card(

@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:skola_offline/app_settings.dart';
 import 'package:skola_offline/main.dart';
-import 'package:skola_offline/timetable.dart';
 // import 'package:skola_offline/main.dart';
 
 // ! TOTALLY NOT WORKING
@@ -154,8 +151,6 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   }
 
   Future<String> downloadTimetable(DateTime whichDay) async {
-
-
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       String dummyData =
           await rootBundle.loadString('lib/assets/dummy_timetable.json');
@@ -196,7 +191,6 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   }
 
   Future<String> downloadTimetableWeek(DateTime dateTime) async {
-
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       String dummyData =
           await rootBundle.loadString('lib/assets/dummy_timetable.json');
@@ -379,7 +373,7 @@ class TimetableWeekScreen extends StatefulWidget {
 class CurrentLessonCard extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
-  const CurrentLessonCard({Key? key, required this.lesson}) : super(key: key);
+  const CurrentLessonCard({super.key, required this.lesson});
 
   @override
   Widget build(BuildContext context) {
@@ -419,7 +413,7 @@ class CurrentLessonCard extends StatelessWidget {
 class LessonCardAbbrev extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
-  const LessonCardAbbrev({Key? key, required this.lesson}) : super(key: key);
+  const LessonCardAbbrev({super.key, required this.lesson});
   @override
   Widget build(BuildContext context) {
     // print(lesson);

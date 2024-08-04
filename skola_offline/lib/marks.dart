@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skola_offline/marksBySubject.dart';
-import 'package:skola_offline/marksReport.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/marks_by_subject.dart';
+import 'package:skola_offline/marks_report.dart';
 
 class MarksScreenState extends State<MarksScreen> {
   bool isSubjectScreen = true;

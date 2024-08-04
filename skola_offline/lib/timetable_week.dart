@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:skola_offline/app_settings.dart';
 import 'package:skola_offline/main.dart';
-import 'package:skola_offline/timetable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> weekTimetable = [];
@@ -51,10 +48,12 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     var currentLessonIndex = -1;
 
     if (!isLoading) {
-      for (var i = weekTimetable[date.weekday - 1].length - 1; i >= 0; i--) {
-        if (date.isBefore(dateFormatter
-            .parse(weekTimetable[date.weekday - 1][i]['endTime']))) {
-          currentLessonIndex = i;
+      if (date.weekday > 0 && date.weekday < 6) {
+        for (var i = weekTimetable[date.weekday - 1].length - 1; i >= 0; i--) {
+          if (date.isBefore(dateFormatter
+              .parse(weekTimetable[date.weekday - 1][i]['endTime']))) {
+            currentLessonIndex = i;
+          }
         }
       }
     }
@@ -147,7 +146,6 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   }
 
   Future<String> downloadTimetable(DateTime whichDay) async {
-
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       String dummyData =
           await rootBundle.loadString('lib/assets/dummy_timetable.json');
@@ -185,7 +183,6 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   }
 
   Future<String> downloadTimetableWeek(DateTime dateTime) async {
-
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       String dummyData =
           await rootBundle.loadString('lib/assets/dummy_timetable.json');
@@ -294,7 +291,7 @@ class TimetableWeekScreen extends StatefulWidget {
 class CurrentLessonCard extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
-  const CurrentLessonCard({Key? key, required this.lesson}) : super(key: key);
+  const CurrentLessonCard({super.key, required this.lesson});
 
   @override
   Widget build(BuildContext context) {
@@ -333,7 +330,7 @@ class CurrentLessonCard extends StatelessWidget {
 class LessonCardAbbrev extends StatelessWidget {
   final Map<String, dynamic> lesson;
 
-  const LessonCardAbbrev({Key? key, required this.lesson}) : super(key: key);
+  const LessonCardAbbrev({super.key, required this.lesson});
 
   @override
   Widget build(BuildContext context) {

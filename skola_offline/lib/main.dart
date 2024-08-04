@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -11,7 +10,6 @@ import 'package:skola_offline/app_settings.dart';
 import 'package:skola_offline/login.dart';
 import 'package:skola_offline/settings.dart';
 import 'package:skola_offline/timetable.dart';
-import 'package:skola_offline/timetableDay.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';

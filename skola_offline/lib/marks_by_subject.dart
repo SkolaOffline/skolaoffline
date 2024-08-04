@@ -101,7 +101,7 @@ class MarksBySubjectScreenState extends State<MarksBySubjectScreen> {
 class SubjectCard extends StatelessWidget {
   final Map<String, dynamic> subject;
 
-  const SubjectCard({Key? key, required this.subject}) : super(key: key);
+  const SubjectCard({super.key, required this.subject});
 
   @override
   Widget build(BuildContext context) {
@@ -221,8 +221,8 @@ class SubjectCard extends StatelessWidget {
           ),
           subtitle: RichText(
               text: TextSpan(
-                  text: AppLocalizations.of(context)!.average +
-                      ': ', // Normal text
+                  text:
+                      '${AppLocalizations.of(context)!.average}: ', // Normal text
                   style: DefaultTextStyle.of(context).style,
                   children: <TextSpan>[
                 TextSpan(

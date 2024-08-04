@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
-import 'package:skola_offline/app_settings.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class MessagesScreen extends StatefulWidget {
@@ -50,11 +49,8 @@ class MessagesScreenState extends State<MessagesScreen> {
         //   headers: {'Authorization': 'Bearer $accessToken'},
         // );
 
-        final response = await makeRequest(
-          'api/v1/messages/received', 
-          params, 
-          context
-        );
+        final response =
+            await makeRequest('api/v1/messages/received', params, context);
 
         if (response.statusCode == 200) {
           setState(() {
@@ -105,7 +101,7 @@ class MessagesScreenState extends State<MessagesScreen> {
 class MessagesList extends StatelessWidget {
   final List<dynamic> messageList;
 
-  const MessagesList({Key? key, required this.messageList}) : super(key: key);
+  const MessagesList({super.key, required this.messageList});
 
   @override
   Widget build(BuildContext context) {
@@ -134,13 +130,13 @@ class MessageWidget extends StatefulWidget {
   final dynamic message;
 
   const MessageWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     required this.from,
     required this.date,
     required this.message,
-  }) : super(key: key);
+  });
 
   @override
   // ignore: library_private_types_in_public_api

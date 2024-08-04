@@ -101,7 +101,7 @@ class MarksReportScreenState extends State<MarksReportScreen> {
 class TermCard extends StatelessWidget {
   final Map<String, dynamic> term;
 
-  const TermCard({Key? key, required this.term}) : super(key: key);
+  const TermCard({super.key, required this.term});
 
   @override
   Widget build(BuildContext context) {

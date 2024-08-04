@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skola_offline/timetableDay.dart';
-import 'package:skola_offline/timetableWeek.dart';
+import 'package:skola_offline/timetable_day.dart';
+import 'package:skola_offline/timetable_week.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TimetableScreenState extends State<TimetableScreen> {
