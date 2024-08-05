@@ -26,6 +26,13 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     super.dispose();
   }
 
+  bool _decideWhichDayToEnable(DateTime day) {
+    if (day.weekday == DateTime.monday) {
+      return true;
+    }
+    return false;
+  }
+
   Future<void> _fetchTimetableWeek() async {
     try {
       final timetableData = await downloadTimetableWeek(date);
@@ -45,15 +52,11 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss');
 
-    var currentLessonIndex = -1;
-
     if (!isLoading) {
       if (date.weekday > 0 && date.weekday < 6) {
         for (var i = weekTimetable[date.weekday - 1].length - 1; i >= 0; i--) {
           if (date.isBefore(dateFormatter
-              .parse(weekTimetable[date.weekday - 1][i]['endTime']))) {
-            currentLessonIndex = i;
-          }
+              .parse(weekTimetable[date.weekday - 1][i]['endTime']))) {}
         }
       }
     }
@@ -97,6 +100,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                               context: context,
                               firstDate: DateTime(0),
                               lastDate: DateTime(9999),
+                              selectableDayPredicate: _decideWhichDayToEnable,
+                              locale: const Locale('cs', 'CZ'),
                               initialDate: date)
                           .then((value) {
                         if (value != null) {

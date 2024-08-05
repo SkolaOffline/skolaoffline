@@ -53,16 +53,12 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss');
 
-    var currentLessonIndex = -1;
-
     // print(isLoading);
 
     if (!isLoading) {
       for (var i = weekTimetable[now.weekday - 1].length - 1; i >= 0; i--) {
         if (now.isBefore(dateFormatter
-            .parse(weekTimetable[now.weekday - 1][i]['endTime']))) {
-          currentLessonIndex = i;
-        }
+            .parse(weekTimetable[now.weekday - 1][i]['endTime']))) {}
       }
     }
 

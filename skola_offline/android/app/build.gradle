@@ -60,7 +60,8 @@ android {
     }
    buildTypes {
        release {
-           signingConfig signingConfigs.release
+            //TODO:Michael36500 needs to send Daalbu and matym1 the signing certificate
+            signingConfig signingConfigs.release
        }
    }
 
