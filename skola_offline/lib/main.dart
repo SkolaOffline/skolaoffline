@@ -222,7 +222,8 @@ class MyHomePageState extends State<MyHomePage> {
                 stream: Stream.periodic(const Duration(seconds: 1)),
                 builder: (context, snapshot) {
                   return Text(
-                    DateFormat('d.M H:mm:ss').format(DateTime.now()),
+                    DateFormat('d.M H:mm:ss').format(DateTime
+                        .now()), //TODO: For final releases I would personally remove seconds - Daalbu
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,

@@ -156,6 +156,7 @@ class LoginScreenState extends State<LoginScreen> {
                 Navigator.of(context).pop();
                 Navigator.of(context)
                     .pop(); //This has to be here, i have no fricking idea why
+                //lol
               },
               child: Text('OK'),
             ),
@@ -168,62 +169,71 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.profile),
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  child: Icon(Icons.person, size: 50),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.profile),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 50,
+                child: Icon(Icons.person, size: 50),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.username,
+                  border: OutlineInputBorder(),
                 ),
-                SizedBox(height: 20),
-                TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.username,
-                    border: OutlineInputBorder(),
-                  ),
+              ),
+              SizedBox(height: 12),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.password,
+                  border: OutlineInputBorder(),
                 ),
-                SizedBox(height: 12),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.password,
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    String username = _usernameController.text;
-                    String password = _passwordController.text;
+              ),
+              SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  String username = _usernameController.text;
+                  String password = _passwordController.text;
 
-                    if (username == 'dummy' && password == 'mode') {
-                      MyApp.of(context)?.setDummyMode(true);
-                      _showSuccessDialog('Success', 'Dummy data mode enabled!');
-                    } else {
-                      MyApp.of(context)?.setDummyMode(false);
-                    }
-                    await login(username, password);
-                  },
-                  icon: Icon(Icons.login),
-                  label: Text(AppLocalizations.of(context)!.login),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
-                  ),
+                  if (username == 'dummy' && password == 'mode') {
+                    MyApp.of(context)?.setDummyMode(true);
+                    _showSuccessDialog('Success', 'Dummy data mode enabled!');
+                  } else {
+                    MyApp.of(context)?.setDummyMode(false);
+                  }
+                  await login(username, password);
+                },
+                icon: Icon(Icons.login),
+                label: Text(AppLocalizations.of(context)!.login),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                 ),
-              ],
-            ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "If you don't have a aplikace.skolaonline.cz account, u can use dummy mode by logging in as:\nusername: dummy\npassword: mode",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

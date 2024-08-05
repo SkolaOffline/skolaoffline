@@ -176,17 +176,26 @@ class TermCard extends StatelessWidget {
                 );
               },
             ),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Achievement: ${term['achievementText']}'),
-                  Text('Marks Average: ${term['marksAverage']}'),
-                  Text('Absent Hours: ${term['absentHours']}'),
-                  Text('Excused Hours: ${term['excusedHours']}'),
-                  Text('Not Excused Hours: ${term['notExcusedHours']}'),
-                ],
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Achievement: ${term['achievementText']}'),
+                    Text('Marks Average: ${term['marksAverage']}'),
+                    Text('Absent Hours: ${term['absentHours']}'),
+                    Text('Excused Hours: ${term['excusedHours']}'),
+                    Text('Not Excused Hours: ${term['notExcusedHours']}'),
+                  ],
+                ),
               ),
             ),
           ],
