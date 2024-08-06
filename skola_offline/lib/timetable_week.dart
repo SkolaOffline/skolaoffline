@@ -102,7 +102,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                               lastDate: DateTime(9999),
                               selectableDayPredicate: _decideWhichDayToEnable,
                               locale: const Locale('cs', 'CZ'),
-                              initialDate: date)
+                              initialDate: date
+                                  .subtract(Duration(days: date.weekday - 1)))
                           .then((value) {
                         if (value != null) {
                           setState(() {
