@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> weekTimetable = [];
@@ -178,13 +179,14 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
 
     String url = 'api/v1/timeTable';
 
-    final response = await makeRequest(url, params, context);
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception(
-          'Failed to load timetable\n${response.statusCode}\n${response.body}');
-    }
+    // final response = await makeRequest(url, params, context);
+    // if (response.statusCode == 200) {
+    //   return response.body;
+    // } else {
+    //   throw Exception(
+    //       'Failed to load timetable\n${response.statusCode}\n${response.body}');
+    // }
+    return ''; // Add this line to return an empty string as a placeholder
   }
 
   Future<String> downloadTimetableWeek(DateTime dateTime) async {
@@ -216,11 +218,14 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
 
       String url = 'api/v1/timeTable';
 
-      final response = await makeRequest(
-        url,
-        params,
-        context,
-      );
+      // final response = await makeRequest(
+      //   url,
+      //   params,
+      //   context,
+      // );
+
+      final apiCubit = context.read<ApiCubit>();
+      final response = await apiCubit.makeRequest(url, params, context);
 
       if (response.statusCode == 200) {
         return response.body;

@@ -6,8 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-// import 'package:skola_offline/main.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TimetableDayScreenState extends State<TimetableDayScreen> {
   List<dynamic> dayTimetable = [];
@@ -241,7 +240,10 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     // .replace(queryParameters: params);
 
     // ignore: use_build_context_synchronously
-    final response = await makeRequest(url, params, context);
+    // final response = await makeRequest(url, params, context);
+
+    final apiCubit = context.read<ApiCubit>();
+    final response = await apiCubit.makeRequest(url, params, context);
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -290,12 +292,14 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
       //   headers: {'Authorization': 'Bearer $accessToken'},
       // );
 
-      final response = await makeRequest(
-        url,
-        params,
-        // ignore: use_build_context_synchronously
-        context,
-      );
+      // final response = await makeRequest(
+      //   url,
+      //   params,
+      //   // ignore: use_build_context_synchronously
+      //   context,
+      // );
+      final apiCubit = context.read<ApiCubit>();
+      final response = await apiCubit.makeRequest(url, params, context);
 
       if (response.statusCode == 200) {
         return response.body;

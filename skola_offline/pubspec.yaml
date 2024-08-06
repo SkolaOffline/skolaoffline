@@ -26,6 +26,10 @@ dependencies:
   provider: ^6.0.0
   flutter_localizations:
     sdk: flutter
+  hydrated_bloc: ^9.1.5
+  equatable: ^2.0.5
+  flutter_bloc: ^8.1.6
+  path_provider: ^2.1.4
 
 dev_dependencies:
   flutter_test:

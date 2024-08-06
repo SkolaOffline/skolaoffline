@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AbsencesScreen extends StatefulWidget {
   @override
@@ -30,7 +30,6 @@ class AbsencesScreenState extends State<AbsencesScreen> {
   Future<void> _fetchAbsences() async {
     try {
       final absencesData = await downloadAbsences();
-      // print(absencesData);
       if (_mounted) {
         setState(() {
           absencesSubjectList = parseAbsences(absencesData);
@@ -82,36 +81,24 @@ class AbsencesScreenState extends State<AbsencesScreen> {
     return absencesList;
   }
 
-  // final absence = {
-  //   'subjectName': 'subjectName',
-  //   'absences': 123,
-  //   'percentage': 0.2345,
-  //   'numberOfHours': 234,
-  //   'excused': 345,
-  //   'unexcused': 456,
-  //   'notCounted': 567,
-  //   'allowedAbsences': 678,
-  //   'allowedPercentage': 789,
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : ListView(
-                children: [
-                  for (var subject in absencesSubjectList)
-                    AbsenceInSubjectCard(absence: subject, context: context)
-                ],
-              ));
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView(
+              children: [
+                for (var subject in absencesSubjectList)
+                  AbsenceInSubjectCard(absence: subject, context: context)
+              ],
+            ),
+    );
   }
 
   Future<String> downloadAbsences() async {
-
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       return await rootBundle.loadString('lib/assets/dummy_absences.json');
     } else {
-
       String dateFrom() {
         final today = DateTime.now();
 
@@ -133,19 +120,20 @@ class AbsencesScreenState extends State<AbsencesScreen> {
             .split('T')[0],
       };
 
-      // final url = Uri.parse(
-      //   'https://aplikace.skolaonline.cz/solapi/api/v1/absences/inSubject',
-      // ).replace(queryParameters: params);
+      // final response = await makeRequest(
+      //     'api/v1/absences/inSubject',
+      //     null,
+      //     // ignore: use_build_context_synchronously
+      //     context,
+      //   );
 
-      final response = await makeRequest(
+      final apiCubit = context.read<ApiCubit>();
+      final response = await apiCubit.makeRequest(
         'api/v1/absences/inSubject',
         params,
-        context
+        context,
       );
-      // final response = await http.get(
-      //   url,
-      //   headers: {'Authorization': 'Bearer $accessToken'},
-      // );
+
       if (response.statusCode == 200) {
         return response.body;
       } else {
@@ -173,7 +161,8 @@ class AbsencesScreenState extends State<AbsencesScreen> {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    absence['subjectName'] ?? AppLocalizations.of(context)!.unknown_subject,
+                    absence['subjectName'] ??
+                        AppLocalizations.of(context)!.unknown_subject,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

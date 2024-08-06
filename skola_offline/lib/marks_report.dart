@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MarksReportScreen extends StatefulWidget {
   @override
@@ -51,12 +52,16 @@ class MarksReportScreenState extends State<MarksReportScreen> {
         //   headers: {'Authorization': 'Bearer $accessToken'},
         // );
 
-        final response = await makeRequest(
-          'api/v1/students/$userId/marks/final',
-          null,
-          // ignore: use_build_context_synchronously
-          context,
-        );
+        // final response = await makeRequest(
+        //   'api/v1/students/$userId/marks/final',
+        //   null,
+        //   // ignore: use_build_context_synchronously
+        //   context,
+        // );
+
+        final apiCubit = context.read<ApiCubit>();
+        final response = await apiCubit.makeRequest(
+            'api/v1/students/$userId/marks/final', null, context);
 
         if (response.statusCode == 200) {
           if (_mounted) {
