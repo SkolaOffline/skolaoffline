@@ -5,6 +5,7 @@ import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skola_offline/api_cubit.dart';
 
 class MessagesScreen extends StatefulWidget {
   @override
@@ -22,18 +23,49 @@ class MessagesScreenState extends State<MessagesScreen> {
   }
 
   Future<void> downloadMessages() async {
+    List<dynamic> parseMessages(Map<String, dynamic> response) {
+      List<dynamic> messageJsn = response['messages'];
+      return messageJsn
+          .map((message) => {
+                'sentDate': message['sentDate'],
+                'read': message['read'],
+                'sender': message['sender']['name'],
+                'attachments': message['attachments'].toString(),
+                'title': message['title'],
+                'text': message['text'],
+                'id': message['id'],
+              })
+          .toList();
+    }
+
+    List<dynamic> parseMessagesJson(String jsonString) {
+      Map<String, dynamic> jsn = jsonDecode(jsonString);
+      List<dynamic> messageJsn = jsn['messages'];
+      return messageJsn
+          .map((message) => {
+                'sentDate': message['sentDate'],
+                'read': message['read'],
+                'sender': message['sender']['name'],
+                'attachments': message['attachments'].toString(),
+                'title': message['title'],
+                'text': message['text'],
+                'id': message['id'],
+              })
+          .toList();
+    }
+
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       final dummyData =
           await rootBundle.loadString("lib/assets/dummy_messages.json");
       setState(() {
-        messageList = parseMessages(dummyData);
+        messageList = parseMessagesJson(dummyData);
         isLoading = false;
       });
     } else {
       try {
         // final storage = FlutterSecureStorage();
         // final accessToken = await storage.read(key: 'accessToken');
-
+        final apiCubit = context.read<ApiCubit>();
         final now = DateTime.now();
         final params = {
           'dateFrom': DateFormat('yyyy-MM-ddTHH:mm:ss.SSS')
@@ -52,52 +84,48 @@ class MessagesScreenState extends State<MessagesScreen> {
 
         // final response =
         //     await makeRequest('api/v1/messages/received', params, context);
-        final apiCubit = context.read<ApiCubit>();
         final response = await apiCubit.makeRequest(
-            'api/v1/messages/received', null, context);
+            'api/v1/messages/received', params, context);
 
-        if (response.statusCode == 200) {
-          setState(() {
-            messageList = parseMessages(response.body);
-            isLoading = false;
-          });
-        } else {
-          throw Exception('Failed to load messages: ${response.statusCode}');
-        }
+        setState(() {
+          messageList = parseMessages(response);
+          isLoading = false;
+        });
       } catch (e) {
         setState(() {
           isLoading = false;
         });
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading messages: $e')),
+          SnackBar(
+            content: Text('Error loading messages: $e'),
+            action: SnackBarAction(
+              label: 'Retry',
+              onPressed: downloadMessages,
+            ),
+          ),
         );
       }
     }
-  }
 
-  List<dynamic> parseMessages(String jsonString) {
-    Map<String, dynamic> jsn = jsonDecode(jsonString);
-    List<dynamic> messageJsn = jsn['messages'];
-    return messageJsn
-        .map((message) => {
-              'sentDate': message['sentDate'],
-              'read': message['read'],
-              'sender': message['sender']['name'],
-              'attachments': message['attachments'].toString(),
-              'title': message['title'],
-              'text': message['text'],
-              'id': message['id'],
-            })
-        .toList();
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : MessagesList(messageList: messageList),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : MessagesList(messageList: messageList),
+      body: RefreshIndicator(
+        onRefresh: downloadMessages,
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : MessagesList(messageList: messageList),
+      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skola_offline/api_cubit.dart';
 
 class MarksBySubjectScreen extends StatefulWidget {
   @override
@@ -30,6 +31,60 @@ class MarksBySubjectScreenState extends State<MarksBySubjectScreen> {
     super.dispose();
   }
 
+  // Future<void> _fetchMarks() async {
+  //   if (MyApp.of(context)?.getDummyMode() ?? false) {
+  //     final dummyData =
+  //         await rootBundle.loadString('lib/assets/dummy_marks.json');
+  //     setState(() {
+  //       subjects = json.decode(dummyData)['subjects'];
+  //       isLoading = false;
+  //     });
+  //   } else {
+  //     try {
+  //       final storage = FlutterSecureStorage();
+  //       final userId = await storage.read(key: 'userId');
+  //       // final accessToken = await storage.read(key: 'accessToken');
+
+  //       // final url = Uri.parse(
+  //       //     "https://aplikace.skolaonline.cz/solapi/api/v1/students/$userId/marks/bySubject");
+
+  //       // final response = await http.get(
+  //       //   url,
+  //       //   headers: {'Authorization': 'Bearer $accessToken'},
+  //       // );
+
+  //       // final response = await makeRequest(
+  //       //   'api/v1/students/$userId/marks/bySubject',
+  //       //   null,
+  //       //   // ignore: use_build_context_synchronously
+  //       //   context,
+  //       // );
+
+  //       final apiCubit = context.read<ApiCubit>();
+  //       final response = await apiCubit.makeRequest(
+  //           'api/v1/students/$userId/marks/bySubject', null, context);
+
+  //       if (response.statusCode == 200) {
+  //         if (_mounted) {
+  //           setState(() {
+  //             subjects = json.decode(response.body)['subjects'];
+  //             isLoading = false;
+  //           });
+  //         }
+  //       } else {
+  //         throw Exception('Failed to load marks');
+  //       }
+  //     } catch (e) {
+  //       print('Error fetching marks: $e');
+  //       if (_mounted) {
+  //         setState(() {
+  //           isLoading = false;
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
+
   Future<void> _fetchMarks() async {
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       final dummyData =
@@ -42,36 +97,16 @@ class MarksBySubjectScreenState extends State<MarksBySubjectScreen> {
       try {
         final storage = FlutterSecureStorage();
         final userId = await storage.read(key: 'userId');
-        // final accessToken = await storage.read(key: 'accessToken');
-
-        // final url = Uri.parse(
-        //     "https://aplikace.skolaonline.cz/solapi/api/v1/students/$userId/marks/bySubject");
-
-        // final response = await http.get(
-        //   url,
-        //   headers: {'Authorization': 'Bearer $accessToken'},
-        // );
-
-        // final response = await makeRequest(
-        //   'api/v1/students/$userId/marks/bySubject',
-        //   null,
-        //   // ignore: use_build_context_synchronously
-        //   context,
-        // );
 
         final apiCubit = context.read<ApiCubit>();
-        final response = await apiCubit.makeRequest(
+        final responseData = await apiCubit.makeRequest(
             'api/v1/students/$userId/marks/bySubject', null, context);
 
-        if (response.statusCode == 200) {
-          if (_mounted) {
-            setState(() {
-              subjects = json.decode(response.body)['subjects'];
-              isLoading = false;
-            });
-          }
-        } else {
-          throw Exception('Failed to load marks');
+        if (_mounted) {
+          setState(() {
+            subjects = responseData['subjects'];
+            isLoading = false;
+          });
         }
       } catch (e) {
         print('Error fetching marks: $e');
@@ -80,6 +115,9 @@ class MarksBySubjectScreenState extends State<MarksBySubjectScreen> {
             isLoading = false;
           });
         }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load marks: ${e.toString()}')),
+        );
       }
     }
   }

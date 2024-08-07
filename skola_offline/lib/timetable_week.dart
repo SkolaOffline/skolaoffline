@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skola_offline/api_cubit.dart';
 
 class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> weekTimetable = [];
@@ -195,43 +196,49 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
           await rootBundle.loadString('lib/assets/dummy_timetable.json');
       return dummyData;
     } else {
-      final storage = FlutterSecureStorage();
-      final userId = await storage.read(key: 'userId');
-      final syID = await storage.read(key: 'schoolYearId');
+      try {
+        final storage = FlutterSecureStorage();
+        final userId = await storage.read(key: 'userId');
+        final syID = await storage.read(key: 'schoolYearId');
 
-      DateTime getMidnight(DateTime datetime) {
-        return DateTime(datetime.year, datetime.month, datetime.day);
-      }
+        DateTime getMidnight(DateTime datetime) {
+          return DateTime(datetime.year, datetime.month, datetime.day);
+        }
 
-      final monday =
-          getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
-      final friday = getMidnight(monday.add(Duration(days: 5)));
+        final monday = getMidnight(
+            dateTime.subtract(Duration(days: dateTime.weekday - 1)));
+        final friday = getMidnight(monday.add(Duration(days: 5)));
 
-      final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
+        final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
-      Map<String, dynamic> params = {
-        'studentId': userId,
-        'dateFrom': dateFormatter.format(monday),
-        'dateTo': dateFormatter.format(friday),
-        'schoolYearId': syID
-      };
+        Map<String, dynamic> params = {
+          'studentId': userId,
+          'dateFrom': dateFormatter.format(monday),
+          'dateTo': dateFormatter.format(friday),
+          'schoolYearId': syID
+        };
 
-      String url = 'api/v1/timeTable';
+        String url = 'api/v1/timeTable';
 
-      // final response = await makeRequest(
-      //   url,
-      //   params,
-      //   context,
-      // );
+        // final response = await makeRequest(
+        //   url,
+        //   params,
+        //   context,
+        // );
 
-      final apiCubit = context.read<ApiCubit>();
-      final response = await apiCubit.makeRequest(url, params, context);
-
-      if (response.statusCode == 200) {
-        return response.body;
-      } else {
-        throw Exception(
-            'Failed to load timetable\n${response.statusCode}\n${response.body}');
+        final apiCubit = context.read<ApiCubit>();
+        final response = await apiCubit.makeRequest(url, params, context);
+        return response;
+      } catch (e) {
+        print('Error fetching marks: $e');
+        if (_mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load marks: ${e.toString()}')),
+        );
       }
     }
   }

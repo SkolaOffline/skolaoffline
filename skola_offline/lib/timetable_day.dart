@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skola_offline/api_cubit.dart';
 
 class TimetableDayScreenState extends State<TimetableDayScreen> {
   List<dynamic> dayTimetable = [];

@@ -7,6 +7,7 @@ import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skola_offline/api_cubit.dart';
 
 class MarksReportScreen extends StatefulWidget {
   @override
@@ -33,45 +34,27 @@ class MarksReportScreenState extends State<MarksReportScreen> {
   Future<void> _fetchMarks() async {
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       final dummyData =
-          await rootBundle.loadString('lib/assets/dummy_report.json');
+          await rootBundle.loadString('lib/assets/dummy_marks.json');
       setState(() {
         certificateTerms = json.decode(dummyData)['certificateTerms'];
         isLoading = false;
       });
     } else {
       try {
+        final apiCubit = context.read<ApiCubit>();
         final storage = FlutterSecureStorage();
         final userId = await storage.read(key: 'userId');
-        // final accessToken = await storage.read(key: 'accessToken');
-
-        // final url = Uri.parse(
-        //     "https://aplikace.skolaonline.cz/solapi/api/v1/students/$userId/marks/bySubject");
-
-        // final response = await http.get(
-        //   url,
-        //   headers: {'Authorization': 'Bearer $accessToken'},
-        // );
-
-        // final response = await makeRequest(
-        //   'api/v1/students/$userId/marks/final',
-        //   null,
-        //   // ignore: use_build_context_synchronously
-        //   context,
-        // );
-
-        final apiCubit = context.read<ApiCubit>();
         final response = await apiCubit.makeRequest(
-            'api/v1/students/$userId/marks/final', null, context);
+          'api/v1/students/$userId/marks/final',
+          null,
+          context,
+        );
 
-        if (response.statusCode == 200) {
-          if (_mounted) {
-            setState(() {
-              certificateTerms = json.decode(response.body)['certificateTerms'];
-              isLoading = false;
-            });
-          }
-        } else {
-          throw Exception('Failed to load marks');
+        if (_mounted) {
+          setState(() {
+            certificateTerms = response['certificateTerms'];
+            isLoading = false;
+          });
         }
       } catch (e) {
         print('Error fetching marks: $e');
@@ -80,6 +63,15 @@ class MarksReportScreenState extends State<MarksReportScreen> {
             isLoading = false;
           });
         }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to load marks: ${e.toString()}'),
+            action: SnackBarAction(
+              label: 'Retry',
+              onPressed: _fetchMarks,
+            ),
+          ),
+        );
       }
     }
   }

@@ -18,6 +18,8 @@ import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';
 
+import 'package:skola_offline/api_cubit.dart';
+
 Future<void> main() async {
   // final storage = FlutterSecureStorage();
   // storage.deleteAll();
@@ -30,141 +32,6 @@ Future<void> main() async {
   );
 
   runApp(MyApp());
-}
-
-class ApiState extends Equatable {
-  final Map<String, dynamic> cachedData;
-
-  const ApiState({this.cachedData = const {}});
-
-  @override
-  List<Object> get props => [cachedData];
-
-  ApiState copyWith({Map<String, dynamic>? cachedData}) {
-    return ApiState(
-      cachedData: cachedData ?? this.cachedData,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {'cachedData': cachedData};
-
-  factory ApiState.fromJson(Map<String, dynamic> json) {
-    return ApiState(
-      cachedData: json['cachedData'] as Map<String, dynamic>? ?? {},
-    );
-  }
-}
-
-class ApiCubit extends HydratedCubit<ApiState> {
-  ApiCubit() : super(ApiState());
-
-  Future<http.Response> makeRequest(
-    String rawUrl,
-    Map<String, dynamic>? params,
-    BuildContext context,
-  ) async {
-    final url = Uri.parse('https://aplikace.skolaonline.cz/solapi/$rawUrl');
-    final queryUrl =
-        params != null ? url.replace(queryParameters: params) : url;
-    final cacheKey = queryUrl.toString();
-
-    // Check if data is in cache
-    if (state.cachedData.containsKey(cacheKey)) {
-      print('Returning cached data for $cacheKey');
-      return http.Response(
-        json.encode(state.cachedData[cacheKey]),
-        200,
-        headers: {'content-type': 'application/json'},
-      );
-    }
-
-    // var url = Uri.parse('https://aplikace.skolaonline.cz/solapi/$rawUrl');
-    // if (params != null) {
-    //   url = url.replace(queryParameters: params);
-    // }
-
-    final storage = FlutterSecureStorage();
-    final accessToken = await storage.read(key: 'accessToken');
-
-    print('starting request to $rawUrl');
-    final startTime = DateTime.now();
-    final response = await http.get(
-      url,
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
-    final endTime = DateTime.now();
-    final duration = endTime.difference(startTime);
-    print('request took ${duration.inMilliseconds} milliseconds');
-    print('ending request');
-
-    print('response is ${response.statusCode}');
-
-    if (response.statusCode == 200) {
-      // Cache the response
-      final responseData = json.decode(response.body);
-      emit(state.copyWith(
-        cachedData: {...state.cachedData, cacheKey: responseData},
-      ));
-      return response;
-    } else if (response.statusCode == 401 && accessToken != null) {
-      // trying to refresh token
-      print('refreshing token...');
-      final refreshToken = await storage.read(key: 'refreshToken');
-
-      print('starting refresh request');
-      final resp = await http.post(
-        Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'grant_type': 'refresh_token',
-          'refresh_token': refreshToken,
-          'client_id': 'test_client',
-          'scope': 'offline_access sol_api',
-        },
-      );
-      print('ending refresh request');
-
-      print('refresh response is ${resp.statusCode}');
-
-      // if successful, save the new tokens and retry the request
-      if (resp.statusCode == 200) {
-        final jsn = jsonDecode(resp.body);
-        final accessToken = jsn['access_token'];
-        final refreshToken = jsn['refresh_token'];
-
-        await storage.write(key: 'accessToken', value: accessToken);
-        await storage.write(key: 'refreshToken', value: refreshToken);
-
-        print('starting request after refresh');
-        final response = await http.get(
-          url,
-          headers: {'Authorization': 'Bearer $accessToken'},
-        );
-        print('ending request after refresh');
-
-        if (response.statusCode == 200) {
-          return response;
-        } else {
-          throw Exception('failed to load data after refresh token');
-        }
-      } else {
-        throw Exception('Failed to refresh token');
-      }
-    } else {
-      Navigator.push(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-      throw Exception('Failed to load data');
-    }
-  }
-
-  @override
-  ApiState? fromJson(Map<String, dynamic> json) => ApiState.fromJson(json);
-
-  @override
-  Map<String, dynamic>? toJson(ApiState state) => state.toJson();
 }
 
 class MyApp extends StatefulWidget {
