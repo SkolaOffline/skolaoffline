@@ -65,29 +65,8 @@ class SettingsScreen extends StatelessWidget {
                         Switch(
                             value: MyApp.of(context)?.getDarkMode() ?? false,
                             onChanged: (value) {
-                              // MyApp.of(context)?.setDarkMode(value);
-                              value =
-                                  true; // A bit of trolling while dark mode is not active.
-                              launchUrl(Uri.parse(
-                                  "https://www.youtube.com/watch?v=xvFZjo5PgG0"));
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text("Stay back brother!"),
-                                    content: Text(
-                                        "YOU SHALL NEVER TURN ON LIGHT MODE !!!!!"),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(),
-                                        child: Text('OK'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            })
+                              MyApp.of(context)?.setDarkMode(value);
+                           })
                       ],
                     ),
                     Row(

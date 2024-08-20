@@ -186,7 +186,7 @@ class _MyAppState extends State<MyApp> {
 
           theme: ThemeData(
             useMaterial3: true,
-            colorScheme: lightScheme,
+            colorScheme: _appSettings.useDarkMode ? darkScheme : lightScheme,
           ),
         
           localizationsDelegates: AppLocalizations.localizationsDelegates,
