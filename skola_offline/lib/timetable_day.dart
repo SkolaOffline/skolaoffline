@@ -86,112 +86,132 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _fetchTimetable,
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: isLoadingToday
-                      ? Center(child: CircularProgressIndicator())
-                      : (currentLessonIndex == -1
-                          ? Center(
-                              child: Text(AppLocalizations.of(context)!
-                                  .no_lessons_for_today))
-                          : CurrentLessonCard(
-                              lesson: todayTimetable[currentLessonIndex]))),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.timetable,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      '${DateFormat('EE').format(date)}, ${DateFormat(
-                        'd.M.y',
-                      ).format(date)}',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () {
-                            setState(() {
-                              if (date.weekday == 1) {
-                                date = date.subtract(Duration(days: 3));
+        child: GestureDetector(
+          onHorizontalDragEnd: (details) {
+            if (details.primaryVelocity! < 0) {
+              if (date.weekday == 1) {
+                date = date.subtract(Duration(days: 3));
+              } else {
+                date = date.subtract(Duration(days: 1));
+              }
+              isLoading = true;
+            } else if (details.primaryVelocity! > 0) {
+              if (date.weekday == 5) {
+                date = date.add(Duration(days: 3));
+              } else {
+                date = date.add(Duration(days: 1));
+              }
+              isLoading = true;
+            }
+            _fetchTimetable();
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: isLoadingToday
+                        ? Center(child: CircularProgressIndicator())
+                        : (currentLessonIndex == -1
+                            ? Center(
+                                child: Text(AppLocalizations.of(context)!
+                                    .no_lessons_for_today))
+                            : CurrentLessonCard(
+                                lesson: todayTimetable[currentLessonIndex]))),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.timetable,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        '${DateFormat('EE').format(date)}, ${DateFormat(
+                          'd.M.y',
+                        ).format(date)}',
+                        style:
+                            TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.arrow_back),
+                            onPressed: () {
+                              setState(() {
+                                if (date.weekday == 1) {
+                                  date = date.subtract(Duration(days: 3));
+                                } else {
+                                  date = date.subtract(Duration(days: 1));
+                                }
+          
+                                isLoading = true;
+                              });
+                              _fetchTimetable();
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.date_range),
+                            onPressed: () {
+                              showDatePicker(
+                                      context: context,
+                                      firstDate: DateTime(0),
+                                      lastDate: DateTime(9999),
+                                      initialDate: date)
+                                  .then((value) {
+                                if (value != null) {
+                                  setState(() {
+                                    date = value;
+                                    isLoading = true;
+                                  });
+                                  _fetchTimetable();
+                                }
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.arrow_forward),
+                            onPressed: () {
+                              if (date.weekday == 5) {
+                                date = date.add(Duration(days: 3));
                               } else {
-                                date = date.subtract(Duration(days: 1));
+                                date = date.add(Duration(days: 1));
                               }
-
                               isLoading = true;
-                            });
-                            _fetchTimetable();
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.date_range),
-                          onPressed: () {
-                            showDatePicker(
-                                    context: context,
-                                    firstDate: DateTime(0),
-                                    lastDate: DateTime(9999),
-                                    initialDate: date)
-                                .then((value) {
-                              if (value != null) {
-                                setState(() {
-                                  date = value;
-                                  isLoading = true;
-                                });
-                                _fetchTimetable();
-                              }
-                            });
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.arrow_forward),
-                          onPressed: () {
-                            if (date.weekday == 5) {
-                              date = date.add(Duration(days: 3));
-                            } else {
-                              date = date.add(Duration(days: 1));
-                            }
-                            isLoading = true;
-
-                            _fetchTimetable();
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+          
+                              _fetchTimetable();
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            isLoading
-                ? SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final lesson = dayTimetable[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 0.0),
-                          child: LessonCard(lesson: lesson),
-                        );
-                      },
-                      childCount:
-                          dayTimetable.isEmpty ? 0 : dayTimetable.length,
+              isLoading
+                  ? SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final lesson = dayTimetable[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 0.0),
+                            child: LessonCard(lesson: lesson),
+                          );
+                        },
+                        childCount:
+                            dayTimetable.isEmpty ? 0 : dayTimetable.length,
+                      ),
                     ),
-                  ),
-          ],
+            ],
+          ),
         ),
       ),
     );
