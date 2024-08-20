@@ -51,6 +51,7 @@ class LoginScreenState extends State<LoginScreen> {
     try {
       Map<String, dynamic> data;
 
+      // ignore: use_build_context_synchronously
       if (MyApp.of(context)?.getDummyMode() ?? false) {
         // Use dummy data
         data = _dummyLoginResponse;
@@ -97,6 +98,7 @@ class LoginScreenState extends State<LoginScreen> {
       // Get user data
       Map<String, dynamic> jsonResponse;
 
+      // ignore: use_build_context_synchronously
       if (MyApp.of(context)?.getDummyMode() ?? false) {
         // Use dummy user data
         jsonResponse = _dummyUserResponse;

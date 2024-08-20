@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -13,13 +14,13 @@ import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   // final storage = FlutterSecureStorage();
   // storage.deleteAll();
-  // TODO invalidate the access token
   // storage.write(key: 'accessToken', value: 'your_access_token_here');
 
   runApp(MyApp());
@@ -30,9 +31,6 @@ Future<http.Response> makeRequest(
   Map<String, dynamic>? params,
   BuildContext context,
 ) async {
-  // TODO - we could cache the requests...
-  // but it would be SO much work
-
   var url = Uri.parse('https://aplikace.skolaonline.cz/solapi/$rawUrl');
   if (params != null) {
     url = url.replace(queryParameters: params);
@@ -112,8 +110,10 @@ Future<http.Response> makeRequest(
 
 class MyApp extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _MyAppState createState() => _MyAppState();
 
+  // ignore: library_private_types_in_public_api
   static _MyAppState? of(BuildContext context) =>
       context.findAncestorStateOfType<_MyAppState>();
 }
@@ -163,25 +163,38 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Škola Offline',
-      // TODO - dark theme + theme changing
-      darkTheme: ThemeData.dark(
-        useMaterial3: true,
-        // colorScheme: ColorScheme.fromSeed(
-        //   seedColor: Colors.deepPurple,
-        // ),
-      ),
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 47, 23, 89),
-        ),
-      ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      locale: _appSettings.language,
-      home: MyHomePage(),
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        ColorScheme lightScheme;
+        ColorScheme darkScheme;
+
+        if (lightDynamic != null && darkDynamic != null) {
+          print('Using dynamic color scheme');
+          lightScheme = lightDynamic.harmonized()..copyWith();
+          darkScheme = darkDynamic.harmonized()..copyWith();  
+        } else {
+          lightScheme = ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 47, 23, 89),
+          );
+          darkScheme = ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 47, 23, 89),
+            brightness: Brightness.dark,
+          );
+        }
+        return MaterialApp(
+          title: 'Škola Offline',
+
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: lightScheme,
+          ),
+        
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: _appSettings.language,
+          home: MyHomePage(),
+        );
+      }
     );
   }
 }

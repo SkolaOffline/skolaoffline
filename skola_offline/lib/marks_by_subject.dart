@@ -30,6 +30,7 @@ class MarksBySubjectScreenState extends State<MarksBySubjectScreen> {
   }
 
   Future<void> _fetchMarks() async {
+    print('dummy mode: ${MyApp.of(context)?.getDummyMode()}');
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       final dummyData =
           await rootBundle.loadString('lib/assets/dummy_marks.json');

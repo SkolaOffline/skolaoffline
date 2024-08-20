@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.5+7
+version: 0.0.5+8
 
 environment:
   sdk: ^3.1.1
@@ -26,6 +26,8 @@ dependencies:
   provider: ^6.0.0
   flutter_localizations:
     sdk: flutter
+
+  dynamic_color: ^1.4.0
 
 dev_dependencies:
   flutter_test:
