@@ -42,3 +42,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 skola_offline/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# Token-related
+/skola_offline/android/key.properties
