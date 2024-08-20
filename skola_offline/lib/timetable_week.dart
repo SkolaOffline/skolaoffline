@@ -52,14 +52,14 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss');
 
-    if (!isLoading) {
-      if (date.weekday > 0 && date.weekday < 6) {
-        for (var i = weekTimetable[date.weekday - 1].length - 1; i >= 0; i--) {
-          if (date.isBefore(dateFormatter
-              .parse(weekTimetable[date.weekday - 1][i]['endTime']))) {}
-        }
-      }
-    }
+    // if (!isLoading) {
+    //   if (date.weekday > 0 && date.weekday < 6) {
+    //     for (var i = weekTimetable[date.weekday - 1].length - 1; i >= 0; i--) {
+    //       if (date.isBefore(dateFormatter
+    //           .parse(weekTimetable[date.weekday - 1][i]['endTime']))) {}
+    //     }
+    //   }
+    // }
 
     if (isLoading) {
       return Center(child: CircularProgressIndicator());
