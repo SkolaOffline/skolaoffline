@@ -86,13 +86,16 @@ class MarksReportScreenState extends State<MarksReportScreen> {
         onRefresh: _fetchMarks,
         child: isLoading
             ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: certificateTerms.length,
-                itemBuilder: (context, index) {
-                  final term = certificateTerms[index];
-                  return TermCard(term: term);
-                },
-              ),
+            : Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ListView.builder(
+                  itemCount: certificateTerms.length,
+                  itemBuilder: (context, index) {
+                    final term = certificateTerms[index];
+                    return TermCard(term: term);
+                  },
+                ),
+            ),
       ),
     );
   }

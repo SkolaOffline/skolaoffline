@@ -98,12 +98,15 @@ class AbsencesScreenState extends State<AbsencesScreen> {
     return Scaffold(
         body: isLoading
             ? Center(child: CircularProgressIndicator())
-            : ListView(
-                children: [
-                  for (var subject in absencesSubjectList)
-                    AbsenceInSubjectCard(absence: subject, context: context)
-                ],
-              ));
+            : Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: ListView(
+                  children: [
+                    for (var subject in absencesSubjectList)
+                      AbsenceInSubjectCard(absence: subject, context: context)
+                  ],
+                ),
+            ));
   }
 
   Future<String> downloadAbsences() async {

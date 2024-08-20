@@ -147,7 +147,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
             }
           },
           child: Padding(
-            padding: const EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(16.0),
             child: GridView.count(
               scrollDirection: Axis.horizontal,
               crossAxisCount: 8,
@@ -319,34 +319,31 @@ class CurrentLessonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppLocalizations.of(context)!.current_lesson,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius: BorderRadius.circular(17),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 5,
-                    spreadRadius: 2,
-                    offset: Offset(7, 7),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: LessonCardAbbrev(lesson: lesson),
-              ))
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          AppLocalizations.of(context)!.current_lesson,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(17),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 5,
+                  spreadRadius: 2,
+                  offset: Offset(7, 7),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: LessonCardAbbrev(lesson: lesson),
+            ))
+      ],
     );
   }
 }
@@ -382,23 +379,23 @@ class LessonCardAbbrev extends StatelessWidget {
               ),
               softWrap: true,
               style: const TextStyle(
-                fontSize: 12,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               lesson['classroomAbbrev']
                   .replaceAll(RegExp(r'\([^()]*\)'), '')
-                  .substring(0, min<int>(3, lesson['classroomAbbrev'].length)),
+                  .substring(0, min<int>(6, lesson['classroomAbbrev'].length)),
               softWrap: true,
               style: const TextStyle(
-                fontSize: 9,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
               lesson['teacherAbbrev'],
-              style: const TextStyle(fontSize: 9),
+              style: const TextStyle(fontSize: 13),
             ),
           ],
         ),

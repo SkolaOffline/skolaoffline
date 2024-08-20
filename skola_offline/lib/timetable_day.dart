@@ -109,7 +109,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                    padding: const EdgeInsets.all(3.0),
+                    padding: const EdgeInsets.only(left: 70, right: 70, top: 10, bottom: 20),
                     child: isLoadingToday
                         ? Center(child: CircularProgressIndicator())
                         : (currentLessonIndex == -1
@@ -351,7 +351,7 @@ class _CurrentLessonCardState extends State<CurrentLessonCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -418,7 +418,7 @@ class LessonCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 19),
+            SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
