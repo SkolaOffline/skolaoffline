@@ -9,6 +9,8 @@
 .history
 .svn/
 migrate_working_dir/
+skola_offline.apk
+skola_offline.apk
 
 # IntelliJ related
 *.iml

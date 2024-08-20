@@ -2,12 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-// import 'package:skola_offline/main.dart';
 
 class TimetableDayScreenState extends State<TimetableDayScreen> {
   List<dynamic> dayTimetable = [];
@@ -34,14 +31,12 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   Future<void> _fetchTimetable() async {
     try {
       final timetableData = await downloadTimetable(date);
-      // print(timetableData);
       if (_mounted) {
         setState(() {
           dayTimetable = parseWeekTimetable(timetableData)[0];
           isLoading = false;
         });
       }
-      // print(timetableData);
     } catch (e) {
       print('Error fetching timetable: $e');
       if (_mounted) {
@@ -59,14 +54,12 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
 
     try {
       final timetableData = await downloadTimetable(today);
-      // print(timetableData);
       if (_mounted) {
         setState(() {
           todayTimetable = parseWeekTimetable(timetableData)[0];
           isLoadingToday = false;
         });
       }
-      // print(timetableData);
     } catch (e) {
       print('Error fetching timetable for today: $e');
       if (_mounted) {
@@ -107,10 +100,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                           : CurrentLessonCard(
                               lesson: todayTimetable[currentLessonIndex]))),
             ),
-            // SliverToBoxAdapter(
-            //     child: SizedBox(
-            //   height: 10,
-            // )),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -191,7 +180,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                 : SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        print(index);
                         final lesson = dayTimetable[index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(
@@ -225,7 +213,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     }
 
     final day = getMidnight(whichDay);
-    // final nextDay = getMidnight(day.add(Duration(days: 1)));
 
     final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
@@ -237,8 +224,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     };
 
     String url = 'api/v1/timeTable';
-    // Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/timeTable")
-    // .replace(queryParameters: params);
 
     // ignore: use_build_context_synchronously
     final response = await makeRequest(url, params, context);
@@ -259,7 +244,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
       final storage = FlutterSecureStorage();
       final userId = await storage.read(key: 'userId');
       final syID = await storage.read(key: 'schoolYearId');
-      // final accessToken = await storage.read(key: 'accessToken');
 
       DateTime getMidnight(DateTime datetime) {
         return DateTime(datetime.year, datetime.month, datetime.day);
@@ -282,13 +266,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
       };
 
       String url = 'api/v1/timeTable';
-      // Uri.parse("https://aplikace.skolaonline.cz/solapi/api/v1/timeTable")
-      // .replace(queryParameters: params);
-
-      // final response = await http.get(
-      //   url,
-      //   headers: {'Authorization': 'Bearer $accessToken'},
-      // );
 
       final response = await makeRequest(
         url,
@@ -299,9 +276,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
 
       if (response.statusCode == 200) {
         return response.body;
-        // } else if (response.statusCode == 401) {
-        //   await refreshToken();
-        //   return downloadTimetable(dateTime);
       } else {
         throw Exception(
             'Failed to load timetable\n${response.statusCode}\n${response.body}');
@@ -344,63 +318,6 @@ class TimetableDayScreen extends StatefulWidget {
   TimetableDayScreenState createState() => TimetableDayScreenState();
 }
 
-// Future<void> refreshToken() async {
-//   final storage = FlutterSecureStorage();
-// refresh token
-//   final refreshToken = await storage.read(key: 'refreshToken');
-//   final r = await http.post(
-//     Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
-//     headers: {"Content-Type": "application/x-www-form-urlencoded"},
-//     body: {
-//       "grant_type": "refresh_token",
-//       "refresh_token": refreshToken,
-//       "client_id": "test_client",
-//       "scope": "offline_access sol_api",
-//     },
-//   );
-// print(r.body);
-//   print('refresh response: ${r.statusCode}');
-
-//   if (r.statusCode == 200) {
-//     final accessToken = jsonDecode(r.body)['access_token'];
-//     final newRefreshToken = jsonDecode(r.body)['refresh_token'];
-//     await storage.write(key: 'accessToken', value: accessToken);
-//     await storage.write(key: 'refreshToken', value: newRefreshToken);
-
-//     print('refreshed token');
-//   } else if (r.statusCode == 400) {
-//     await storage.delete(key: 'accessToken');
-//     await storage.delete(key: 'refreshToken');
-//     print('deleted token');
-
-//     final response = await http.post(
-//       Uri.parse('https://aplikace.skolaonline.cz/solapi/api/connect/token'),
-//       headers: {"Content-Type": "application/x-www-form-urlencoded"},
-//       body: {
-//         "grant_type": "password",
-//         "username": await storage.read(key: 'username'),
-//         "password": await storage.read(key: 'password'),
-//         "client_id": "test_client",
-//         "scope": "openid offline_access profile sol_api",
-//       },
-//     );
-
-//     if (response.statusCode == 200) {
-//       final accessToken = jsonDecode(response.body)['access_token'];
-//       final refreshToken = jsonDecode(response.body)['refresh_token'];
-//       await storage.write(key: 'accessToken', value: accessToken);
-//       await storage.write(key: 'refreshToken', value: refreshToken);
-//     } else {
-//       throw Exception('Failed to login again after token refresh');
-//     }
-//   } else {
-//     throw Exception('Failed to refresh token');
-//   }
-
-//   throw Exception('too lazy to implement');
-//   // exit(1);
-// }
-
 class CurrentLessonCard extends StatefulWidget {
   final Map<String, dynamic> lesson;
 
@@ -418,30 +335,6 @@ class _CurrentLessonCardState extends State<CurrentLessonCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     Text(
-          //       'Current Lesson',
-          //       style: Theme.of(context).textTheme.headlineSmall,
-          //     ),
-          //     ButtonBar(
-          //       children: [
-          //         IconButton(
-          //           icon: Icon(Icons.calendar_today),
-          //           onPressed: () {
-          //             setState(() {
-          //               TimetableScreenState().setWeekScreen();
-          //             // //   isLoading = true;
-          //             });
-          //             // _fetchTimetable();
-          //           },
-          //         ),
-          //       ],
-          //     ),
-          // ],
-          // ),
-          // SizedBox(height: 8),
           Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
@@ -489,7 +382,6 @@ class LessonCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    // lesson['lessonOrder'].toString(),
                     lesson['lessonIdFrom'] == lesson['lessonIdTo']
                         ? lesson['lessonIdFrom'].toString()
                         : '${lesson['lessonIdFrom']}-${lesson['lessonIdTo']}',
