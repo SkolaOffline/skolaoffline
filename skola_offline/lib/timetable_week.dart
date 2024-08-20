@@ -130,21 +130,39 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
             ],
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: GridView.count(
-            scrollDirection: Axis.horizontal,
-            crossAxisCount: 8,
-            childAspectRatio: MediaQuery.of(context).size.height /
-                (MediaQuery.of(context).size.width) *
-                9 /
-                24,
-            mainAxisSpacing: 2,
-            crossAxisSpacing: 2,
-            children: [
-              for (var i = 0; i < listifiedTimetable.length; i++)
-                LessonCardAbbrev(lesson: listifiedTimetable[i]),
-            ],
+        body: GestureDetector(
+          onHorizontalDragEnd: (details) {
+            if (details.primaryVelocity! > 0) {
+              setState(() {
+                date = date.subtract(Duration(days: 7));
+                isLoading = true;
+              });
+              _fetchTimetableWeek();
+            } else if (details.primaryVelocity! < 0) {
+              setState(() {
+                date = date.add(Duration(days: 7));
+                isLoading = true;
+              });
+              _fetchTimetableWeek();
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: GridView.count(
+              scrollDirection: Axis.horizontal,
+              crossAxisCount: 8,
+              // TODO this needs to be fixed
+              childAspectRatio: MediaQuery.of(context).size.height /
+                  (MediaQuery.of(context).size.width) *
+                  9 /
+                  24,
+              mainAxisSpacing: 2,
+              crossAxisSpacing: 2,
+              children: [
+                for (var i = 0; i < listifiedTimetable.length; i++)
+                  LessonCardAbbrev(lesson: listifiedTimetable[i]),
+              ],
+            ),
           ),
         ),
       );
