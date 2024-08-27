@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart'; // Import the url_launcher package
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:skola_offline/main.dart';
 
@@ -66,7 +65,7 @@ class SettingsScreen extends StatelessWidget {
                             value: MyApp.of(context)?.getDarkMode() ?? false,
                             onChanged: (value) {
                               MyApp.of(context)?.setDarkMode(value);
-                           })
+                            })
                       ],
                     ),
                     Row(
