@@ -165,7 +165,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
               // TODO this needs to be fixed
               childAspectRatio: MediaQuery.of(context).size.height /
                   (MediaQuery.of(context).size.width) *
-                  9 /
+                  11 /
                   24,
               mainAxisSpacing: 2,
               crossAxisSpacing: 2,
@@ -231,9 +231,12 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
         return DateTime(dateTime.year, dateTime.month, dateTime.day);
       }
 
-      final monday =
+      var monday =
           getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
+      monday = monday.add(Duration(days: 7)); 
       final friday = getMidnight(monday.add(Duration(days: 5)));
+
+      print(monday);
 
       final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
@@ -397,7 +400,13 @@ class LessonCardAbbrev extends StatelessWidget {
             Text(
               lesson['classroomAbbrev']
                   .replaceAll(RegExp(r'\([^()]*\)'), '')
-                  .substring(0, min<int>(6, lesson['classroomAbbrev'].length)),
+                  .substring(
+                    0, 
+                    min<int>(
+                      6, 
+                      lesson['classroomAbbrev']
+                      .replaceAll(RegExp(r'\([^()]*\)'), '')
+                      .length)),
               softWrap: true,
               style: const TextStyle(
                 fontSize: 13,

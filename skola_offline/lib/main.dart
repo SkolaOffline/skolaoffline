@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:skola_offline/absences.dart';
 import 'package:skola_offline/app_settings.dart';
-import 'package:skola_offline/login.dart';
+// import 'package:skola_offline/login.dart';
 import 'package:skola_offline/settings.dart';
 import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/marks.dart';
@@ -50,7 +50,7 @@ Future<http.Response> makeRequest(
   print('ending request');
 
   print('response is ${response.statusCode}');
-  print('response body is ${response.body}');
+  // print('response body is ${response.body}');
 
   if (response.statusCode == 200) {
     return response;
@@ -125,6 +125,7 @@ Future<http.Response> makeRequest(
         ],
       );
     });
+    print('response body is ${response.body}');
     throw Exception('Failed to load data, response code: ${response.statusCode} != 200');
   }
 }
