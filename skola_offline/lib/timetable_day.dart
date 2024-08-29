@@ -424,7 +424,8 @@ class LessonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      color: Theme.of(context).colorScheme.secondaryContainer,
+      // color: Theme.of(context).colorScheme.secondaryContainer,
+      color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
       child: Padding(
         padding: EdgeInsets.all(0),
         child: Row(
@@ -433,8 +434,16 @@ class LessonCard extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
                 borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 3,
+                    spreadRadius: 0,
+                    offset: Offset(7, 0),
+                  ),
+                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

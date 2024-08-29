@@ -377,47 +377,53 @@ class LessonCardAbbrev extends StatelessWidget {
         child: const SizedBox.shrink(),
       );
     }
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              lesson['lessonAbbrev'].substring(
-                0,
-                lesson['lessonAbbrev'].length > 4
-                    ? 4
-                    : lesson['lessonAbbrev'].length,
+
+    print('lesson type: ${lesson['lessonType']}');
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Card(
+        margin: EdgeInsets.zero,
+        color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                lesson['lessonAbbrev'].substring(
+                  0,
+                  lesson['lessonAbbrev'].length > 4
+                      ? 4
+                      : lesson['lessonAbbrev'].length,
+                ),
+                softWrap: true,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              softWrap: true,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              Text(
+                lesson['classroomAbbrev']
+                    .replaceAll(RegExp(r'\([^()]*\)'), '')
+                    .substring(
+                      0, 
+                      min<int>(
+                        6, 
+                        lesson['classroomAbbrev']
+                        .replaceAll(RegExp(r'\([^()]*\)'), '')
+                        .length)),
+                softWrap: true,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            Text(
-              lesson['classroomAbbrev']
-                  .replaceAll(RegExp(r'\([^()]*\)'), '')
-                  .substring(
-                    0, 
-                    min<int>(
-                      6, 
-                      lesson['classroomAbbrev']
-                      .replaceAll(RegExp(r'\([^()]*\)'), '')
-                      .length)),
-              softWrap: true,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+              Text(
+                lesson['teacherAbbrev'],
+                style: const TextStyle(fontSize: 13),
               ),
-            ),
-            Text(
-              lesson['teacherAbbrev'],
-              style: const TextStyle(fontSize: 13),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
