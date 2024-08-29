@@ -439,7 +439,7 @@ class LessonCard extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
-                    blurRadius: 3,
+                    blurRadius: 5,
                     spreadRadius: 0,
                     offset: Offset(7, 0),
                   ),

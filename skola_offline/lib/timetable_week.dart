@@ -382,6 +382,7 @@ class LessonCardAbbrev extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Card(
+        elevation: 2,
         margin: EdgeInsets.zero,
         color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
         child: Padding(
