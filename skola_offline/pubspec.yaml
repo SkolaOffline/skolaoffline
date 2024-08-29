@@ -1,5 +1,5 @@
 name: skola_offline
-description: A new Flutter project.
+description: A Flutter app for the skolaonline school system.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 

@@ -29,6 +29,19 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   }
 
   Future<void> _fetchTimetable() async {
+    // holiday fix
+    //TODO: holidays are set strictly to july and august in this whole file
+    if (date.month == 7 || date.month == 8) {
+      date = DateTime(date.year, 9, 1, 0, 0, 0);
+    }
+
+    //weekend fix
+    if (date.weekday == 6) {
+      date.add(Duration(days: 2));
+    } else if (date.weekday == 7) {
+      date.add(Duration(days: 1));
+    }
+
     try {
       final timetableData = await downloadTimetable(date);
       if (_mounted) {
@@ -51,6 +64,18 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     today = (MyApp.of(context)?.getDummyMode() ?? false)
         ? DateTime(2024, 5, 27, 8, 46, 03)
         : DateTime.now();
+
+    // holiday fix
+    if (today.month == 7 || today.month == 8) {
+      today = DateTime(today.year, 9, 1, 0, 0, 0);
+    }
+
+    //weekend fix
+    if (today.weekday == 6) {
+      today.add(Duration(days: 2));
+    } else if (today.weekday == 7) {
+      today.add(Duration(days: 1));
+    }
 
     try {
       final timetableData = await downloadTimetable(today);
@@ -109,7 +134,8 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                    padding: const EdgeInsets.only(left: 70, right: 70, top: 10, bottom: 20),
+                    padding: const EdgeInsets.only(
+                        left: 70, right: 70, top: 10, bottom: 20),
                     child: isLoadingToday
                         ? Center(child: CircularProgressIndicator())
                         : (currentLessonIndex == -1
@@ -134,8 +160,8 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                         '${DateFormat('EE').format(date)}, ${DateFormat(
                           'd.M.y',
                         ).format(date)}',
-                        style:
-                            TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w300),
                       ),
                       Row(
                         children: [
@@ -148,7 +174,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                                 } else {
                                   date = date.subtract(Duration(days: 1));
                                 }
-          
+
                                 isLoading = true;
                               });
                               _fetchTimetable();
@@ -182,7 +208,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                                 date = date.add(Duration(days: 1));
                               }
                               isLoading = true;
-          
+
                               _fetchTimetable();
                             },
                           ),
@@ -232,14 +258,26 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
       return DateTime(datetime.year, datetime.month, datetime.day);
     }
 
-    final day = getMidnight(whichDay);
+    today = getMidnight(whichDay);
+
+    // holiday fix
+    if (today.month == 7 || today.month == 8) {
+      today = getMidnight(DateTime(whichDay.year, 9, 1, 0, 0, 0));
+    }
+
+    //weekend fix
+    if (today.weekday == 6) {
+      today.add(Duration(days: 2));
+    } else if (today.weekday == 7) {
+      today.add(Duration(days: 1));
+    }
 
     final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
     Map<String, dynamic> params = {
       'studentId': userId,
-      'dateFrom': dateFormatter.format(day),
-      'dateTo': dateFormatter.format(day),
+      'dateFrom': dateFormatter.format(today),
+      'dateTo': dateFormatter.format(today),
       'schoolYearId': syID
     };
 

@@ -185,38 +185,35 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
-      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        ColorScheme lightScheme;
-        ColorScheme darkScheme;
+        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+      ColorScheme lightScheme;
+      ColorScheme darkScheme;
 
-        if (lightDynamic != null && darkDynamic != null) {
-          print('Using dynamic color scheme');
-          lightScheme = lightDynamic.harmonized()..copyWith();
-          darkScheme = darkDynamic.harmonized()..copyWith();  
-        } else {
-          lightScheme = ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 47, 23, 89),
-          );
-          darkScheme = ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 47, 23, 89),
-            brightness: Brightness.dark,
-          );
-        }
-        return MaterialApp(
-          title: 'Škola Offline',
-
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: _appSettings.useDarkMode ? darkScheme : lightScheme,
-          ),
-        
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: _appSettings.language,
-          home: MyHomePage(),
+      if (lightDynamic != null && darkDynamic != null) {
+        print('Using dynamic color scheme');
+        lightScheme = lightDynamic.harmonized()..copyWith();
+        darkScheme = darkDynamic.harmonized()..copyWith();
+      } else {
+        lightScheme = ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 47, 23, 89),
+        );
+        darkScheme = ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 47, 23, 89),
+          brightness: Brightness.dark,
         );
       }
-    );
+      return MaterialApp(
+        title: 'Škola Offline',
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: _appSettings.useDarkMode ? darkScheme : lightScheme,
+        ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: _appSettings.language,
+        home: MyHomePage(),
+      );
+    });
   }
 }
 

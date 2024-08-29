@@ -34,6 +34,17 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   }
 
   Future<void> _fetchTimetableWeek() async {
+    // holiday fix
+    if (date.month == 7 || date.month == 8) {
+      date = DateTime(date.year, 9, 1, 0, 0, 0);
+    }
+
+    //weekend fix
+    if (date.weekday == 6) {
+      date.add(Duration(days: 2));
+    } else if (date.weekday == 7) {
+      date.add(Duration(days: 1));
+    }
     try {
       final timetableData = await downloadTimetableWeek(date);
       if (_mounted) {
@@ -216,8 +227,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
       final userId = await storage.read(key: 'userId');
       final syID = await storage.read(key: 'schoolYearId');
 
-      DateTime getMidnight(DateTime datetime) {
-        return DateTime(datetime.year, datetime.month, datetime.day);
+      DateTime getMidnight(DateTime dateTime) {
+        return DateTime(dateTime.year, dateTime.month, dateTime.day);
       }
 
       final monday =
