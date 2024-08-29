@@ -113,14 +113,14 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
         onRefresh: _fetchTimetable,
         child: GestureDetector(
           onHorizontalDragEnd: (details) {
-            if (details.primaryVelocity! < 0) {
+            if (details.primaryVelocity! > 0) {
               if (date.weekday == 1) {
                 date = date.subtract(Duration(days: 3));
               } else {
                 date = date.subtract(Duration(days: 1));
               }
               isLoading = true;
-            } else if (details.primaryVelocity! > 0) {
+            } else if (details.primaryVelocity! < 0) {
               if (date.weekday == 5) {
                 date = date.add(Duration(days: 3));
               } else {

@@ -143,13 +143,13 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
         ),
         body: GestureDetector(
           onHorizontalDragEnd: (details) {
-            if (details.primaryVelocity! > 0) {
+            if (details.primaryVelocity! < 0) {
               setState(() {
                 date = date.subtract(Duration(days: 7));
                 isLoading = true;
               });
               _fetchTimetableWeek();
-            } else if (details.primaryVelocity! < 0) {
+            } else if (details.primaryVelocity! > 0) {
               setState(() {
                 date = date.add(Duration(days: 7));
                 isLoading = true;
