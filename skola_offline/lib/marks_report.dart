@@ -81,6 +81,7 @@ class MarksReportScreenState extends State<MarksReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    certificateTerms = certificateTerms.reversed.toList();
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _fetchMarks,
