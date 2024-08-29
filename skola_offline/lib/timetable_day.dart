@@ -271,17 +271,17 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
 
       final monday =
           getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
-      getMidnight(monday.add(Duration(days: 5)));
+      final friday = getMidnight(monday.add(Duration(days: 5)));
 
       final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
 
       Map<String, dynamic> params = {
         'studentId': userId,
         // TODO change to dateTime
-        // 'dateFrom': dateFormatter.format(monday),
-        // 'dateTo': dateFormatter.format(friday),
-        'dateFrom': dateFormatter.format(DateTime(2024, 6, 3, 0, 0, 0)),
-        'dateTo': dateFormatter.format(DateTime(2024, 6, 7, 0, 0, 0)),
+        'dateFrom': dateFormatter.format(monday),
+        'dateTo': dateFormatter.format(friday),
+        // 'dateFrom': dateFormatter.format(DateTime(2024, 6, 3, 0, 0, 0)),
+        // 'dateTo': dateFormatter.format(DateTime(2024, 6, 7, 0, 0, 0)),
         'schoolYearId': syID
       };
 
@@ -312,14 +312,14 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     return day['schedules']
         .where((lesson) =>
             // TODO parse different types of lessons
-            lesson['hourType']['id'] != 'SKOLNI_AKCE' &&
+            // lesson['hourType']['id'] != 'SKOLNI_AKCE' &&
             lesson['hourType']['id'] != 'SUPLOVANA')
         .map((lesson) => {
               'lessonFrom': lesson['lessonIdFrom'],
               'lessonTo': lesson['lessonIdTo'],
               'lessonType': lesson['hourType']['id'],
-              'lessonAbbrev': lesson['subject']['abbrev'],
-              'lessonName': lesson['subject']['name'],
+              'lessonAbbrev': lesson['subject']['abbrev'] ?? lesson['title'],
+              'lessonName': lesson['subject']['name'] ?? lesson['description'],
               'classroomAbbrev': lesson['rooms'][0]['abbrev'],
               'teacher': lesson['teachers'][0]['displayName'],
               'teacherAbbrev': lesson['teachers'][0]['abbrev'],

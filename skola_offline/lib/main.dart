@@ -14,7 +14,6 @@ import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +50,7 @@ Future<http.Response> makeRequest(
   print('ending request');
 
   print('response is ${response.statusCode}');
+  print('response body is ${response.body}');
 
   if (response.statusCode == 200) {
     return response;
@@ -73,6 +73,7 @@ Future<http.Response> makeRequest(
     print('ending refresh request');
 
     print('refresh response is ${resp.statusCode}');
+    print('refresh response body is ${resp.body}');
 
     // if successful, save the new tokens and retry the request
     if (resp.statusCode == 200) {
@@ -99,12 +100,32 @@ Future<http.Response> makeRequest(
       throw Exception('Failed to refresh token');
     }
   } else {
-    Navigator.push(
-      // ignore: use_build_context_synchronously
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
-    throw Exception('Failed to load data');
+    // Navigator.push(
+    //   // ignore: use_build_context_synchronously
+    //   context,
+    //   MaterialPageRoute(builder: (context) => LoginScreen()),
+    // );
+    showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Failed to load data'),
+        content: Column(
+          children: [
+            Text('Response code: ${response.statusCode} != 200'),
+            Text('Response body: ${response.body}'),
+            Text('Please log in again'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    });
+    throw Exception('Failed to load data, response code: ${response.statusCode} != 200');
   }
 }
 
