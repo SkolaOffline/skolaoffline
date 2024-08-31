@@ -226,7 +226,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 20),
               Text(
-                "If you don't have a aplikace.skolaonline.cz account, u can use dummy mode by logging in as:\nusername: dummy\npassword: mode",
+                "If you don't have an aplikace.skolaonline.cz account, u can use dummy mode by logging in as:\nusername: dummy\npassword: mode",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey,

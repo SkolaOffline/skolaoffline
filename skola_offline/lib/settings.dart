@@ -82,6 +82,18 @@ class SettingsScreen extends StatelessWidget {
                             })
                       ],
                     ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              "Disclaimer:\nWe are not in any way asociated with Škola Online, skolaonline.cz, BAKALÁŘI software s.r.o. or any other related subjects. This project is for educational purposes only.",
+                              style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow:TextOverflow.visible
+                        ),
+                        ]),
                   ],
                 ))));
   }

@@ -60,19 +60,11 @@ android {
     }
    buildTypes {
        release {
-            //TODO:Michael36500 needs to send Daalbu and matym1 the signing certificate
             signingConfig signingConfigs.release
        }
    }
 
 
-    // buildTypes {
-    //     release {
-    //         // TODO: Add your own signing config for the release build.
-    //         // Signing with the debug keys for now, so `flutter run --release` works.
-    //         signingConfig = signingConfigs.debug
-    //     }
-    // }
 }
 
 flutter {
@@ -80,5 +72,5 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.google.android.material:material:1.12.0'
-}
+        implementation 'com.google.android.material:material:1.12.0'
+    }
