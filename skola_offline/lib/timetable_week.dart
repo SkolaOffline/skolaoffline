@@ -145,18 +145,18 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
           onHorizontalDragEnd: (details) {
             if (details.primaryVelocity! < 0) {
               setState(() {
-                date = date.subtract(Duration(days: 7));
+                date = date.add(Duration(days: 7));
                 isLoading = true;
               });
               _fetchTimetableWeek();
             } else if (details.primaryVelocity! > 0) {
               setState(() {
-                date = date.add(Duration(days: 7));
+                date = date.subtract(Duration(days: 7));
                 isLoading = true;
               });
               _fetchTimetableWeek();
             }
-          },
+          }, 
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: GridView.count(

@@ -245,7 +245,7 @@ class MyHomePageState extends State<MyHomePage> {
             Text(
               'Škola Offline',
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 20,
                 // fontFamily: 'SansSerif',
                 fontWeight: FontWeight.bold,
               ),

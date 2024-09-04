@@ -45,8 +45,6 @@ class LoginScreenState extends State<LoginScreen> {
     );
 
     final storage = FlutterSecureStorage();
-    await storage.write(key: 'username', value: username);
-    await storage.write(key: 'password', value: password);
 
     try {
       Map<String, dynamic> data;

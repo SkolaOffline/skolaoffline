@@ -135,7 +135,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
               SliverToBoxAdapter(
                 child: Padding(
                     padding: const EdgeInsets.only(
-                        left: 70, right: 70, top: 10, bottom: 20),
+                        left: 20, right: 20, top: 10, bottom: 20),
                     child: isLoadingToday
                         ? Center(child: CircularProgressIndicator())
                         : (currentLessonIndex == -1
