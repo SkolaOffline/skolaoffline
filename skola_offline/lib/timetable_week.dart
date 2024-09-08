@@ -399,7 +399,7 @@ class LessonCardAbbrev extends StatelessWidget {
                 ),
                 softWrap: true,
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -415,13 +415,13 @@ class LessonCardAbbrev extends StatelessWidget {
                         .length)),
                 softWrap: true,
                 style: const TextStyle(
-                  fontSize: 13,
+                  fontSize: 10,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               Text(
                 lesson['teacherAbbrev'],
-                style: const TextStyle(fontSize: 13),
+                style: const TextStyle(fontSize: 10),
               ),
             ],
           ),
