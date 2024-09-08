@@ -147,6 +147,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _appSettings.language = value;
     });
+    saveSettings();
   }
 
   Locale getLocale() {
@@ -154,9 +155,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void setDarkMode(bool value) {
+
     setState(() {
       _appSettings.useDarkMode = value;
     });
+    saveSettings();
   }
 
   bool getDarkMode() {
@@ -167,6 +170,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _appSettings.useDummyData = value;
     });
+    saveSettings();
   }
 
   bool getDummyMode() {
@@ -177,14 +181,31 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _appSettings.darkMarks = value;
     });
+    saveSettings();
   }
 
   bool getDarkMarks() {
     return _appSettings.darkMarks;
   }
 
+  Future<void> saveSettings() async{
+    final storage = FlutterSecureStorage();
+    await storage.write(key: 'settings', value: jsonEncode(_appSettings.toJSON()));
+  }
+
+  Future<void> loadSettings() async {
+    final storage = FlutterSecureStorage();
+    final json  = await storage.read(key: 'settings');
+    if(json != null){
+      setState(() {
+      _appSettings = AppSettings.fromJSON(jsonDecode(json));
+    });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    loadSettings();
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       ColorScheme lightScheme;

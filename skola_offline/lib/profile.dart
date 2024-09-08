@@ -22,7 +22,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     final storage = FlutterSecureStorage();
     final fullName = await storage.read(key: 'fullName');
     setState(() {
-      _fullName = fullName ?? 'Fuck McFuckFace';
+      _fullName = fullName ?? 'Rick Astley';
       isLoading = false;
     });
   }
