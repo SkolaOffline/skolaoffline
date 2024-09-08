@@ -161,7 +161,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                           'd.M.y',
                         ).format(date)}',
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w300),
+                            fontSize: 14, fontWeight: FontWeight.w300),
                       ),
                       Row(
                         children: [
