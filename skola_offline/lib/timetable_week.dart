@@ -61,16 +61,6 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss');
-
-    // if (!isLoading) {
-    //   if (date.weekday > 0 && date.weekday < 6) {
-    //     for (var i = weekTimetable[date.weekday - 1].length - 1; i >= 0; i--) {
-    //       if (date.isBefore(dateFormatter
-    //           .parse(weekTimetable[date.weekday - 1][i]['endTime']))) {}
-    //     }
-    //   }
-    // }
 
     if (isLoading) {
       return Center(child: CircularProgressIndicator());
@@ -80,11 +70,6 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                AppLocalizations.of(context)!.timetable,
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
               SizedBox(width: 10),
               Text(
                 '${DateFormat('d.M').format(date)} - ${DateFormat(
@@ -399,7 +384,7 @@ class LessonCardAbbrev extends StatelessWidget {
                 ),
                 softWrap: true,
                 style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -417,6 +402,7 @@ class LessonCardAbbrev extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
+                  height: 0.5
                 ),
               ),
               Text(

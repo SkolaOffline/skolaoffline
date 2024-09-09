@@ -266,7 +266,7 @@ class MyHomePageState extends State<MyHomePage> {
             Text(
               'Škola Offline',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 // fontFamily: 'SansSerif',
                 fontWeight: FontWeight.bold,
               ),
@@ -275,8 +275,8 @@ class MyHomePageState extends State<MyHomePage> {
                 stream: Stream.periodic(const Duration(seconds: 1)),
                 builder: (context, snapshot) {
                   return Text(
-                    DateFormat('d.M H:mm:ss').format(DateTime
-                        .now()), //TODO: For final releases I would personally remove seconds - Daalbu
+                    DateFormat('d.M H:mm').format(DateTime
+                        .now()),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,

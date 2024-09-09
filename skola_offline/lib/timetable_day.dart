@@ -102,11 +102,12 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     var currentLessonIndex = -1;
     if (!isLoadingToday) {
       for (var i = todayTimetable.length - 1; i >= 0; i--) {
-        if (today.isBefore(dateFormatter.parse(todayTimetable[i]['endTime']))) {
+        if (DateTime.now().isBefore(dateFormatter.parse(todayTimetable[i]['endTime']))) {
           currentLessonIndex = i;
         }
       }
     }
+    print('currentlessonindex: $currentLessonIndex');
 
     return Scaffold(
       body: RefreshIndicator(
@@ -151,11 +152,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        AppLocalizations.of(context)!.timetable,
-                        style: Theme.of(context).textTheme.headlineSmall,
-                        textAlign: TextAlign.center,
-                      ),
+                      
                       Text(
                         '${DateFormat('EE').format(date)}, ${DateFormat(
                           'd.M.y',

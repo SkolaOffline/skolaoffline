@@ -22,7 +22,7 @@ class TimetableScreenState extends State<TimetableScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.current_lesson),
+        title: Text(AppLocalizations.of(context)!.timetable),
         actions: [
           IconButton(
             icon: Icon(Icons.calendar_today),
