@@ -94,11 +94,33 @@ class SettingsScreen extends StatelessWidget {
                       ],
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.default_timetable,
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        DropdownButton<bool>(
+                            value: MyApp.of(context)?.getDefaultToWeeklyTimetable() ?? false,
+                            items: [DropdownMenuItem(
+                                  value: true,
+                                  child: Text(AppLocalizations.of(context)!.weekly)),
+                                  DropdownMenuItem(
+                                  value: false,
+                                  child: Text(AppLocalizations.of(context)!.daily))
+                                  ],
+                            onChanged: (bool? value) {
+                              MyApp.of(context)
+                                  ?.setDefaultToWeeklyTimetable(value ?? false);
+                            })
+                      ],
+                    ),
+                    Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
                             child: Text(
-                              "Disclaimer:\nWe are not in any way asociated with Škola Online, skolaonline.cz, BAKALÁŘI software s.r.o. or any other related subjects. This project is for educational purposes only.",
+                              AppLocalizations.of(context)!.disclaimer,
                               style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -106,6 +128,7 @@ class SettingsScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),)
                         ]),
+
                   ],
                 ))));
   }

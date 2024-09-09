@@ -187,6 +187,16 @@ class _MyAppState extends State<MyApp> {
   bool getDarkMarks() {
     return _appSettings.darkMarks;
   }
+  void setDefaultToWeeklyTimetable(bool value) {
+    setState(() {
+      _appSettings.defaultToWeeklyTimetable = value;
+    });
+    saveSettings();
+  }
+
+  bool getDefaultToWeeklyTimetable() {
+    return _appSettings.defaultToWeeklyTimetable;
+  }
 
   Future<void> saveSettings() async{
     final storage = FlutterSecureStorage();

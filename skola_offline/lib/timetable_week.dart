@@ -150,7 +150,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
               // TODO this needs to be fixed
               childAspectRatio: MediaQuery.of(context).size.height /
                   (MediaQuery.of(context).size.width) *
-                  11 /
+                10 /
                   24,
               mainAxisSpacing: 2,
               crossAxisSpacing: 2,
@@ -400,7 +400,7 @@ class LessonCardAbbrev extends StatelessWidget {
                         .length)),
                 softWrap: true,
                 style: const TextStyle(
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   height: 0.5
                 ),

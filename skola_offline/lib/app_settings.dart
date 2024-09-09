@@ -9,6 +9,7 @@ class AppSettings {
   bool useDarkMode=true;
   Locale language=Locale('cs');
   bool darkMarks=false;
+  bool defaultToWeeklyTimetable=false;
 
   AppSettings();
 
@@ -17,7 +18,8 @@ Map<String,dynamic> toJSON(){
   'useDummyData':useDummyData,
   'useDarkMode':useDarkMode,
   'language':language.languageCode,
-  'darkMarks':darkMarks
+  'darkMarks':darkMarks,
+  'defaultToWeeklyTimetable':defaultToWeeklyTimetable
 
     };
     }
@@ -26,5 +28,6 @@ Map<String,dynamic> toJSON(){
   useDarkMode =  json['useDarkMode'];
   language = Locale(json['language']);
   darkMarks = json['darkMarks'];
+  defaultToWeeklyTimetable=json['defaultToWeeklyTimetable'];
   }
 }

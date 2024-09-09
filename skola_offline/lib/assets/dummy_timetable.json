@@ -56,10 +56,10 @@
           "teachers": [
             {
               "id": "A",
-              "abbrev": "Teacher A",
-              "name": "Teacher A",
-              "surname": "Teacher A",
-              "displayName": "Mgr. Teacher A"
+              "abbrev": "Teach A",
+              "name": "Teach A",
+              "surname": "Teach A",
+              "displayName": "Mgr. Teach A"
             }
           ],
           "contextMenu": [],
@@ -164,10 +164,10 @@
           "teachers": [
             {
               "id": "B",
-              "abbrev": "Teacher B",
-              "name": "Teacher B",
-              "surname": "Teacher B",
-              "displayName": "Mgr. Teacher B"
+              "abbrev": "Teach B",
+              "name": "Teach B",
+              "surname": "Teach B",
+              "displayName": "Mgr. Teach B"
             }
           ],
           "contextMenu": [],
@@ -252,10 +252,10 @@
           "teachers": [
             {
               "id": "B",
-              "abbrev": "Teacher B",
-              "name": "Teacher B",
-              "surname": "Teacher B",
-              "displayName": "Mgr. Teacher B"
+              "abbrev": "Teach B",
+              "name": "Teach B",
+              "surname": "Teach B",
+              "displayName": "Mgr. Teach B"
             }
           ],
           "contextMenu": [],
@@ -344,9 +344,9 @@
             {
               "id": "G",
               "abbrev": "G",
-              "name": "Teacher",
+              "name": "Teach",
               "surname": "G",
-              "displayName": "Teacher G"
+              "displayName": "Teach G"
             }
           ],
           "contextMenu": [],
@@ -448,9 +448,9 @@
             {
               "id": "H",
               "abbrev": "H",
-              "name": "Teacher",
+              "name": "Teach",
               "surname": "H",
-              "displayName": "Teacher H"
+              "displayName": "Teach H"
             }
           ],
           "contextMenu": [],
@@ -536,9 +536,9 @@
             {
               "id": "F",
               "abbrev": "F",
-              "name": "Teacher",
+              "name": "Teach",
               "surname": "F",
-              "displayName": "Teacher F"
+              "displayName": "Teach F"
             }
           ],
           "contextMenu": [],
@@ -655,9 +655,9 @@
             {
               "id": "K",
               "abbrev": "K",
-              "name": "Teacher",
+              "name": "Teach",
               "surname": "K",
-              "displayName": "Mgr. Teacher K"
+              "displayName": "Mgr. Teach K"
             }
           ],
           "contextMenu": [],
@@ -846,9 +846,9 @@
             {
               "id": "O",
               "abbrev": "O",
-              "name": "Teacher",
+              "name": "Teach",
               "surname": "O",
-              "displayName": "Mgr. Teacher O"
+              "displayName": "Mgr. Teach O"
             }
           ],
           "contextMenu": [],
@@ -930,9 +930,9 @@
             {
               "id": "K",
               "abbrev": "K",
-              "name": "Teacher",
+              "name": "Teach",
               "surname": "K",
-              "displayName": "Mgr. Teacher K"
+              "displayName": "Mgr. Teach K"
             }
           ],
           "contextMenu": [],
@@ -979,7 +979,7 @@
         {
           "teachingInformationId": "K",
           "lessonId": "5",
-          "teacherName": "Mgr. Teacher K",
+          "teacherName": "Mgr. Teach K",
           "information": "Integral",
           "hourType": {
             "id": "POZNAMKA",
@@ -1051,7 +1051,7 @@
           "valueToDisplay": "1",
           "valueToAverage": "1",
           "verbalEvaluation": null,
-          "teacher": { "id": "K", "name": "Mgr. Teacher K" },
+          "teacher": { "id": "K", "name": "Mgr. Teach K" },
           "evaluationDate": "2024-05-27T00:00:00",
           "schoolYearId": "testId",
           "semesterId": "testId",

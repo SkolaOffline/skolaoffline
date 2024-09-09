@@ -72,15 +72,15 @@ class LoginScreenState extends State<LoginScreen> {
         if (response.statusCode == 400) {
           // ignore: use_build_context_synchronously
           Navigator.of(context).pop(); // Close the loading dialog
-          _showErrorDialog('Wrong credentials',
-              "Please check your username and password. If you don't have a skola online account you may try this app using dummy mode by loging in as 'dummy:mode'.");
+          _showErrorDialog(AppLocalizations.of(context)!.wrong_credentials,
+              AppLocalizations.of(context)!.wrong_credentials_message);
           return;
         }
 
         if (response.statusCode != 200) {
           // ignore: use_build_context_synchronously
           Navigator.of(context).pop(); // Close the loading dialog
-          _showErrorDialog('Error', 'An error occurred while logging in.');
+          _showErrorDialog(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.error_message);
           return;
         }
 
@@ -116,11 +116,11 @@ class LoginScreenState extends State<LoginScreen> {
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
-      _showSuccessDialog('Success', 'You have been logged in.');
+      _showSuccessDialog(AppLocalizations.of(context)!.success, AppLocalizations.of(context)!.success_message);
     } catch (e) {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
-      _showErrorDialog('Error', 'An unexpected error occurred: $e');
+      _showErrorDialog(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.error_info + ' $e');
     }
   }
 
@@ -208,7 +208,7 @@ class LoginScreenState extends State<LoginScreen> {
 
                   if (username == 'dummy' && password == 'mode') {
                     MyApp.of(context)?.setDummyMode(true);
-                    _showSuccessDialog('Success', 'Dummy data mode enabled!');
+                    _showSuccessDialog(AppLocalizations.of(context)!.success, AppLocalizations.of(context)!.dummy_enabled);
                   } else {
                     MyApp.of(context)?.setDummyMode(false);
                   }
@@ -224,7 +224,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 20),
               Text(
-                "If you don't have an aplikace.skolaonline.cz account, u can use dummy mode by logging in as:\nusername: dummy\npassword: mode",
+                AppLocalizations.of(context)!.dummy_info,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey,
