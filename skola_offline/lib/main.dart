@@ -285,7 +285,7 @@ class MyHomePageState extends State<MyHomePage> {
                 stream: Stream.periodic(const Duration(seconds: 1)),
                 builder: (context, snapshot) {
                   return Text(
-                    DateFormat('d.M H:mm').format(DateTime
+                    DateFormat('d.M. H:mm').format(DateTime
                         .now()),
                     textAlign: TextAlign.center,
                     style: TextStyle(

@@ -107,7 +107,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
         }
       }
     }
-    print('currentlessonindex: $currentLessonIndex');
 
     return Scaffold(
       body: RefreshIndicator(
@@ -233,6 +232,15 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                             dayTimetable.isEmpty ? 0 : dayTimetable.length,
                       ),
                     ),
+              isLoading || dayTimetable.isEmpty
+                  ? SliverToBoxAdapter(child: Container()) : SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 20, right: 20, top: 5, bottom: 20),
+                        child: Text("Orderly service: ${dayTimetable[0]['orderlyService'].join(', ').replaceAll(RegExp(r'[\{\}]'),'')}",
+                          style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w300),
+                ))),
             ],
           ),
         ),
@@ -363,6 +371,9 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
               'lessonIdTo': lesson['lessonIdTo'],
               'beginTime': lesson['beginTime'],
               'endTime': lesson['endTime'],
+              'orderlyService':lesson['orderlyService'].map((student) => {
+              (student['firstName'] + ' ' + student['lastname']) // Developers made an oopsie...
+              }).toList()
             })
         .toList();
   }
