@@ -119,14 +119,15 @@ class SettingsScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                            child: Text(
+                            child: Center( child: Text(
                               AppLocalizations.of(context)!.disclaimer,
                               style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
+
                           ),
                           textAlign: TextAlign.center,
-                        ),)
+                        ),),)
                         ]),
 
                   ],
