@@ -362,21 +362,21 @@ class SubjectCard extends StatelessWidget {
             child: ListBody(
               children: <Widget>[
                 // Text('Date: ${mark['markDate'].split('T')[0]}'),
-                Text('Date: ${formatDateToDate(mark['markDate'])}'),
-                Text('Mark: ${mark['markText']}'),
-                Text('Weight: ${mark['weight']}'),
+                Text('${AppLocalizations.of(context)!.date}: ${formatDateToDate(mark['markDate'])}'),
+                Text('${AppLocalizations.of(context)!.mark}: ${mark['markText']}'),
+                Text('${AppLocalizations.of(context)!.weight}: ${mark['weight']}'),
                 // Text('Type: ${mark['type']}'),
                 if (mark['typeNote'] != null)
-                  Text('Type Note: ${mark['typeNote']}'),
+                  Text('${AppLocalizations.of(context)!.type_note}: ${mark['typeNote']}'),
                 if (mark['comment'] != null)
-                  Text('Comment: ${mark['comment']}'),
+                  Text('${AppLocalizations.of(context)!.comment}: ${mark['comment']}'),
                 if (mark['verbalEvaluation'] != null)
-                  Text('Verbal Evaluation: ${mark['verbalEvaluation']}'),
-                Text('Teacher: $teacherName'),
+                  Text('${AppLocalizations.of(context)!.verbal_evaluation}: ${mark['verbalEvaluation']}'),
+                Text('${AppLocalizations.of(context)!.teacher}: $teacherName'),
                 if (mark['classRankText'] != null)
-                  Text('Class Rank: ${mark['classRankText']}'),
+                  Text('${AppLocalizations.of(context)!.class_rank}: ${mark['classRankText']}'),
                 if (mark['classAverage'] != null)
-                  Text('Class Average: ${mark['classAverage']}'),
+                  Text('${AppLocalizations.of(context)!.class_average}: ${mark['classAverage']}'),
               ],
             ),
           ),

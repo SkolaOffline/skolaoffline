@@ -240,15 +240,15 @@ class TermCard extends StatelessWidget {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Date: ${formatDateToDate(mark['markDate'])}'),
-                Text('Mark: ${mark['markText']}'),
-                Text('Edit Date: ${formatDateToDate(mark['editDate'])}'),
+                Text('${AppLocalizations.of(context)!.date}: ${formatDateToDate(mark['markDate'])}'),
+                Text('${AppLocalizations.of(context)!.mark}: ${mark['markText']}'),
+                Text('${AppLocalizations.of(context)!.edit_date}: ${formatDateToDate(mark['editDate'])}'),
                 if (mark['verbalEvaluation'] != null)
-                  Text('Verbal Evaluation: ${mark['verbalEvaluation']}'),
-                Text('Released: ${mark['released'] ? 'Yes' : 'No'}'),
-                Text('Unclassified: ${mark['unclassified'] ? 'Yes' : 'No'}'),
-                Text('Unevaluated: ${mark['unevaluated'] ? 'Yes' : 'No'}'),
-                Text('Recognized: ${mark['recognized'] ? 'Yes' : 'No'}'),
+                  Text('${AppLocalizations.of(context)!.verbal_evaluation}: ${mark['verbalEvaluation']}'),
+                Text('${AppLocalizations.of(context)!.released}: ${mark['released'] ? 'Yes' : 'No'}'),
+                Text('${AppLocalizations.of(context)!.unclassified}: ${mark['unclassified'] ? 'Yes' : 'No'}'),
+                Text('${AppLocalizations.of(context)!.unevaluated}: ${mark['unevaluated'] ? 'Yes' : 'No'}'),
+                Text('${AppLocalizations.of(context)!.recognized}: ${mark['recognized'] ? 'Yes' : 'No'}'),
               ],
             ),
           ),

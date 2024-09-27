@@ -207,7 +207,7 @@ class AbsencesScreenState extends State<AbsencesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'Percentage',
+                        AppLocalizations.of(context)!.percentage,
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                       Text(

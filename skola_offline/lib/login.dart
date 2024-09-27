@@ -120,7 +120,7 @@ class LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
-      _showErrorDialog(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.error_info + ' $e');
+      _showErrorDialog(AppLocalizations.of(context)!.error, '${AppLocalizations.of(context)!.error_info} $e');
     }
   }
 
