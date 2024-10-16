@@ -12,6 +12,7 @@ class MessagesScreen extends StatefulWidget {
 
 class MessagesScreenState extends State<MessagesScreen> {
   List<dynamic> messageList = [];
+  int selectedMessage = 0;
   bool isLoading = true;
 
   @override
@@ -93,83 +94,105 @@ class MessagesScreenState extends State<MessagesScreen> {
     return Scaffold(
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : MessagesList(messageList: messageList),
-    );
-  }
-}
-
-class MessagesList extends StatelessWidget {
-  final List<dynamic> messageList;
-
-  const MessagesList({super.key, required this.messageList});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
+          : Scaffold(
+      appBar:AppBar(
+        title: Center(child: Text(messageList[selectedMessage]['title'])),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      drawer: Container(
+        width:500,
+        child:Drawer(
+        child:    ListView.builder(
       padding: EdgeInsets.all(20.0),
       itemCount: messageList.length,
       itemBuilder: (context, index) {
         final message = messageList[index];
-        return MessageWidget(
+        return Column(
+          children: [
+            GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedMessage = index;
+            });
+          },
+          child: MessageWidget(
           title: message['title'],
           content: message['text'],
           from: message['sender'],
           date: message['sentDate'],
           message: message,
-        );
+          index:index,
+          selected:index==selectedMessage
+        )
+            ),
+            SizedBox(height:10)
+          ],
+          );
+        
+        
+        
       },
+    )
+      ),
+      ),
+      body:Padding(
+        padding: EdgeInsets.all(10),
+        child:Html(
+        data: messageList[selectedMessage]['text'],
+        style: {
+          'p': Style(
+            fontSize: FontSize(16),
+          ),
+          'span': Style(
+            fontSize: FontSize(16),
+          ),
+          'a': Style(
+            fontSize: FontSize(16),
+          ),
+        },
+      )
+      )
+    ),
     );
   }
 }
 
-class MessageWidget extends StatefulWidget {
+class MessageWidget extends StatelessWidget {
   final String title;
   final String content;
   final String from;
   final String date;
   final dynamic message;
+  final int index;
+  final bool selected;
 
   const MessageWidget({
-    super.key,
-    required this.title,
-    required this.content,
-    required this.from,
-    required this.date,
-    required this.message,
+  super.key,
+  required this.title,
+  required this.content,
+  required this.from,
+  required this.date,
+  required this.message,
+  required this.index,
+  required this.selected
   });
 
-  @override
-  // ignore: library_private_types_in_public_api
-  _MessageWidgetState createState() => _MessageWidgetState();
-}
-
-class _MessageWidgetState extends State<MessageWidget> {
-  bool _isExpanded = false;
-
-  void _toggleExpanded() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: _toggleExpanded,
-          child: Container(
+    return Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
+              color: selected ? Theme.of(context).colorScheme.secondaryContainer : Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: Offset(0, 3),
-                ),
-              ],
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -181,51 +204,39 @@ class _MessageWidgetState extends State<MessageWidget> {
                     children: [
                       Expanded(
                         child: Text(
-                          widget.title,
+                          title,
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
-                          maxLines: _isExpanded ? null : 2,
-                          overflow: _isExpanded
-                              ? TextOverflow.visible
-                              : TextOverflow.ellipsis,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(widget.from),
-                          Text(formatDateToDate(widget.date)),
+                          Text(from,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          ),
+                          Text(formatDateToDate(date),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          ),
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(height: _isExpanded ? 8 : 0),
-                  Html(
-                    data: _isExpanded ? widget.content : '',
-                    style: {
-                      'p': Style(
-                        fontSize: FontSize(16),
-                      ),
-                      'span': Style(
-                        fontSize: FontSize(16),
-                      ),
-                      'a': Style(
-                        fontSize: FontSize(16),
-                      ),
-                    },
-                  ),
-                  // Text(_isExpanded ? widget.content : ''),
                 ],
               ),
             ),
-          ),
-        ),
-        SizedBox(height: 15),
-      ],
-    );
+          );
   }
 
   String formatDateToDate(String date) {
