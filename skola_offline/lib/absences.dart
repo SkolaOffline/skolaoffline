@@ -30,7 +30,7 @@ class AbsencesScreenState extends State<AbsencesScreen> {
   Future<void> _fetchAbsences() async {
     try {
       final absencesData = await downloadAbsences();
-      // print(absencesData);
+      //print(absencesData);
       if (_mounted) {
         setState(() {
           absencesSubjectList = parseAbsences(absencesData);
@@ -124,10 +124,18 @@ class AbsencesScreenState extends State<AbsencesScreen> {
           return secondSemester.toIso8601String().split('T')[0];
         } else {
           // First half of the academic year (Fall semester)
-          final firstSemester = DateTime(today.year, 9, 1);
+          DateTime firstSemester = DateTime(today.year, 9, 1);
+          if (today.month == 1){
+            firstSemester = DateTime(today.year-1, 9, 1);
+          }
           return firstSemester.toIso8601String().split('T')[0];
         }
       }
+      // print(dateFrom());
+      // print(DateTime(DateTime.now().year, 6, 30)
+      //       .toIso8601String()
+      //       .split('T')[0]);
+
 
       final params = {
         'dateFrom': dateFrom(),

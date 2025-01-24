@@ -222,7 +222,7 @@ class _MyAppState extends State<MyApp> {
       ColorScheme darkScheme;
 
       if (lightDynamic != null && darkDynamic != null) {
-        print('Using dynamic color scheme');
+        // print('Using dynamic color scheme');
         lightScheme = lightDynamic.harmonized()..copyWith();
         darkScheme = darkDynamic.harmonized()..copyWith();
       } else {
@@ -255,7 +255,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 2;
+  int _currentIndex = 0;
 
   final List<Widget> _tabs = [
     TimetableScreen(),

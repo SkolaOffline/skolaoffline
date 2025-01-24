@@ -3,7 +3,7 @@ description: A Flutter app for the skolaonline school system.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.14+18
+version: 0.0.18+18
 
 environment:
   sdk: ^3.1.1
@@ -22,18 +22,22 @@ dependencies:
   flutter:
     sdk: flutter
   test: ^1.21.0
-    
+
   provider: ^6.0.0
   flutter_localizations:
     sdk: flutter
 
   dynamic_color: ^1.4.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.14
 
 flutter:
   uses-material-design: true

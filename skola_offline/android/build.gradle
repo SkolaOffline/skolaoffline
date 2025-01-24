@@ -1,7 +1,14 @@
 buildscript {
     dependencies {
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0'
+        
     }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    
+    
 }
 allprojects {
     ext.kotlin_version = '2.0.0'
@@ -10,6 +17,8 @@ allprojects {
         mavenCentral()
     }
 }
+
+
 
 
 rootProject.buildDir = "../build"
