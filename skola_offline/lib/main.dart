@@ -10,18 +10,22 @@ import 'package:skola_offline/absences.dart';
 import 'package:skola_offline/app_settings.dart';
 // import 'package:skola_offline/login.dart';
 import 'package:skola_offline/settings.dart';
+import 'package:skola_offline/structs/lesson.dart';
 import 'package:skola_offline/timetable.dart';
 import 'package:skola_offline/marks.dart';
 import 'package:skola_offline/messages.dart';
 import 'package:skola_offline/profile.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // final storage = FlutterSecureStorage();
   // storage.deleteAll();
   // storage.write(key: 'accessToken', value: 'your_access_token_here');
-
+  await Hive.initFlutter();
+  Hive.registerAdapter<Lesson>(LessonAdapter());
+  await Hive.openBox('timetable');
   runApp(MyApp());
 }
 

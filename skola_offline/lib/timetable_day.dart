@@ -2,13 +2,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/structs/lesson.dart';
 
+const TIMETABLE = 'timetable';
+DateFormat hiveIndexFormatter = DateFormat('y-MM-dd');
 class TimetableDayScreenState extends State<TimetableDayScreen> {
-  List<dynamic> dayTimetable = [];
-  List<dynamic> todayTimetable = [];
+  List<Lesson> dayTimetable = [];
+  List<Lesson> todayTimetable = [];
   bool isLoading = true;
   bool _mounted = true;
   DateTime date = DateTime.now();
@@ -18,6 +22,17 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   @override
   void initState() {
     super.initState();
+
+    Hive.box(TIMETABLE).listenable().addListener(() {
+      if (_mounted && Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date)) != null) {
+        print('Cache update');
+        setState(() {
+          dayTimetable = Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date));
+          isLoading = false;
+        });
+      }
+    });
+
     _fetchTimetable();
     _fetchTimetableForToday();
   }
@@ -42,11 +57,24 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
       date.add(Duration(days: 1));
     }
 
+    setState(() {
+        List<dynamic>? returnValue = Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date));
+        if (returnValue != null) {
+          print('Cache hit: $returnValue');
+          dayTimetable = returnValue.cast<Lesson>();
+          isLoading = false;
+        } else {
+          print('Cache miss');
+        }
+      });
+
     try {
       final timetableData = await downloadTimetable(date);
       if (_mounted) {
+        print(parseWeekTimetable(timetableData));
+        final List<Lesson> timetable = parseWeekTimetable(timetableData)[0];
+        Hive.box(TIMETABLE).put(hiveIndexFormatter.format(date), timetable);
         setState(() {
-          dayTimetable = parseWeekTimetable(timetableData)[0];
           isLoading = false;
         });
       }
@@ -102,7 +130,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     var currentLessonIndex = -1;
     if (!isLoadingToday) {
       for (var i = todayTimetable.length - 1; i >= 0; i--) {
-        if (DateTime.now().isBefore(dateFormatter.parse(todayTimetable[i]['endTime']))) {
+        if (DateTime.now().isBefore(dateFormatter.parse(todayTimetable[i].endTime))) {
           currentLessonIndex = i;
         }
       }
@@ -237,7 +265,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(
                         left: 20, right: 20, top: 5, bottom: 20),
-                        child: Text("Orderly service: ${dayTimetable[0]['orderlyService'].join(', ').replaceAll(RegExp(r'[\{\}]'),'')}",
+                        child: Text("Orderly service: ${dayTimetable[0].orderlyService.join(', ').replaceAll(RegExp(r'[\{\}]'),'')}",
                           style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w300),
                 ))),
@@ -346,36 +374,44 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     }
   }
 
-  List<dynamic> parseWeekTimetable(String jsonString) {
+  List<List<Lesson>> parseWeekTimetable(String jsonString) {
     Map<String, dynamic> data = jsonDecode(jsonString);
-    return data['days'].map((day) => parseDayTimetable(day)).toList();
+    return data['days'].map<List<Lesson>>((day) => parseDayTimetable(day)).toList();
   }
 
-  List<dynamic> parseDayTimetable(Map<String, dynamic> day) {
-    return day['schedules']
-        .where((lesson) =>
-            // TODO parse different types of lessons
-            // lesson['hourType']['id'] != 'SKOLNI_AKCE' &&
-            lesson['hourType']['id'] != 'SUPLOVANA')
-        .map((lesson) => {
-              'lessonFrom': lesson['lessonIdFrom'],
-              'lessonTo': lesson['lessonIdTo'],
-              'lessonType': lesson['hourType']['id'],
-              'lessonAbbrev': lesson['subject']['abbrev'] ?? lesson['title'],
-              'lessonName': lesson['subject']['name'] ?? lesson['description'],
-              'classroomAbbrev': lesson['rooms'][0]['abbrev'],
-              'teacher': lesson['teachers'][0]['displayName'],
-              'teacherAbbrev': lesson['teachers'][0]['abbrev'],
-              'lessonOrder': lesson['detailHours'][0]['order'],
-              'lessonIdFrom': lesson['lessonIdFrom'],
-              'lessonIdTo': lesson['lessonIdTo'],
-              'beginTime': lesson['beginTime'],
-              'endTime': lesson['endTime'],
-              'orderlyService':lesson['orderlyService'].map((student) => {
-              (student['firstName'] + ' ' + student['lastname']) // Developers made an oopsie...
-              }).toList()
-            })
-        .toList();
+  List<Lesson> parseDayTimetable(Map<String, dynamic> day) {
+
+    List<Lesson> dayTimetable = [];
+
+    for(Map<String, dynamic>lesson in day['schedules']){
+      if(
+        // TODO parse different types of lessons
+        // lesson['hourType']['id'] != 'SKOLNI_AKCE' &&
+        lesson['hourType']['id'] != 'SUPLOVANA'){
+
+          List<String> orderlyService = [];
+          
+          for(Map<String, dynamic> student in lesson['orderlyService']){
+            orderlyService.add('${student['firstName']} ${student['lastname']}');
+          }
+          dayTimetable.add(Lesson(
+          lessonFrom: int.parse(lesson['lessonIdFrom']),
+          lessonTo: int.parse(lesson['lessonIdTo']),
+          lessonType: lesson['hourType']['id'],
+          lessonAbbrev: lesson['subject']['abbrev'] ?? lesson['title'],
+          lessonName: lesson['subject']['name'] ?? lesson['description'],
+          classroomAbbrev: lesson['rooms'][0]['abbrev'],
+          teacher: lesson['teachers'][0]['displayName'],
+          teacherAbbrev: lesson['teachers'][0]['abbrev'],
+          lessonOrder: lesson['detailHours'][0]['order'],
+          beginTime: lesson['beginTime'],
+          endTime: lesson['endTime'],
+          orderlyService: orderlyService,
+        ));
+      }
+    }
+
+    return dayTimetable;
   }
 }
 
@@ -385,7 +421,7 @@ class TimetableDayScreen extends StatefulWidget {
 }
 
 class CurrentLessonCard extends StatefulWidget {
-  final Map<String, dynamic> lesson;
+  final Lesson lesson;
 
   const CurrentLessonCard({super.key, required this.lesson});
 
@@ -425,7 +461,7 @@ class _CurrentLessonCardState extends State<CurrentLessonCard> {
 }
 
 class LessonCard extends StatelessWidget {
-  final Map<String, dynamic> lesson;
+  final Lesson lesson;
 
   const LessonCard({super.key, required this.lesson});
   @override
@@ -433,7 +469,7 @@ class LessonCard extends StatelessWidget {
     return Card(
       elevation: 2,
       // color: Theme.of(context).colorScheme.secondaryContainer,
-      color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
+      color: lesson.lessonType == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
       child: Padding(
         padding: EdgeInsets.all(0),
         child: Row(
@@ -442,7 +478,7 @@ class LessonCard extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
+                color: lesson.lessonType == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
@@ -457,17 +493,17 @@ class LessonCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    lesson['lessonIdFrom'] == lesson['lessonIdTo']
-                        ? lesson['lessonIdFrom'].toString()
-                        : '${lesson['lessonIdFrom']}-${lesson['lessonIdTo']}',
+                    lesson.lessonFrom == lesson.lessonTo
+                        ? lesson.lessonFrom.toString()
+                        : '${lesson.lessonFrom}-${lesson.lessonTo}',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    formatTime(lesson['beginTime']),
+                    formatTime(lesson.beginTime),
                     style: TextStyle(fontSize: 10),
                   ),
                   Text(
-                    formatTime(lesson['endTime']),
+                    formatTime(lesson.endTime),
                     style: TextStyle(fontSize: 10),
                   ),
                 ],
@@ -480,17 +516,17 @@ class LessonCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${lesson['lessonAbbrev']} - ${lesson['lessonName']}',
+                    '${lesson.lessonAbbrev} - ${lesson.lessonName}',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 5),
                   Text(
-                    lesson['classroomAbbrev'],
+                    lesson.classroomAbbrev,
                     style: TextStyle(fontSize: 14),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    lesson['teacher'],
+                    lesson.teacher,
                     style: TextStyle(fontSize: 14),
                   ),
                 ],
