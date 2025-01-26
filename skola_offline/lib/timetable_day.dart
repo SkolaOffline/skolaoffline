@@ -88,7 +88,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
       if (_mounted) {
         print(parseWeekTimetable(timetableData));
         final List<Lesson> timetable = parseWeekTimetable(timetableData)[0];
-        if( -7< DateTime.now().difference(date).inDays && DateTime.now().difference(date).inDays < 14){
+        if( -14<= DateTime.now().difference(date).inDays && DateTime.now().difference(date).inDays <= 7){
           Hive.box(TIMETABLE).put(hiveIndexFormatter.format(date), timetable);
         }
         else {

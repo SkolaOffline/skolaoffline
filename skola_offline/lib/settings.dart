@@ -114,20 +114,6 @@ class SettingsScreen extends StatelessWidget {
                       ],
                     ),
                     Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Center( child: Text(
-                              AppLocalizations.of(context)!.disclaimer,
-                              style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-
-                          ),
-                          textAlign: TextAlign.center,
-                        ),),)
-                        ]),
-                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -141,6 +127,21 @@ class SettingsScreen extends StatelessWidget {
                             child: Text('Clear'))
                       ],
                     ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Center( child: Text(
+                              AppLocalizations.of(context)!.disclaimer,
+                              style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+
+                          ),
+                          textAlign: TextAlign.center,
+                        ),),)
+                        ]),
+
 
                   ],
                 ))));
