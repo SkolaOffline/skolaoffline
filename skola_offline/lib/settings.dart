@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:skola_offline/main.dart';
 
 
@@ -126,6 +127,20 @@ class SettingsScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),),)
                         ]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Clear cache',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        TextButton(
+                            onPressed:() => {
+                              Hive.box('timetable').clear(),
+                            },
+                            child: Text('Clear'))
+                      ],
+                    ),
 
                   ],
                 ))));

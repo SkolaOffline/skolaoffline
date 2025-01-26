@@ -23,6 +23,8 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   void initState() {
     super.initState();
 
+    // TODO: implement cache cleanup
+
     Hive.box(TIMETABLE).listenable().addListener(() {
       if (_mounted && Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date)) != null) {
         print('Cache update');
@@ -86,7 +88,15 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
       if (_mounted) {
         print(parseWeekTimetable(timetableData));
         final List<Lesson> timetable = parseWeekTimetable(timetableData)[0];
-        Hive.box(TIMETABLE).put(hiveIndexFormatter.format(date), timetable);
+        if( -7< DateTime.now().difference(date).inDays && DateTime.now().difference(date).inDays < 14){
+          Hive.box(TIMETABLE).put(hiveIndexFormatter.format(date), timetable);
+        }
+        else {
+          setState(() {
+            dayTimetable = timetable;
+          });
+        }
+        
         setState(() {
           isLoading = false;
         });
