@@ -60,11 +60,24 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     setState(() {
         List<dynamic>? returnValue = Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date));
         if (returnValue != null) {
-          print('Cache hit: $returnValue');
+          print('Cache hit: ${hiveIndexFormatter.format(date)}');
           dayTimetable = returnValue.cast<Lesson>();
           isLoading = false;
         } else {
           print('Cache miss');
+          dayTimetable = [Lesson(
+            lessonFrom: 1,
+            lessonTo: 4,
+            lessonType: 'offline',
+            lessonAbbrev: 'OFL', 
+            lessonName: 'You are offline', 
+            classroomAbbrev: '-', 
+            teacher: '-', 
+            teacherAbbrev: '-', 
+            lessonOrder: 0, 
+            beginTime: hiveIndexFormatter.format(date), 
+            endTime:  hiveIndexFormatter.format(date), 
+            orderlyService: ['You are offline'])];
         }
       });
 
