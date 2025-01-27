@@ -26,6 +26,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<Lesson>(LessonAdapter());
   await Hive.openBox('timetable');
+  Hive.box('timetable').clear();
   DateFormat hiveIndexFormatter = DateFormat('y-MM-dd');
   if(Hive.box('timetable').get('lastCleared') != null && DateTime.now().difference(Hive.box('timetable').get('lastCleared')).inDays > 2){
     final keys = Hive.box('timetable').keys;

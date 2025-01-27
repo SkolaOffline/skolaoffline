@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:skola_offline/structs/lesson.dart';
+import 'package:skola_offline/api_handlers/timetable_handler.dart';
 
 const TIMETABLE = 'timetable';
 DateFormat hiveIndexFormatter = DateFormat('y-MM-dd');
@@ -15,27 +16,31 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   List<Lesson> todayTimetable = [];
   bool isLoading = true;
   bool _mounted = true;
-  DateTime date = DateTime.now();
+  DateTime date = DateTime.now().add(Duration(days: -3));
   DateTime today = DateTime(2024, 5, 27, 8, 40, 03);
   bool isLoadingToday = true;
+
+
+  void cacheCheck(){
+    if (_mounted && Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date)) != null && Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date)) is List<Lesson>) {
+      print('Cache update');
+      setState(() {
+        dayTimetable = Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date));
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
 
-    // TODO: implement cache cleanup
-
     Hive.box(TIMETABLE).listenable().addListener(() {
-      if (_mounted && Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date)) != null) {
-        print('Cache update');
-        setState(() {
-          dayTimetable = Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date));
-          isLoading = false;
-        });
-      }
+      cacheCheck();
     });
 
-    _fetchTimetable();
+    cacheCheck();
+    TimetableHandler.fetchTimetable(date, context);
     _fetchTimetableForToday();
   }
 
@@ -43,72 +48,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   void dispose() {
     _mounted = false;
     super.dispose();
-  }
-
-  Future<void> _fetchTimetable() async {
-    // holiday fix
-    //TODO: holidays are set strictly to july and august in this whole file
-    if (date.month == 7 || date.month == 8) {
-      date = DateTime(date.year, 9, 1, 0, 0, 0);
-    }
-
-    //weekend fix
-    if (date.weekday == 6) {
-      date.add(Duration(days: 2));
-    } else if (date.weekday == 7) {
-      date.add(Duration(days: 1));
-    }
-
-    setState(() {
-        List<dynamic>? returnValue = Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date));
-        if (returnValue != null) {
-          print('Cache hit: ${hiveIndexFormatter.format(date)}');
-          dayTimetable = returnValue.cast<Lesson>();
-          isLoading = false;
-        } else {
-          print('Cache miss');
-          dayTimetable = [Lesson(
-            lessonFrom: 1,
-            lessonTo: 4,
-            lessonType: 'offline',
-            lessonAbbrev: 'OFL', 
-            lessonName: 'You are offline', 
-            classroomAbbrev: '-', 
-            teacher: '-', 
-            teacherAbbrev: '-', 
-            lessonOrder: 0, 
-            beginTime: hiveIndexFormatter.format(date), 
-            endTime:  hiveIndexFormatter.format(date), 
-            orderlyService: ['You are offline'])];
-        }
-      });
-
-    try {
-      final timetableData = await downloadTimetable(date);
-      if (_mounted) {
-        print(parseWeekTimetable(timetableData));
-        final List<Lesson> timetable = parseWeekTimetable(timetableData)[0];
-        if( -14<= DateTime.now().difference(date).inDays && DateTime.now().difference(date).inDays <= 7){
-          Hive.box(TIMETABLE).put(hiveIndexFormatter.format(date), timetable);
-        }
-        else {
-          setState(() {
-            dayTimetable = timetable;
-          });
-        }
-        
-        setState(() {
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      print('Error fetching timetable: $e');
-      if (_mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
   }
 
   Future<void> _fetchTimetableForToday() async {
@@ -129,7 +68,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     }
 
     try {
-      final timetableData = await downloadTimetable(today);
+      final timetableData = await TimetableHandler.downloadTimetable(today,context);
       if (_mounted) {
         setState(() {
           todayTimetable = parseWeekTimetable(timetableData)[0];
@@ -161,7 +100,9 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
 
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: _fetchTimetable,
+        onRefresh: () async {
+          await TimetableHandler.fetchTimetable(date, context);
+        },
         child: GestureDetector(
           onHorizontalDragEnd: (details) {
             if (details.primaryVelocity! > 0) {
@@ -179,7 +120,7 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
               }
               isLoading = true;
             }
-            _fetchTimetable();
+            TimetableHandler.fetchTimetable(date, context);
           },
           child: CustomScrollView(
             slivers: [
@@ -224,7 +165,9 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
 
                                 isLoading = true;
                               });
-                              _fetchTimetable();
+                              
+                              cacheCheck();
+                              TimetableHandler.fetchTimetable(date,context);
                             },
                           ),
                           IconButton(
@@ -241,7 +184,9 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                                     date = value;
                                     isLoading = true;
                                   });
-                                  _fetchTimetable();
+
+                                  cacheCheck();
+                                  TimetableHandler.fetchTimetable(date,context);
                                 }
                               });
                             },
@@ -255,8 +200,10 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                                 date = date.add(Duration(days: 1));
                               }
                               isLoading = true;
+                              
+                              cacheCheck();
+                              TimetableHandler.fetchTimetable(date,context);
 
-                              _fetchTimetable();
                             },
                           ),
                         ],
@@ -297,104 +244,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
         ),
       ),
     );
-  }
-
-  Future<String> downloadTimetable(DateTime whichDay) async {
-    if (MyApp.of(context)?.getDummyMode() ?? false) {
-      String dummyData =
-          // TODO: make dummy data for one day
-          await rootBundle.loadString('lib/assets/dummy_timetable.json');
-      return dummyData;
-    }
-    final storage = FlutterSecureStorage();
-    final userId = await storage.read(key: 'userId');
-    final syID = await storage.read(key: 'schoolYearId');
-
-    DateTime getMidnight(DateTime datetime) {
-      return DateTime(datetime.year, datetime.month, datetime.day);
-    }
-
-    today = getMidnight(whichDay);
-
-    // holiday fix
-    if (today.month == 7 || today.month == 8) {
-      today = getMidnight(DateTime(whichDay.year, 9, 1, 0, 0, 0));
-    }
-
-    //weekend fix
-    if (today.weekday == 6) {
-      today.add(Duration(days: 2));
-    } else if (today.weekday == 7) {
-      today.add(Duration(days: 1));
-    }
-
-    final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
-
-    Map<String, dynamic> params = {
-      'studentId': userId,
-      'dateFrom': dateFormatter.format(today),
-      'dateTo': dateFormatter.format(today),
-      'schoolYearId': syID
-    };
-
-    String url = 'api/v1/timeTable';
-
-    // ignore: use_build_context_synchronously
-    final response = await makeRequest(url, params, context);
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception(
-          'Failed to load timetable\n${response.statusCode}\n${response.body}');
-    }
-  }
-
-  Future<String> downloadTimetableWeek(DateTime dateTime) async {
-    if (MyApp.of(context)?.getDummyMode() ?? false) {
-      String dummyData =
-          await rootBundle.loadString('lib/assets/dummy_timetable.json');
-      return dummyData;
-    } else {
-      final storage = FlutterSecureStorage();
-      final userId = await storage.read(key: 'userId');
-      final syID = await storage.read(key: 'schoolYearId');
-
-      DateTime getMidnight(DateTime datetime) {
-        return DateTime(datetime.year, datetime.month, datetime.day);
-      }
-
-      final monday =
-          getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
-      final friday = getMidnight(monday.add(Duration(days: 5)));
-
-      final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
-
-      Map<String, dynamic> params = {
-        'studentId': userId,
-        // TODO change to dateTime
-        'dateFrom': dateFormatter.format(monday),
-        'dateTo': dateFormatter.format(friday),
-        // 'dateFrom': dateFormatter.format(DateTime(2024, 6, 3, 0, 0, 0)),
-        // 'dateTo': dateFormatter.format(DateTime(2024, 6, 7, 0, 0, 0)),
-        'schoolYearId': syID
-      };
-
-      String url = 'api/v1/timeTable';
-
-      final response = await makeRequest(
-        url,
-        params,
-        // ignore: use_build_context_synchronously
-        context,
-      );
-
-      if (response.statusCode == 200) {
-        return response.body;
-      } else {
-        throw Exception(
-            'Failed to load timetable\n${response.statusCode}\n${response.body}');
-      }
-    }
   }
 
   List<List<Lesson>> parseWeekTimetable(String jsonString) {
