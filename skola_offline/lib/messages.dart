@@ -122,6 +122,7 @@ class MessagesScreenState extends State<MessagesScreen> {
           onTap: () {
             setState(() {
               selectedMessage = index;
+              Scaffold.of(context).closeDrawer();
             });
           },
           child: MessageWidget(
