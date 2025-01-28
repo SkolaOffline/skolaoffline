@@ -2,22 +2,47 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:skola_offline/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/structs/lesson.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:skola_offline/api_handlers/timetable_handler.dart';
+
+const TIMETABLE = 'timetable';
+DateFormat hiveIndexFormatter = DateFormat('y-MM-dd');
 
 class TimetableWeekScreenState extends State<TimetableWeekScreen> {
-  List<dynamic> weekTimetable = [];
-  List<dynamic> listifiedTimetable = [];
+  List<List<Lesson>> weekTimetable = [];
+  List<Lesson?> listifiedTimetable = [];
   bool isLoading = true;
   bool _mounted = true;
-  DateTime date = DateTime.now();
+  DateTime date = DateTime.now().add(Duration(days:-4));
+
+  void cacheCheck(){
+    if (_mounted && Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date)) != null && Hive.box(TIMETABLE).get(hiveIndexFormatter.format(date)) is List<Lesson>) {
+      print('Cache update');
+      setState(() {
+        final monday = date.subtract(Duration(days: date.weekday - 1));
+        weekTimetable = [];
+        for (var i = 0; i < 5; i++) {
+          weekTimetable.add(Hive.box(TIMETABLE).get(hiveIndexFormatter.format(monday.add(Duration(days: i)))));
+        }
+        listifiedTimetable = listify(weekTimetable);
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _fetchTimetableWeek();
+
+    Hive.box(TIMETABLE).listenable().addListener(() {
+      cacheCheck();
+    });
+
+    cacheCheck();
+    TimetableHandler.fetchTimetable(date, context);
   }
 
   @override
@@ -31,32 +56,6 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
       return true;
     }
     return false;
-  }
-
-  Future<void> _fetchTimetableWeek() async {
-    // holiday fix
-    if (date.month == 7 || date.month == 8) {
-      date = DateTime(date.year, 9, 1, 0, 0, 0);
-    }
-
-    //weekend fix
-    if (date.weekday == 6) {
-      date.add(Duration(days: 2));
-    } else if (date.weekday == 7) {
-      date.add(Duration(days: 1));
-    }
-    try {
-      final timetableData = await downloadTimetableWeek(date);
-      if (_mounted) {
-        setState(() {
-          weekTimetable = parseWeekTimetable(timetableData);
-          listifiedTimetable = listify(weekTimetable);
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      print('Error fetching timetable: $e');
-    }
   }
 
   @override
@@ -86,7 +85,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                         date = date.subtract(Duration(days: 7));
                         isLoading = true;
                       });
-                      _fetchTimetableWeek();
+                      cacheCheck();
+                      TimetableHandler.fetchTimetable(date,context);
                     },
                   ),
                   IconButton(
@@ -106,7 +106,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                             date = value;
                             isLoading = true;
                           });
-                          _fetchTimetableWeek();
+                          cacheCheck();
+                          TimetableHandler.fetchTimetable(date,context);
                         }
                       });
                     },
@@ -118,7 +119,8 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                         date = date.add(Duration(days: 7));
                         isLoading = true;
                       });
-                      _fetchTimetableWeek();
+                    cacheCheck();
+                    TimetableHandler.fetchTimetable(date,context);
                     },
                   ),
                 ],
@@ -133,13 +135,13 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
                 date = date.add(Duration(days: 7));
                 isLoading = true;
               });
-              _fetchTimetableWeek();
+              TimetableHandler.fetchTimetable(date,context);
             } else if (details.primaryVelocity! > 0) {
               setState(() {
                 date = date.subtract(Duration(days: 7));
                 isLoading = true;
               });
-              _fetchTimetableWeek();
+              TimetableHandler.fetchTimetable(date,context);
             }
           }, 
           child: Padding(
@@ -156,7 +158,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
               crossAxisSpacing: 2,
               children: [
                 for (var i = 0; i < listifiedTimetable.length; i++)
-                  LessonCardAbbrev(lesson: listifiedTimetable[i]),
+                  LessonCardAbbrev(potentiallesson: listifiedTimetable[i]),
               ],
             ),
           ),
@@ -165,145 +167,34 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
     }
   }
 
-  Future<String> downloadTimetable(DateTime whichDay) async {
-    if (MyApp.of(context)?.getDummyMode() ?? false) {
-      String dummyData =
-          await rootBundle.loadString('lib/assets/dummy_timetable.json');
-      return dummyData;
-    }
-    final storage = FlutterSecureStorage();
-    final userId = await storage.read(key: 'userId');
-    final syID = await storage.read(key: 'schoolYearId');
-
-    DateTime getMidnight(DateTime datetime) {
-      return DateTime(datetime.year, datetime.month, datetime.day);
-    }
-
-    final day = getMidnight(whichDay);
-    final nextDay = getMidnight(day.add(Duration(days: 1)));
-
-    final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
-
-    Map<String, dynamic> params = {
-      'studentId': userId,
-      'dateFrom': dateFormatter.format(day),
-      'dateTo': dateFormatter.format(nextDay),
-      'schoolYearId': syID
-    };
-
-    String url = 'api/v1/timeTable';
-
-    final response = await makeRequest(url, params, context);
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception(
-          'Failed to load timetable\n${response.statusCode}\n${response.body}');
-    }
-  }
-
-  Future<String> downloadTimetableWeek(DateTime dateTime) async {
-    if (MyApp.of(context)?.getDummyMode() ?? false) {
-      String dummyData =
-          await rootBundle.loadString('lib/assets/dummy_timetable.json');
-      return dummyData;
-    } else {
-      final storage = FlutterSecureStorage();
-      final userId = await storage.read(key: 'userId');
-      final syID = await storage.read(key: 'schoolYearId');
-
-      DateTime getMidnight(DateTime dateTime) {
-        return DateTime(dateTime.year, dateTime.month, dateTime.day);
-      }
-
-      var monday =
-          getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
-      monday = monday.add(Duration(days: 7)); 
-      final friday = getMidnight(monday.add(Duration(days: 5)));
-
-      print(monday);
-
-      final dateFormatter = DateFormat('y-MM-ddTHH:mm:ss.000');
-
-      Map<String, dynamic> params = {
-        'studentId': userId,
-        'dateFrom': dateFormatter.format(monday),
-        'dateTo': dateFormatter.format(friday),
-        'schoolYearId': syID
-      };
-
-      String url = 'api/v1/timeTable';
-
-      final response = await makeRequest(
-        url,
-        params,
-        context,
-      );
-
-      if (response.statusCode == 200) {
-        return response.body;
-      } else {
-        throw Exception(
-            'Failed to load timetable\n${response.statusCode}\n${response.body}');
-      }
-    }
-  }
-
-  List<dynamic> parseWeekTimetable(String jsonString) {
-    Map<String, dynamic> data = jsonDecode(jsonString);
-    return data['days'].map((day) => parseDayTimetable(day)).toList();
-  }
-
-  List<dynamic> listify(List<dynamic> timetable) {
-    List<Map<String, dynamic>> listified = [];
+  List<Lesson?> listify(List<dynamic> timetable) {
+    List<Lesson?> listified = [];
     for (var day in timetable) {
       int len = 0;
       for (var lesson in day) {
-        if (lesson['lessonTo'].toString() == '-' ||
-            lesson['lessonFrom'].toString() == '-') {
-          listified.add(Map<String, dynamic>.from(lesson));
+        if (lesson.lessonTo.toString() == '-' ||
+            lesson.lessonFrom.toString() == '-') {
+          listified.add(lesson);
           len += 1;
           continue;
         }
         for (var i = 0;
             i <
-                int.parse(lesson['lessonTo']) -
-                    int.parse(lesson['lessonFrom']) +
+                lesson.lessonTo -
+                    lesson.lessonFrom +
                     1;
             i++) {
-          listified.add(Map<String, dynamic>.from(lesson));
+          listified.add(lesson);
           len += 1;
         }
       }
       for (var i = 0; i < 8 - len; i++) {
-        listified.add({});
+        listified.add(null);
       }
     }
     return listified;
   }
 
-  List<dynamic> parseDayTimetable(Map<String, dynamic> day) {
-    return day['schedules']
-        .where((lesson) =>
-            lesson['hourType']['id'] != 'SKOLNI_AKCE' &&
-            lesson['hourType']['id'] != 'SUPLOVANA')
-        .map((lesson) => {
-              'lessonFrom': lesson['lessonIdFrom'],
-              'lessonTo': lesson['lessonIdTo'],
-              'lessonType': lesson['hourType']['id'],
-              'lessonAbbrev': lesson['subject']['abbrev'],
-              'lessonName': lesson['subject']['name'],
-              'classroomAbbrev': lesson['rooms'][0]['abbrev'],
-              'teacher': lesson['teachers'][0]['displayName'],
-              'teacherAbbrev': lesson['teachers'][0]['abbrev'],
-              'lessonOrder': lesson['detailHours'][0]['order'],
-              'lessonIdFrom': lesson['lessonIdFrom'],
-              'lessonIdTo': lesson['lessonIdTo'],
-              'beginTime': lesson['beginTime'],
-              'endTime': lesson['endTime'],
-            })
-        .toList();
-  }
 }
 
 class TimetableWeekScreen extends StatefulWidget {
@@ -312,7 +203,7 @@ class TimetableWeekScreen extends StatefulWidget {
 }
 
 class CurrentLessonCard extends StatelessWidget {
-  final Map<String, dynamic> lesson;
+  final Lesson lesson;
 
   const CurrentLessonCard({super.key, required this.lesson});
 
@@ -340,7 +231,7 @@ class CurrentLessonCard extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(2.0),
-              child: LessonCardAbbrev(lesson: lesson),
+              child: LessonCardAbbrev(potentiallesson: lesson),
             ))
       ],
     );
@@ -348,13 +239,13 @@ class CurrentLessonCard extends StatelessWidget {
 }
 
 class LessonCardAbbrev extends StatelessWidget {
-  final Map<String, dynamic> lesson;
+  final Lesson? potentiallesson;
 
-  const LessonCardAbbrev({super.key, required this.lesson});
+  const LessonCardAbbrev({super.key, required this.potentiallesson});
 
   @override
   Widget build(BuildContext context) {
-    if (lesson.isEmpty) {
+    if (potentiallesson == null ) {
       return Card(
         color: Theme.of(context).colorScheme.surface,
         elevation: 0,
@@ -363,24 +254,24 @@ class LessonCardAbbrev extends StatelessWidget {
       );
     }
 
-    print('lesson type: ${lesson['lessonType']}');
+    final lesson = potentiallesson as Lesson;
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Card(
         elevation: 2,
         margin: EdgeInsets.zero,
-        color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
+        color: lesson.lessonType == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                lesson['lessonAbbrev'].substring(
+                lesson.lessonAbbrev.substring(
                   0,
-                  lesson['lessonAbbrev'].length > 4
+                  lesson.lessonAbbrev.length > 4
                       ? 4
-                      : lesson['lessonAbbrev'].length,
+                      : lesson.lessonAbbrev.length,
                 ),
                 softWrap: true,
                 style: const TextStyle(
@@ -389,13 +280,13 @@ class LessonCardAbbrev extends StatelessWidget {
                 ),
               ),
               Text(
-                lesson['classroomAbbrev']
+                lesson.classroomAbbrev
                     .replaceAll(RegExp(r'\([^()]*\)'), '')
                     .substring(
                       0, 
                       min<int>(
                         6, 
-                        lesson['classroomAbbrev']
+                        lesson.classroomAbbrev
                         .replaceAll(RegExp(r'\([^()]*\)'), '')
                         .length)),
                 softWrap: true,
@@ -406,7 +297,7 @@ class LessonCardAbbrev extends StatelessWidget {
                 ),
               ),
               Text(
-                lesson['teacherAbbrev'],
+                lesson.teacherAbbrev,
                 style: const TextStyle(fontSize: 10),
               ),
             ],
