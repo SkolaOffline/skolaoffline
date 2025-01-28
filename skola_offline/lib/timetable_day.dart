@@ -15,7 +15,8 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
   List<Lesson> todayTimetable = [];
   bool isLoading = true;
   bool _mounted = true;
-  DateTime date = DateTime.now().add(Duration(days: -3));
+  //Date automatically normalized to monday
+  DateTime date = (DateTime.now().weekday == 6 || DateTime.now().weekday == 7) ?  DateTime.now().add(Duration(days: 1-DateTime.now().weekday)): DateTime.now();
   DateTime today = DateTime(2024, 5, 27, 8, 40, 03);
   bool isLoadingToday = true;
 
