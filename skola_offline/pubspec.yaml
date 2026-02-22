@@ -3,7 +3,7 @@ description: A Flutter app for the skolaonline school system.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.18+18
+version: 0.0.21+21
 
 environment:
   sdk: ^3.1.1
