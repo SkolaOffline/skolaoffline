@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/l10n/app_localizations.dart';
 
 class TimetableWeekScreenState extends State<TimetableWeekScreen> {
   List<dynamic> weekTimetable = [];
@@ -61,7 +61,6 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     if (isLoading) {
       return Center(child: CircularProgressIndicator());
     } else {
@@ -141,7 +140,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
               });
               _fetchTimetableWeek();
             }
-          }, 
+          },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: GridView.count(
@@ -150,7 +149,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
               // TODO this needs to be fixed
               childAspectRatio: MediaQuery.of(context).size.height /
                   (MediaQuery.of(context).size.width) *
-                10 /
+                  10 /
                   24,
               mainAxisSpacing: 2,
               crossAxisSpacing: 2,
@@ -218,7 +217,7 @@ class TimetableWeekScreenState extends State<TimetableWeekScreen> {
 
       var monday =
           getMidnight(dateTime.subtract(Duration(days: dateTime.weekday - 1)));
-      monday = monday.add(Duration(days: 7)); 
+      monday = monday.add(Duration(days: 7));
       final friday = getMidnight(monday.add(Duration(days: 5)));
 
       print(monday);
@@ -369,7 +368,9 @@ class LessonCardAbbrev extends StatelessWidget {
       child: Card(
         elevation: 2,
         margin: EdgeInsets.zero,
-        color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
+        color: lesson['lessonType'] == 'ROZVRH'
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.tertiaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Column(
@@ -392,18 +393,15 @@ class LessonCardAbbrev extends StatelessWidget {
                 lesson['classroomAbbrev']
                     .replaceAll(RegExp(r'\([^()]*\)'), '')
                     .substring(
-                      0, 
-                      min<int>(
-                        6, 
-                        lesson['classroomAbbrev']
-                        .replaceAll(RegExp(r'\([^()]*\)'), '')
-                        .length)),
+                        0,
+                        min<int>(
+                            6,
+                            lesson['classroomAbbrev']
+                                .replaceAll(RegExp(r'\([^()]*\)'), '')
+                                .length)),
                 softWrap: true,
                 style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  height: 0.5
-                ),
+                    fontSize: 12, fontWeight: FontWeight.w600, height: 0.5),
               ),
               Text(
                 lesson['teacherAbbrev'],

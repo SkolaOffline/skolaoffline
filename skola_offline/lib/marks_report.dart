@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/l10n/app_localizations.dart';
 // import 'package:http/http.dart' as http;
 import 'package:skola_offline/main.dart';
 import 'package:intl/intl.dart';
@@ -88,15 +88,15 @@ class MarksReportScreenState extends State<MarksReportScreen> {
         child: isLoading
             ? Center(child: CircularProgressIndicator())
             : Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: ListView.builder(
+                padding: const EdgeInsets.all(12.0),
+                child: ListView.builder(
                   itemCount: certificateTerms.length,
                   itemBuilder: (context, index) {
                     final term = certificateTerms[index];
                     return TermCard(term: term);
                   },
                 ),
-            ),
+              ),
       ),
     );
   }
@@ -240,15 +240,23 @@ class TermCard extends StatelessWidget {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('${AppLocalizations.of(context)!.date}: ${formatDateToDate(mark['markDate'])}'),
-                Text('${AppLocalizations.of(context)!.mark}: ${mark['markText']}'),
-                Text('${AppLocalizations.of(context)!.edit_date}: ${formatDateToDate(mark['editDate'])}'),
+                Text(
+                    '${AppLocalizations.of(context)!.date}: ${formatDateToDate(mark['markDate'])}'),
+                Text(
+                    '${AppLocalizations.of(context)!.mark}: ${mark['markText']}'),
+                Text(
+                    '${AppLocalizations.of(context)!.edit_date}: ${formatDateToDate(mark['editDate'])}'),
                 if (mark['verbalEvaluation'] != null)
-                  Text('${AppLocalizations.of(context)!.verbal_evaluation}: ${mark['verbalEvaluation']}'),
-                Text('${AppLocalizations.of(context)!.released}: ${mark['released'] ? 'Yes' : 'No'}'),
-                Text('${AppLocalizations.of(context)!.unclassified}: ${mark['unclassified'] ? 'Yes' : 'No'}'),
-                Text('${AppLocalizations.of(context)!.unevaluated}: ${mark['unevaluated'] ? 'Yes' : 'No'}'),
-                Text('${AppLocalizations.of(context)!.recognized}: ${mark['recognized'] ? 'Yes' : 'No'}'),
+                  Text(
+                      '${AppLocalizations.of(context)!.verbal_evaluation}: ${mark['verbalEvaluation']}'),
+                Text(
+                    '${AppLocalizations.of(context)!.released}: ${mark['released'] ? 'Yes' : 'No'}'),
+                Text(
+                    '${AppLocalizations.of(context)!.unclassified}: ${mark['unclassified'] ? 'Yes' : 'No'}'),
+                Text(
+                    '${AppLocalizations.of(context)!.unevaluated}: ${mark['unevaluated'] ? 'Yes' : 'No'}'),
+                Text(
+                    '${AppLocalizations.of(context)!.recognized}: ${mark['recognized'] ? 'Yes' : 'No'}'),
               ],
             ),
           ),

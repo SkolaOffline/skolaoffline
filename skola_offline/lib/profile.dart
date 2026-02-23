@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skola_offline/login.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import the url_launcher package
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/l10n/app_localizations.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override

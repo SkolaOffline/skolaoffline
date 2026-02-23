@@ -21,7 +21,6 @@ dependencies:
   url_launcher: ^6.3.0
   flutter:
     sdk: flutter
-  test: ^1.21.0
 
   provider: ^6.0.0
   flutter_localizations:
@@ -37,7 +36,7 @@ dev_dependencies:
 
   flutter_lints: ^5.0.0
   hive_generator: ^2.0.1
-  build_runner: ^2.4.14
+  build_runner: 2.4.13
 
 flutter:
   uses-material-design: true

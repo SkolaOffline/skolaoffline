@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/l10n/app_localizations.dart';
 
 import 'package:skola_offline/absences.dart';
 import 'package:skola_offline/app_settings.dart';
@@ -105,28 +105,31 @@ Future<http.Response> makeRequest(
     //   context,
     //   MaterialPageRoute(builder: (context) => LoginScreen()),
     // );
-    showDialog(context: context, builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Failed to load data'),
-        content: Column(
-          children: [
-            Text('Response code: ${response.statusCode} != 200'),
-            Text('Response body: ${response.body}'),
-            Text('Please log in again'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('OK'),
-          ),
-        ],
-      );
-    });
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Failed to load data'),
+            content: Column(
+              children: [
+                Text('Response code: ${response.statusCode} != 200'),
+                Text('Response body: ${response.body}'),
+                Text('Please log in again'),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        });
     print('response body is ${response.body}');
-    throw Exception('Failed to load data, response code: ${response.statusCode} != 200');
+    throw Exception(
+        'Failed to load data, response code: ${response.statusCode} != 200');
   }
 }
 
@@ -155,7 +158,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   void setDarkMode(bool value) {
-
     setState(() {
       _appSettings.useDarkMode = value;
     });
@@ -187,6 +189,7 @@ class _MyAppState extends State<MyApp> {
   bool getDarkMarks() {
     return _appSettings.darkMarks;
   }
+
   void setDefaultToWeeklyTimetable(bool value) {
     setState(() {
       _appSettings.defaultToWeeklyTimetable = value;
@@ -198,18 +201,19 @@ class _MyAppState extends State<MyApp> {
     return _appSettings.defaultToWeeklyTimetable;
   }
 
-  Future<void> saveSettings() async{
+  Future<void> saveSettings() async {
     final storage = FlutterSecureStorage();
-    await storage.write(key: 'settings', value: jsonEncode(_appSettings.toJSON()));
+    await storage.write(
+        key: 'settings', value: jsonEncode(_appSettings.toJSON()));
   }
 
   Future<void> loadSettings() async {
     final storage = FlutterSecureStorage();
-    final json  = await storage.read(key: 'settings');
-    if(json != null){
+    final json = await storage.read(key: 'settings');
+    if (json != null) {
       setState(() {
-      _appSettings = AppSettings.fromJSON(jsonDecode(json));
-    });
+        _appSettings = AppSettings.fromJSON(jsonDecode(json));
+      });
     }
   }
 
@@ -285,8 +289,7 @@ class MyHomePageState extends State<MyHomePage> {
                 stream: Stream.periodic(const Duration(seconds: 1)),
                 builder: (context, snapshot) {
                   return Text(
-                    DateFormat('d.M. H:mm').format(DateTime
-                        .now()),
+                    DateFormat('d.M. H:mm').format(DateTime.now()),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,

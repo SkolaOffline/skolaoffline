@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:skola_offline/main.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -80,7 +80,8 @@ class LoginScreenState extends State<LoginScreen> {
         if (response.statusCode != 200) {
           // ignore: use_build_context_synchronously
           Navigator.of(context).pop(); // Close the loading dialog
-          _showErrorDialog(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.error_message);
+          _showErrorDialog(AppLocalizations.of(context)!.error,
+              AppLocalizations.of(context)!.error_message);
           return;
         }
 
@@ -116,11 +117,13 @@ class LoginScreenState extends State<LoginScreen> {
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
-      _showSuccessDialog(AppLocalizations.of(context)!.success, AppLocalizations.of(context)!.success_message);
+      _showSuccessDialog(AppLocalizations.of(context)!.success,
+          AppLocalizations.of(context)!.success_message);
     } catch (e) {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop(); // Close the loading dialog
-      _showErrorDialog(AppLocalizations.of(context)!.error, '${AppLocalizations.of(context)!.error_info} $e');
+      _showErrorDialog(AppLocalizations.of(context)!.error,
+          '${AppLocalizations.of(context)!.error_info} $e');
     }
   }
 
@@ -208,7 +211,8 @@ class LoginScreenState extends State<LoginScreen> {
 
                   if (username == 'dummy' && password == 'mode') {
                     MyApp.of(context)?.setDummyMode(true);
-                    _showSuccessDialog(AppLocalizations.of(context)!.success, AppLocalizations.of(context)!.dummy_enabled);
+                    _showSuccessDialog(AppLocalizations.of(context)!.success,
+                        AppLocalizations.of(context)!.dummy_enabled);
                   } else {
                     MyApp.of(context)?.setDummyMode(false);
                   }

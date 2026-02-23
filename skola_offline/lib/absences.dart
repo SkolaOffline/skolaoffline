@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:skola_offline/main.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:skola_offline/l10n/app_localizations.dart';
 
 class AbsencesScreen extends StatefulWidget {
   @override
@@ -99,22 +98,20 @@ class AbsencesScreenState extends State<AbsencesScreen> {
         body: isLoading
             ? Center(child: CircularProgressIndicator())
             : Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: ListView(
+                padding: const EdgeInsets.all(14.0),
+                child: ListView(
                   children: [
                     for (var subject in absencesSubjectList)
                       AbsenceInSubjectCard(absence: subject, context: context)
                   ],
                 ),
-            ));
+              ));
   }
 
   Future<String> downloadAbsences() async {
-
     if (MyApp.of(context)?.getDummyMode() ?? false) {
       return await rootBundle.loadString('lib/assets/dummy_absences.json');
     } else {
-
       String dateFrom() {
         final today = DateTime.now();
 
@@ -125,8 +122,8 @@ class AbsencesScreenState extends State<AbsencesScreen> {
         } else {
           // First half of the academic year (Fall semester)
           DateTime firstSemester = DateTime(today.year, 9, 1);
-          if (today.month == 1){
-            firstSemester = DateTime(today.year-1, 9, 1);
+          if (today.month == 1) {
+            firstSemester = DateTime(today.year - 1, 9, 1);
           }
           return firstSemester.toIso8601String().split('T')[0];
         }
@@ -135,7 +132,6 @@ class AbsencesScreenState extends State<AbsencesScreen> {
       // print(DateTime(DateTime.now().year, 6, 30)
       //       .toIso8601String()
       //       .split('T')[0]);
-
 
       final params = {
         'dateFrom': dateFrom(),
@@ -148,11 +144,8 @@ class AbsencesScreenState extends State<AbsencesScreen> {
       //   'https://aplikace.skolaonline.cz/solapi/api/v1/absences/inSubject',
       // ).replace(queryParameters: params);
 
-      final response = await makeRequest(
-        'api/v1/absences/inSubject',
-        params,
-        context
-      );
+      final response =
+          await makeRequest('api/v1/absences/inSubject', params, context);
       // final response = await http.get(
       //   url,
       //   headers: {'Authorization': 'Bearer $accessToken'},
@@ -184,7 +177,8 @@ class AbsencesScreenState extends State<AbsencesScreen> {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    absence['subjectName'] ?? AppLocalizations.of(context)!.unknown_subject,
+                    absence['subjectName'] ??
+                        AppLocalizations.of(context)!.unknown_subject,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

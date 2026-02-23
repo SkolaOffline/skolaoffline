@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:skola_offline/main.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/l10n/app_localizations.dart';
 
 class TimetableDayScreenState extends State<TimetableDayScreen> {
   List<dynamic> dayTimetable = [];
@@ -102,7 +102,8 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
     var currentLessonIndex = -1;
     if (!isLoadingToday) {
       for (var i = todayTimetable.length - 1; i >= 0; i--) {
-        if (DateTime.now().isBefore(dateFormatter.parse(todayTimetable[i]['endTime']))) {
+        if (DateTime.now()
+            .isBefore(dateFormatter.parse(todayTimetable[i]['endTime']))) {
           currentLessonIndex = i;
         }
       }
@@ -151,7 +152,6 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      
                       Text(
                         '${DateFormat('EE').format(date)}, ${DateFormat(
                           'd.M.y',
@@ -233,14 +233,16 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
                       ),
                     ),
               isLoading || dayTimetable.isEmpty
-                  ? SliverToBoxAdapter(child: Container()) : SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20, right: 20, top: 5, bottom: 20),
-                        child: Text("Orderly service: ${dayTimetable[0]['orderlyService'].join(', ').replaceAll(RegExp(r'[\{\}]'),'')}",
-                          style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w300),
-                ))),
+                  ? SliverToBoxAdapter(child: Container())
+                  : SliverToBoxAdapter(
+                      child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 5, bottom: 20),
+                          child: Text(
+                            "Orderly service: ${dayTimetable[0]['orderlyService'].join(', ').replaceAll(RegExp(r'[\{\}]'), '')}",
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w300),
+                          ))),
             ],
           ),
         ),
@@ -371,9 +373,13 @@ class TimetableDayScreenState extends State<TimetableDayScreen> {
               'lessonIdTo': lesson['lessonIdTo'],
               'beginTime': lesson['beginTime'],
               'endTime': lesson['endTime'],
-              'orderlyService':lesson['orderlyService'].map((student) => {
-              (student['firstName'] + ' ' + student['lastname']) // Developers made an oopsie...
-              }).toList()
+              'orderlyService': lesson['orderlyService']
+                  .map((student) => {
+                        (student['firstName'] +
+                            ' ' +
+                            student['lastname']) // Developers made an oopsie...
+                      })
+                  .toList()
             })
         .toList();
   }
@@ -433,7 +439,9 @@ class LessonCard extends StatelessWidget {
     return Card(
       elevation: 2,
       // color: Theme.of(context).colorScheme.secondaryContainer,
-      color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
+      color: lesson['lessonType'] == 'ROZVRH'
+          ? Theme.of(context).colorScheme.primaryContainer
+          : Theme.of(context).colorScheme.tertiaryContainer,
       child: Padding(
         padding: EdgeInsets.all(0),
         child: Row(
@@ -442,7 +450,9 @@ class LessonCard extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: lesson['lessonType'] == 'ROZVRH' ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.tertiaryContainer,
+                color: lesson['lessonType'] == 'ROZVRH'
+                    ? Theme.of(context).colorScheme.primaryContainer
+                    : Theme.of(context).colorScheme.tertiaryContainer,
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(

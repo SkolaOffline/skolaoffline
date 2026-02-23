@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:skola_offline/main.dart';
 import 'package:skola_offline/timetable_day.dart';
 import 'package:skola_offline/timetable_week.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/l10n/app_localizations.dart';
 
 class TimetableScreenState extends State<TimetableScreen> {
   bool isDayScreen = true;
-  // ! THIS REALLY SUCKS, THERE IS A BETTER WAY, I AM BRAINDEAD. 
+  // ! THIS REALLY SUCKS, THERE IS A BETTER WAY, I AM BRAINDEAD.
   bool hasChanged = false;
 
   setDayScreen() {
@@ -25,7 +25,10 @@ class TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if(MyApp.of(context)?.getDefaultToWeeklyTimetable() == true && hasChanged==false) setWeekScreen();
+    if (MyApp.of(context)?.getDefaultToWeeklyTimetable() == true &&
+        hasChanged == false) {
+      setWeekScreen();
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.timetable),

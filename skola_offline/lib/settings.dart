@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:skola_offline/l10n/app_localizations.dart';
 import 'package:skola_offline/main.dart';
 
-
-
 class SettingsScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    
-
-
-    
-
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -98,14 +90,19 @@ class SettingsScreen extends StatelessWidget {
                           style: TextStyle(fontSize: 20),
                         ),
                         DropdownButton<bool>(
-                            value: MyApp.of(context)?.getDefaultToWeeklyTimetable() ?? false,
-                            items: [DropdownMenuItem(
+                            value: MyApp.of(context)
+                                    ?.getDefaultToWeeklyTimetable() ??
+                                false,
+                            items: [
+                              DropdownMenuItem(
                                   value: true,
-                                  child: Text(AppLocalizations.of(context)!.weekly)),
-                                  DropdownMenuItem(
+                                  child: Text(
+                                      AppLocalizations.of(context)!.weekly)),
+                              DropdownMenuItem(
                                   value: false,
-                                  child: Text(AppLocalizations.of(context)!.daily))
-                                  ],
+                                  child:
+                                      Text(AppLocalizations.of(context)!.daily))
+                            ],
                             onChanged: (bool? value) {
                               MyApp.of(context)
                                   ?.setDefaultToWeeklyTimetable(value ?? false);
@@ -116,17 +113,18 @@ class SettingsScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                            child: Center( child: Text(
-                              AppLocalizations.of(context)!.disclaimer,
-                              style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-
-                          ),
-                          textAlign: TextAlign.center,
-                        ),),)
+                            child: Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.disclaimer,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
                         ]),
-
                   ],
                 ))));
   }
